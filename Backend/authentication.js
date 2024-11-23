@@ -20,6 +20,7 @@ export const authenticateToken = async (req, res, next) => {
             return res.status(404).json({ message: 'User not found' });
         }
         req.user = {
+            userId: user.userId,
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,

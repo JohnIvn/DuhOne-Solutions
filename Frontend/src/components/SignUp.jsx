@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import api from '../Api';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
     const [formData, setFormData] = useState({
@@ -9,19 +9,22 @@ const SignUp = () => {
         email: '',
         password: '',
     });
+    const navigate = useNavigate(); 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const response = await api.post('/signup', formData);
             alert(response.data.message || 'Sign-up successful!');
-            Navigate('/signin');
+            navigate('/signin'); 
         } catch (error) {
             alert(error.response?.data?.message || 'An error occurred');
         }
     };
+
     return (
         <form onSubmit={handleSubmit}>
             <h2>Sign Up</h2>

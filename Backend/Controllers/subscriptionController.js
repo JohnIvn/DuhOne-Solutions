@@ -1,24 +1,28 @@
 import { subscription } from "../Models/subscriptionModel.js";
-import db from '../database.js';
 
 export const subscriptionController = async (req, res) => {
     const { userId, email, plan } = req.body;
 
+    console.log("Request Body: ", req.body);
     if (!userId || !email || !plan) {
-        return res.status(400).json({ message: "Bad Request: Missing required fields (userId, email, plan)." });
+        return res.status(400).json({
+            message: "Bad Request: Missing required fields (userId, email, plan)."
+        });
     }
-
-    if(req.user.email != email) return res.status(403).json({message: "Forbidden: email mismatch"});
+    if (req.user.email !== email) {
+        return res.status(403).json({
+            message: "Forbidden: Email mismatch."
+        });
+    }
 
     try {
         const createPlan = await subscription.create({
-            userId, 
+            userId,
             email,
             plan,
-            subscribedAt: new Date(), 
+            subscribedAt: new Date(),
             endAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), 
         });
-
         return res.status(201).json({
             message: "Subscription created successfully!",
             subscription: createPlan,

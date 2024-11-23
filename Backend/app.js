@@ -7,10 +7,10 @@ import signInRouter from './Routes/signInRoute.js'
 import homePageRouter from './Routes/homePageRoute.js'
 import subscriptionRouter from './Routes/subscriptionRoute.js'
 import dashboardRouter from './Routes/dashBoardRoute.js'
+import userSettingsRouter from './Routes/userSettingsRoute.js'
 dotenv.config()
 
 const app = express()
-
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); 
@@ -20,8 +20,9 @@ app.use(express.static('Public'));
 app.use('/signin', signInRouter);
 app.use('/signup', signUpRouter);
 app.use('/homepage', homePageRouter);
-app.use('subscription', subscriptionRouter);
+app.use('/subscription', subscriptionRouter);
 app.use('/dashboard', dashboardRouter);
+app.use('/settings', userSettingsRouter);
 
 app.listen(process.env.PORT, () => {
     console.log('app is listening to port: ' + process.env.PORT);
