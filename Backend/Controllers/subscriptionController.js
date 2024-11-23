@@ -4,6 +4,12 @@ import db from '../database.js';
 export const subscriptionController = async (req, res) => {
     const { userId, email, plan } = req.body;
 
+    if (!userId || !email || !plan) {
+        return res.status(400).json({ message: "Bad Request: Missing required fields (userId, email, plan)." });
+    }
+
+    if(req.user.email != email) return res.status(403).json({message: "Forbidden: email mismatch"});
+
     try {
         const createPlan = await subscription.create({
             userId, 
