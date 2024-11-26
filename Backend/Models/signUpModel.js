@@ -47,6 +47,7 @@ const UserAccount = UserAccountModel.init(
     timestamps: false,
   }
 );
+
 class AdminAccountModel extends Model {}
 
 const AdminAccount = AdminAccountModel.init(
@@ -54,6 +55,13 @@ const AdminAccount = AdminAccountModel.init(
     userId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
+      references: {
+        model: UserAccount,  
+        key: 'userId',       
+      },
+      allowNull: false,
+      onDelete: 'CASCADE',  
+      onUpdate: 'CASCADE',  
     },
     email: {
       type: DataTypes.STRING,
@@ -73,13 +81,13 @@ const AdminAccount = AdminAccountModel.init(
     sequelize: db,
     modelName: 'AdminAccount',
     tableName: 'adminaccounts',
-    timestamps: false, 
+    timestamps: true, 
   }
 );
 
 async function createTableUserAccounts() {
   try {
-    await UserAccount.sync({ force: false }); 
+    await UserAccount.sync({ force: false });
     console.log('UserAccount table is synced and created if not exists');
   } catch (error) {
     console.error('Error syncing the table:', error);
@@ -88,8 +96,8 @@ async function createTableUserAccounts() {
 
 async function createTableAdminAccounts() {
   try {
-    await AdminAccount.sync({ force: false }); 
-    console.log('Adminaccounts table is synced and created if not exists');
+    await AdminAccount.sync({ force: false });
+    console.log('AdminAccount table is synced and created if not exists');
   } catch (error) {
     console.error('Error syncing the table:', error);
   }
