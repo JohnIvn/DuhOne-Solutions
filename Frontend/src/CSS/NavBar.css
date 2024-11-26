@@ -1,0 +1,31 @@
+body {
+    color: white !important;
+}
+
+.navbar, .navbar-nav, .nav-item, .nav-link, .dropdown-menu, .dropdown-item, .form-label, .form-check-label {
+    color: white !important;
+}
+
+.navbar {
+    background-color: #051b36 !important;
+}
+
+button {
+    color: white !important;
+}
+
+a {
+    color: white !important;
+}
+
+.navbar-nav .nav-item.separator {
+    display: flex;
+    align-items: center; 
+    margin-bottom: 3px;
+    padding: 0 10px; 
+}
+
+.navbar-nav .nav-item.separator .separator-text {
+    font-size: 20px;
+    line-height: 0.3; 
+}
