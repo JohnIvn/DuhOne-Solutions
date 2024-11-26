@@ -12,7 +12,7 @@ router.get('/', authenticateToken, (req, res) => {
             lastName,
             email
         },
-        message: "you are authenticated too access the dashboard"
+        message: "you are authenticated to access the dashboard"
     });
 
 })

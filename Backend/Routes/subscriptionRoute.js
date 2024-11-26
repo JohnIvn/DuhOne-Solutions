@@ -1,8 +1,8 @@
-import express from 'express'
-import { subscriptionController } from "../Controllers/subscriptionController.js";
+import express from 'express';
 import authenticateToken from '../authentication.js';
+import { subscriptionController } from '../Controllers/subscriptionController.js';
 
-const router = express.Router()
+const router = express.Router();
 
 router.post('/', authenticateToken, subscriptionController);
 

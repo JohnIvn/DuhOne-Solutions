@@ -1,5 +1,8 @@
 import db from '../database.js';
 import { Sequelize, DataTypes, Model } from 'sequelize';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 class UserAccountModel extends Model {}
 
@@ -25,6 +28,11 @@ const UserAccount = UserAccountModel.init(
     },
     password: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    role: {
+      type: DataTypes.STRING,
+      defaultValue: process.env.DEFAULT_ROLE,
       allowNull: false,
     },
     createdAt: {
@@ -68,5 +76,26 @@ const AdminAccount = AdminAccountModel.init(
     timestamps: false, 
   }
 );
+
+async function createTableUserAccounts() {
+  try {
+    await UserAccount.sync({ force: false }); 
+    console.log('UserAccount table is synced and created if not exists');
+  } catch (error) {
+    console.error('Error syncing the table:', error);
+  }
+}
+
+async function createTableAdminAccounts() {
+  try {
+    await AdminAccount.sync({ force: false }); 
+    console.log('Adminaccounts table is synced and created if not exists');
+  } catch (error) {
+    console.error('Error syncing the table:', error);
+  }
+}
+
+createTableUserAccounts();
+createTableAdminAccounts();
 
 export { UserAccount, AdminAccount };

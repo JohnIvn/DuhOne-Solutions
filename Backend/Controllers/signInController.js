@@ -9,7 +9,7 @@ dotenv.config();
 
 const SignIn = async (req, res) => {
     const { email, password } = req.body;
-
+    console.log("Request Body: ", req.body); 
     try {
         if (!email || !password) {
             return res.status(400).json({ message: 'Please fill in both email and password.' });
@@ -17,7 +17,8 @@ const SignIn = async (req, res) => {
         const user = await SignInModel.findOne({
             where: { email }
         });
-        
+
+
         if (!user) {
             return res.status(400).json({ message: 'Invalid credentials.' });
         }
@@ -27,7 +28,7 @@ const SignIn = async (req, res) => {
             return res.status(400).json({ message: 'Invalid credentials.' });
         }
         const token = jwt.sign(
-            {email: user.email},
+            {email: user.email, userId: user.userId},
             process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );

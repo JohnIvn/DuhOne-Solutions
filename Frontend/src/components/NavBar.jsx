@@ -28,7 +28,7 @@ const NavBar = () => {
                     </ul>
                     <ul className="navbar-nav ms-auto">
                         <li className="nav-item">
-                            <a className="nav-link active text-nowrap" href="signin">Log In</a>
+                            <a className="nav-link active text-nowrap" href="signin">Sign in</a>
                         </li>
                     </ul>
                 </div>
