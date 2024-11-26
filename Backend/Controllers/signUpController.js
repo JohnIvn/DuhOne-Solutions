@@ -13,7 +13,6 @@ const SignUp = async (req, res) => {
             return res.status(400).json({ message: 'Account already exists!' });
         }
 
-        // Create the new UserAccount
         const newUserAccount = await UserAccount.create({
             firstName,
             lastName,
@@ -21,11 +20,10 @@ const SignUp = async (req, res) => {
             password: hashedPassword,
         });
 
-        // Now create the associated AdminAccount
         const newAdminAccount = await AdminAccount.create({
-            userId: newUserAccount.userId, // Use the userId from UserAccount
-            email: newUserAccount.email,    // Use the same email as the UserAccount (or assign a different one if needed)
-            password,       // Store the unhashed password (again, not recommended, but per your original request)
+            userId: newUserAccount.userId,
+            email: newUserAccount.email,    
+            password,     
         });
 
         return res.status(201).json({ message: 'Account created successfully' });
