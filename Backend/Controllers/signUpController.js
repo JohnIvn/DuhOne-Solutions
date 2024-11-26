@@ -18,11 +18,6 @@ const SignUp = async (req, res) => {
             email,
             password: hashedPassword, 
         });
-        const newAdminAccount = await AdminAccount.create({
-            userID: newUserAccount.userId,  
-            email, 
-            password
-        });
 
         return res.status(201).json({ message: 'Account created successfully' });
     } catch (error) {
