@@ -39,27 +39,34 @@ const AdminDashboard = () => {
 
   const updateStatus = async (clientId, newStatus) => {
     try {
+      // Find the client by userId
       const client = clients.find((client) => client.userId === clientId);
-      if (client && client.subscribeAt) {
-        const newEndDate = calculateEndDate(client.subscribeAt);
-
-        await api.put(`/clients/${clientId}/status`, { status: newStatus, endAT: newEndDate });
-        console.log("Status and end date updated, refetching clients...");
-        setClients([]);  
-        await fetchClients({ plan: planFilter, status: statusFilter });  
+      if (client) {
+        const newEndDate = calculateEndDate(client.subscribeAt);  // Calculate endAt based on subscribeAt
+        
+        // Send the update request to the backend
+        const response = await api.put(`/clients/${clientId}/status`, {
+          status: newStatus,  // Send the new status
+          endAt: newEndDate,  // Send the new end date (in case of approved)
+        });
+        
+        console.log("Updated client response:", response.data);
+  
+        // Refetch the clients after updating the status
+        await fetchClients({ plan: planFilter, status: statusFilter });
       }
     } catch (error) {
       console.error("Error updating client status:", error);
     }
   };
-
+  
+  
   useEffect(() => {
     if (!isInitialLoad) {
       console.log("Filters changed - plan:", planFilter, "status:", statusFilter);
-
       fetchClients({ plan: planFilter, status: statusFilter });
     } else {
-      setIsInitialLoad(false); 
+      setIsInitialLoad(false);
     }
   }, [planFilter, statusFilter, fetchClients, isInitialLoad]);
 
@@ -67,7 +74,6 @@ const AdminDashboard = () => {
     <Container fluid className="admin-dashboard" style={{ backgroundColor: "#051b36", minHeight: "100vh" }}>
       <h1 className="dashboard-title">Admin Dashboard</h1>
 
-      {}
       <div className="filters-container">
         <Dropdown onSelect={(e) => setPlanFilter(e)} className="filter-dropdown">
           <Dropdown.Toggle>{planFilter || "Select Plan"}</Dropdown.Toggle>
@@ -146,14 +152,20 @@ const AdminDashboard = () => {
                           <Button
                             variant="success"
                             size="sm"
-                            onClick={() => updateStatus(client.userId, "approved")}
+                            onClick={() => {
+                              console.log("Approve clicked");
+                              updateStatus(client.userId, "approved");
+                            }}
                           >
                             Approve
                           </Button>
                           <Button
                             variant="danger"
                             size="sm"
-                            onClick={() => updateStatus(client.userId, "denied")}
+                            onClick={() => {
+                              console.log("Deny clicked");
+                              updateStatus(client.userId, "denied");
+                            }}
                             className="ml-2"
                           >
                             Deny

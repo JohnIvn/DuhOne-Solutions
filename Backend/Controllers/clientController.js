@@ -22,14 +22,13 @@ export const getClients = async (req, res) => {
 export const updateClientStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, endAt } = req.body;  
 
-    const normalizedStatus = status ? status.trim().toLowerCase() : undefined;
-
-    if (!normalizedStatus) {
+    if (!status) {
       return res.status(400).json({ message: 'Status is required' });
     }
 
+    const normalizedStatus = status.trim().toLowerCase();
     const client = await ClientModel.findOne({ where: { userId: id } });
 
     if (!client) {
@@ -40,13 +39,18 @@ export const updateClientStatus = async (req, res) => {
 
     if (normalizedStatus === 'approved') {
       const subscribeAt = new Date();  
-      const endAt = new Date();
-      endAt.setDate(subscribeAt.getDate() + 30);  
+      const newEndAt = endAt ? new Date(endAt) : new Date();  
+
+      if (!newEndAt) {
+        return res.status(400).json({ message: 'Invalid end date provided' });
+      }
+
+      newEndAt.setDate(subscribeAt.getDate() + 30);
 
       updateData = {
         ...updateData,
         subscribeAt,
-        endAt,
+        endAt: newEndAt,
       };
     }
 
@@ -59,6 +63,8 @@ export const updateClientStatus = async (req, res) => {
     res.json({ message: 'Client status and dates updated successfully' });
   } catch (error) {
     console.error('Error updating client status:', error);
-    res.status(500).json({ message: 'Error updating client status' });
+    res.status(500).json({ message: `Error updating client status: ${error.message}` });
   }
 };
+
+
