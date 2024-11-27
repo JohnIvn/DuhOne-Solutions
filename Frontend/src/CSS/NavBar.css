@@ -29,3 +29,26 @@ a {
     font-size: 20px;
     line-height: 0.3; 
 }
+
+@media (max-width: 768px) {
+    .separator-text {
+        display: none; 
+    }
+
+    .nav-link {
+        margin: 0px 0;
+    }
+
+    .navbar-nav {
+        align-items: flex-start;
+    }
+
+    .navbar-nav .nav-item {
+        margin-left: 0 !important; 
+    }
+}
+.navbar-nav .nav-item .nav-link:hover {
+    color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1); 
+    border-radius: 5px;
+}

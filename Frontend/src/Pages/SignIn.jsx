@@ -5,6 +5,8 @@ import {
 import { Google as GoogleIcon, Facebook as FacebookIcon, Visibility, VisibilityOff } from '@mui/icons-material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import NavBar from '../components/NavBar.jsx'
+import Footer from '../components/Footer.jsx';
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -42,6 +44,8 @@ const SignIn = () => {
   };
 
   return (
+    <>
+    <NavBar />
     <Container
       maxWidth="md"
       sx={{
@@ -149,6 +153,8 @@ const SignIn = () => {
         </Grid>
       </Grid>
     </Container>
+    <Footer/>
+    </>
   );
 }
 
