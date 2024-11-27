@@ -17,7 +17,8 @@ const SignIn = async (req, res) => {
         const user = await SignInModel.findOne({
             where: { email }
         });
-        
+
+
         if (!user) {
             return res.status(400).json({ message: 'Invalid credentials.' });
         }

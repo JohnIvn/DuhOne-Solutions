@@ -5,7 +5,6 @@ class SignInModel extends Model {}
 
 SignInModel.init(
   {
-
     email: {
       type: DataTypes.STRING,
       allowNull: false,

@@ -8,29 +8,33 @@ export const subscription = subscriptionModel.init(
         userId: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
-            primaryKey: true,
+            primaryKey: true
         },
-        email: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true,
+        name: {
+            type: DataTypes.STRING
         },
         plan: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false
         },
-        subscribedAt: {
+        status: {
+            type: DataTypes.STRING,
+            defaultValue: 'pending'
+        },
+        subscribeAt: {
             type: DataTypes.DATE,
-            defaultValue: Sequelize.NOW,
+            defaultValue: null
         },
         endAT: {
             type: DataTypes.DATE,
+            defaultValue: null
         },
     },
+    
     {
         sequelize: db,
         modelName: "subscriptionModel",
-        tableName: "subscriptions",
+        tableName: "clients_subscription",
         timestamps: false,
         hooks: {
             beforeCreate: (subscription) => {
