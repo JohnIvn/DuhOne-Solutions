@@ -9,6 +9,8 @@ import subscriptionRouter from './Routes/subscriptionRoute.js'
 import dashboardRouter from './Routes/dashBoardRoute.js'
 import userSettingsRouter from './Routes/userSettingsRoute.js'
 import clientRouter from './Routes/clientsRoute.js'
+import { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions } from './Services/tableCreate.js';
+
 dotenv.config()
 
 const app = express()
@@ -29,3 +31,15 @@ app.use('/clients', clientRouter);
 app.listen(process.env.PORT, () => {
     console.log('app is listening to port: ' + process.env.PORT);
 })
+
+async function initializeTables() {
+    await createTableUserAccounts();
+    await createTableAdminAccounts();
+    await createTableSubscriptions();
+}
+
+initializeTables().then(() => {
+    console.log('Tables have been created or checked.');
+  }).catch((error) => {
+    console.error('Error initializing tables:', error);
+  });
