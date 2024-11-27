@@ -4,29 +4,31 @@ import { subscription } from '../Models/subscriptionModel.js';
 
 async function createTableUserAccounts() {
   try {
-    await UserAccount.sync({ force: false });
-    console.log('UserAccount table is created');
+    await UserAccount.sync({ alter: true });
+    console.log('UserAccount table is checked and updated if necessary');
   } catch (error) {
-    console.error('Error creating table', error);
+    console.error('Error checking/updating UserAccount table', error);
   }
 }
 
 async function createTableAdminAccounts() {
   try {
-    await AdminAccount.sync({ force: false });
-    console.log('AdminAccount table created');
+    await AdminAccount.sync({ alter: true });
+    console.log('AdminAccount table is checked and updated if necessary');
   } catch (error) {
-    console.error('Error creating table', error);
+    console.error('Error checking/updating AdminAccount table', error);
   }
 }
 
 async function createTableSubscriptions() {
   try {
-    await subscription.sync({ force: false });
-    console.log('Subscriptions table is created');
+    await subscription.sync({ alter: true });
+    console.log('Subscriptions table is checked and updated if necessary');
   } catch (error) {
-    console.error('Error creating table', error);
+    console.error('Error checking/updating Subscriptions table', error);
   }
 }
 
-export { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions}
+
+
+export { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions }
