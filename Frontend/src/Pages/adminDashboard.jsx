@@ -39,27 +39,32 @@ const AdminDashboard = () => {
 
   const updateStatus = async (clientId, newStatus) => {
     try {
+      // Find the client by userId
       const client = clients.find((client) => client.userId === clientId);
-      if (client && client.subscribeAt) {
-        const newEndDate = calculateEndDate(client.subscribeAt);
+      if (client) {
+        const newEndDate = calculateEndDate(client.subscribeAt);  
+      
+        const response = await api.put(`/clients/${clientId}/status`, {
+          status: newStatus,  
+          endAt: newEndDate,  
+        });
+        
+        console.log("Updated client response:", response.data);
 
-        await api.put(`/clients/${clientId}/status`, { status: newStatus, endAT: newEndDate });
-        console.log("Status and end date updated, refetching clients...");
-        setClients([]);  
-        await fetchClients({ plan: planFilter, status: statusFilter });  
+        await fetchClients({ plan: planFilter, status: statusFilter });
       }
     } catch (error) {
       console.error("Error updating client status:", error);
     }
   };
-
+  
+  
   useEffect(() => {
     if (!isInitialLoad) {
       console.log("Filters changed - plan:", planFilter, "status:", statusFilter);
-
       fetchClients({ plan: planFilter, status: statusFilter });
     } else {
-      setIsInitialLoad(false); 
+      setIsInitialLoad(false);
     }
   }, [planFilter, statusFilter, fetchClients, isInitialLoad]);
 
@@ -67,7 +72,6 @@ const AdminDashboard = () => {
     <Container fluid className="admin-dashboard" style={{ backgroundColor: "#051b36", minHeight: "100vh" }}>
       <h1 className="dashboard-title">Admin Dashboard</h1>
 
-      {}
       <div className="filters-container">
         <Dropdown onSelect={(e) => setPlanFilter(e)} className="filter-dropdown">
           <Dropdown.Toggle>{planFilter || "Select Plan"}</Dropdown.Toggle>
@@ -146,14 +150,20 @@ const AdminDashboard = () => {
                           <Button
                             variant="success"
                             size="sm"
-                            onClick={() => updateStatus(client.userId, "approved")}
+                            onClick={() => {
+                              console.log("Approve clicked");
+                              updateStatus(client.userId, "approved");
+                            }}
                           >
                             Approve
                           </Button>
                           <Button
                             variant="danger"
                             size="sm"
-                            onClick={() => updateStatus(client.userId, "denied")}
+                            onClick={() => {
+                              console.log("Deny clicked");
+                              updateStatus(client.userId, "denied");
+                            }}
                             className="ml-2"
                           >
                             Deny
