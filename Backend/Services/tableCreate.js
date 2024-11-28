@@ -4,7 +4,7 @@ import { subscription } from '../Models/subscriptionModel.js';
 
 async function createTableUserAccounts() {
   try {
-    await UserAccount.sync({ alter: true });
+    await UserAccount.sync({ alter: false });
     console.log('UserAccount table is checked and updated if necessary');
   } catch (error) {
     console.error('Error checking/updating UserAccount table', error);
@@ -13,7 +13,7 @@ async function createTableUserAccounts() {
 
 async function createTableAdminAccounts() {
   try {
-    await AdminAccount.sync({ alter: true });
+    await AdminAccount.sync({ alter: false });
     console.log('AdminAccount table is checked and updated if necessary');
   } catch (error) {
     console.error('Error checking/updating AdminAccount table', error);
@@ -22,7 +22,7 @@ async function createTableAdminAccounts() {
 
 async function createTableSubscriptions() {
   try {
-    await subscription.sync({ alter: true });
+    await subscription.sync({ alter: false });
     console.log('Subscriptions table is checked and updated if necessary');
   } catch (error) {
     console.error('Error checking/updating Subscriptions table', error);

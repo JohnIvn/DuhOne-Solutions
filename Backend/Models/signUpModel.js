@@ -85,7 +85,20 @@ const AdminAccount = AdminAccountModel.init(
   }
 );
 
-UserAccount.hasOne(AdminAccount, { foreignKey: 'userId' }); 
-AdminAccount.belongsTo(UserAccount, { foreignKey: 'userId' }); 
+UserAccount.hasOne(AdminAccount, {
+  foreignKey: {
+    name: 'userId',
+    allowNull: false,
+  },
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+AdminAccount.belongsTo(UserAccount, {
+  foreignKey: {
+    name: 'userId',
+    allowNull: false,
+  },
+});
+
 
 export { UserAccount, AdminAccount };
