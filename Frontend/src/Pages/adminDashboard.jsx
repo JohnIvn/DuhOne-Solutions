@@ -7,11 +7,13 @@ const AdminDashboard = () => {
   const [clients, setClients] = useState([]);
   const [statusFilter, setStatusFilter] = useState("");
   const [planFilter, setPlanFilter] = useState("");
+  const [paidFilter, setPaidFilter] = useState(""); 
   const [loading, setLoading] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const availablePlans = ["Basic", "Standard", "Premium", "Ultimate"];
   const availableStatuses = ["approved", "pending", "denied"];
+  const availablePaidStatuses = ["true", "false"]; 
 
   const calculateEndDate = (subscribeAt) => {
     const subscribeDate = new Date(subscribeAt);
@@ -61,12 +63,12 @@ const AdminDashboard = () => {
   
   useEffect(() => {
     if (!isInitialLoad) {
-      console.log("Filters changed - plan:", planFilter, "status:", statusFilter);
-      fetchClients({ plan: planFilter, status: statusFilter });
+      console.log("Filters changed - plan:", planFilter, "status:", statusFilter, "paid:", paidFilter);
+      fetchClients({ plan: planFilter, status: statusFilter, paid: paidFilter });
     } else {
       setIsInitialLoad(false);
     }
-  }, [planFilter, statusFilter, fetchClients, isInitialLoad]);
+  }, [planFilter, statusFilter, paidFilter, fetchClients, isInitialLoad]);
 
   return (
     <Container fluid className="admin-dashboard" style={{ backgroundColor: "#051b36", minHeight: "100vh" }}>
@@ -94,11 +96,22 @@ const AdminDashboard = () => {
             ))}
           </Dropdown.Menu>
         </Dropdown>
+        <Dropdown onSelect={(e) => setPaidFilter(e)} className="filter-dropdown">
+          <Dropdown.Toggle>{paidFilter || "Select Paid Status"}</Dropdown.Toggle>
+          <Dropdown.Menu>
+            {availablePaidStatuses.map((status) => (
+              <Dropdown.Item key={status} eventKey={status}>
+                {status}
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
 
         <Button
           onClick={() => {
             setPlanFilter("");
             setStatusFilter("");
+            setPaidFilter("");
             fetchClients({}); 
           }}
           variant="secondary"
@@ -120,6 +133,7 @@ const AdminDashboard = () => {
                 <th>Name</th>
                 <th>Plan</th>
                 <th>Status</th>
+                <th>Paid</th>
                 <th>Subscribed</th>
                 <th>End Date</th>
                 <th>Actions</th>
@@ -128,7 +142,7 @@ const AdminDashboard = () => {
             <tbody>
               {clients.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="no-clients">
+                  <td colSpan="7" className="no-clients">
                     No clients found matching your filters
                   </td>
                 </tr>
@@ -137,7 +151,7 @@ const AdminDashboard = () => {
                   <tr key={client.userId} className="client-row">
                     <td>{client.name}</td>
                     <td>{client.plan}</td>
-                    <td className={`status-${client.status}`}>{client.status}</td>
+                    <td className={`status-${client.paid}`}>{client.paid}</td>
                     <td>
                       {client.subscribeAt ? new Date(client.subscribeAt).toLocaleDateString() : "N/A"}
                     </td>

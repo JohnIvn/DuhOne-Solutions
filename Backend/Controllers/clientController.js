@@ -2,14 +2,16 @@ import { ClientModel } from '../models/clientModel.js';
 
 export const getClients = async (req, res) => {
   try {
-    const { plan, status } = req.query;
+    const { plan, status, paid } = req.query;
 
     const normalizedPlan = plan ? plan.trim().toLowerCase() : undefined;
     const normalizedStatus = status ? status.trim().toLowerCase() : undefined;
+    const normalizedPaid = paid ? paid.trim().toLowerCase() : undefined;
 
     const filter = {};
     if (normalizedPlan) filter.plan = normalizedPlan;  
     if (normalizedStatus) filter.status = normalizedStatus;  
+    if (normalizedPaid) filter.paid = normalizedPaid; 
 
     const clients = await ClientModel.findAll({ where: filter });
     res.json(clients);

@@ -29,6 +29,10 @@ const subscription = subscriptionModel.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    paid: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     status: {
       type: DataTypes.STRING,
       defaultValue: 'pending',

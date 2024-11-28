@@ -15,6 +15,10 @@ SignInModel.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    role: {
+      type: DataTypes.STRING,
+      defaultValue: 'User',
+    }
   },
   {
     sequelize: db,  

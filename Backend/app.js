@@ -5,10 +5,11 @@ import cors from 'cors';
 import signUpRouter from './Routes/signUpRoute.js';
 import signInRouter from './Routes/signInRoute.js';
 import homePageRouter from './Routes/homePageRoute.js';
+import changePasswordRoute from './Routes/forgetPasswordRoute.js';
 import reviewRouter from './Routes/reviewRoute.js';
 import subscriptionRouter from './Routes/subscriptionRoute.js';
 import dashboardRouter from './Routes/dashBoardRoute.js';
-import userSettingsRouter from './Routes/userSettingsRoute.js';
+import userProfileRoute from './Routes/userProfileRoute.js'
 import clientRouter from './Routes/clientsRoute.js';
 import { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview } from './Services/tableCreate.js';
 import createDatabaseIfNotExists from './Services/databaseCreate.js';
@@ -28,9 +29,10 @@ app.use('/signup', signUpRouter);
 app.use('/homepage', homePageRouter);
 app.use('/subscription', subscriptionRouter);
 app.use('/dashboard', dashboardRouter);
-app.use('/settings', userSettingsRouter);
+app.use('/userprofile', userProfileRoute);
 app.use('/clients', clientRouter);
 app.use('/review', reviewRouter);
+app.use(changePasswordRoute); 
 
 async function initializeApp() {
   try {

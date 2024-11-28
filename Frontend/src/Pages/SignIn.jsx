@@ -33,11 +33,14 @@ const SignIn = () => {
     try {
       const response = await axios.post('http://localhost:3000/signin', formData);
   
-      console.log("Response from backend:", response.data);
+      console.log("Response from backend:", response.data);  // Log the response to check role
   
+      // Store token and role in localStorage
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('role', response.data.role);  // Make sure role is stored
+      console.log(localStorage.getItem('role'));
       console.log('Sign in successful:', response.data);
-
+  
       if (response.data.redirectTo) {
         console.log('Redirecting to:', response.data.redirectTo); 
         navigate(response.data.redirectTo); 
@@ -53,6 +56,7 @@ const SignIn = () => {
       setLoading(false);
     }
   };
+  
    
 
   return (
@@ -160,6 +164,12 @@ const SignIn = () => {
               >
                 Sign in with Facebook
               </Button>
+
+              <Typography variant="body2" sx={{ color: '#ffffff', textAlign: 'center', mt: 2 }}>
+                <Link href="/forgot-password" variant="body2" sx={{ color: '#ffffff' }}>
+                  Forgot Password?
+                </Link>
+              </Typography>
             </Box>
           </Box>
         </Grid>
