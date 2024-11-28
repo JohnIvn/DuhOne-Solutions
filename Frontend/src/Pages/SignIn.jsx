@@ -28,13 +28,24 @@ const SignIn = () => {
 
   const handleSignIn = async (event) => {
     event.preventDefault();
-
+  
     setLoading(true);
     try {
       const response = await axios.post('http://localhost:3000/signin', formData);
+  
+      console.log("Response from backend:", response.data);
+  
       localStorage.setItem('token', response.data.token);
       console.log('Sign in successful:', response.data);
-      navigate('/homepage');
+
+      if (response.data.redirectTo) {
+        console.log('Redirecting to:', response.data.redirectTo); 
+        navigate(response.data.redirectTo); 
+      } else {
+        console.log('Redirecting to homepage');
+        navigate('/homepage'); 
+      }
+  
     } catch (error) {
       console.error('Error signing in:', error);
       setError(error.response?.data?.message || 'Failed to sign in. Please try again.');
@@ -42,6 +53,7 @@ const SignIn = () => {
       setLoading(false);
     }
   };
+   
 
   return (
     <>

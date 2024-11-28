@@ -18,6 +18,12 @@ const SignIn = async (req, res) => {
             where: { email }
         });
 
+        if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+            return res.status(200).json({
+                message: 'Admin login successful.',
+                redirectTo: '/clients',  
+            });
+        }
 
         if (!user) {
             return res.status(400).json({ message: 'Invalid credentials.' });
