@@ -22,7 +22,7 @@ export const getClients = async (req, res) => {
 export const updateClientStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status, endAt } = req.body;  
+    const { status } = req.body;
 
     if (!status) {
       return res.status(400).json({ message: 'Status is required' });
@@ -38,19 +38,14 @@ export const updateClientStatus = async (req, res) => {
     let updateData = { status: normalizedStatus };
 
     if (normalizedStatus === 'approved') {
-      const subscribeAt = new Date();  
-      const newEndAt = endAt ? new Date(endAt) : new Date();  
-
-      if (!newEndAt) {
-        return res.status(400).json({ message: 'Invalid end date provided' });
-      }
-
-      newEndAt.setDate(subscribeAt.getDate() + 30)
+      const subscribeAt = new Date(); // Current timestamp
+      const endAt = new Date(subscribeAt);
+      endAt.setDate(subscribeAt.getDate() + 30); // Add 30 days to subscribeAt
 
       updateData = {
         ...updateData,
         subscribeAt,
-        endAt: newEndAt,
+        endAt,
       };
     }
 
@@ -60,11 +55,12 @@ export const updateClientStatus = async (req, res) => {
       return res.status(404).json({ message: 'Client not found or no changes made' });
     }
 
-    res.json({ message: 'Client status and dates updated successfully' });
+    res.json({ message: 'Client status and dates updated successfully   ad' });
   } catch (error) {
     console.error('Error updating client status:', error);
     res.status(500).json({ message: `Error updating client status: ${error.message}` });
   }
 };
+
 
 
