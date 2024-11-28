@@ -38,9 +38,9 @@ export const updateClientStatus = async (req, res) => {
     let updateData = { status: normalizedStatus };
 
     if (normalizedStatus === 'approved') {
-      const subscribeAt = new Date(); // Current timestamp
+      const subscribeAt = new Date(); 
       const endAt = new Date(subscribeAt);
-      endAt.setDate(subscribeAt.getDate() + 30); // Add 30 days to subscribeAt
+      endAt.setDate(subscribeAt.getDate() + 30); 
 
       updateData = {
         ...updateData,
@@ -55,7 +55,7 @@ export const updateClientStatus = async (req, res) => {
       return res.status(404).json({ message: 'Client not found or no changes made' });
     }
 
-    res.json({ message: 'Client status and dates updated successfully   ad' });
+    res.json({ message: 'Client status and dates updated successfully' });
   } catch (error) {
     console.error('Error updating client status:', error);
     res.status(500).json({ message: `Error updating client status: ${error.message}` });
