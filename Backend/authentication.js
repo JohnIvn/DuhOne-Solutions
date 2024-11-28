@@ -12,6 +12,8 @@ export const authenticateToken = async (req, res, next) => {
         return res.status(401).json({ message: 'Authentication failed: Token not provided' });
     }
 
+    console.log(token)
+
     try {
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
         const user = await UserAccount.findOne({ where: { email: decodedToken.email } });

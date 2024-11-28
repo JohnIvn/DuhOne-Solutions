@@ -100,5 +100,4 @@ AdminAccount.belongsTo(UserAccount, {
   },
 });
 
-
 export { UserAccount, AdminAccount };

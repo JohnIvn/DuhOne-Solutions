@@ -5,11 +5,12 @@ import cors from 'cors';
 import signUpRouter from './Routes/signUpRoute.js';
 import signInRouter from './Routes/signInRoute.js';
 import homePageRouter from './Routes/homePageRoute.js';
+import reviewRouter from './Routes/reviewRoute.js';
 import subscriptionRouter from './Routes/subscriptionRoute.js';
 import dashboardRouter from './Routes/dashBoardRoute.js';
 import userSettingsRouter from './Routes/userSettingsRoute.js';
 import clientRouter from './Routes/clientsRoute.js';
-import { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions } from './Services/tableCreate.js';
+import { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview } from './Services/tableCreate.js';
 import createDatabaseIfNotExists from './Services/databaseCreate.js';
 import db from './database.js';
 
@@ -29,6 +30,7 @@ app.use('/subscription', subscriptionRouter);
 app.use('/dashboard', dashboardRouter);
 app.use('/settings', userSettingsRouter);
 app.use('/clients', clientRouter);
+app.use('/review', reviewRouter);
 
 async function initializeApp() {
   try {
@@ -39,6 +41,7 @@ async function initializeApp() {
     await createTableUserAccounts();
     await createTableAdminAccounts();
     await createTableSubscriptions();
+    await createTableReview();
     console.log('Tables have been created or checked.');
 
     app.listen(process.env.PORT, () => {

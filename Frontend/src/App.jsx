@@ -9,6 +9,7 @@ import SignUp from './Pages/SignUp.jsx';
 import SignIn from './Pages/SignIn.jsx';
 import HomePage from './Pages/HomePage.jsx';
 import AdminDashboard from './Pages/AdminDashboard.jsx';
+import Review from './Pages/Review.jsx';
 
 const ProtectedRoute = ({ children }) => {
     const token = localStorage.getItem('token');
@@ -37,6 +38,14 @@ const App = () => {
                     element={
                         <ProtectedRoute>
                             <SubscriptionPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/review"
+                    element={
+                        <ProtectedRoute>
+                            <Review />
                         </ProtectedRoute>
                     }
                 />

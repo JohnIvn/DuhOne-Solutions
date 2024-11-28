@@ -1,6 +1,7 @@
 // tableCreate.js
 import { UserAccount, AdminAccount } from '../Models/signUpModel.js';
 import { subscription } from '../Models/subscriptionModel.js';
+import { Review } from '../Models/reviewModel.js';
 
 async function createTableUserAccounts() {
   try {
@@ -30,5 +31,13 @@ async function createTableSubscriptions() {
 }
 
 
+async function createTableReview() {
+  try {
+    await Review.sync({ alter: false });
+    console.log('Review table is checked and updated if necessary');
+  } catch (error) {
+    console.error('Error checking/updating Review table', error);
+  }
+}
 
-export { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions }
+export { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview }
