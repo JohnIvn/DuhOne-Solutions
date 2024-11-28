@@ -27,7 +27,6 @@ const SignUp = () => {
       [field]: value,
     }));
 
-    // Validate the field on change
     const fieldError = validateSignUpField(field, value);
     setErrors((prevErrors) => ({
       ...prevErrors,

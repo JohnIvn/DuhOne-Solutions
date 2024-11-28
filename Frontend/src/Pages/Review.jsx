@@ -55,15 +55,11 @@ const ReviewPage = () => {
             setErrorMessage(error.response?.data?.message || 'Failed to submit review. Please try again.');
         }
     };
-    
-    
-    
 
     return (
         <div>
             <h2>Review Page</h2>
 
-            {/* Display Loading or Reviews */}
             {loading ? (
                 <p>Loading reviews...</p>
             ) : (
