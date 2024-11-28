@@ -1,3 +1,147 @@
 body {
     background-color: #2E5A88 !important;
 }
+
+/* Global styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: white;
+    background: radial-gradient(#02284f , rgb(0, 0, 0), #080e15);
+  }
+  
+  /* Navbar styles */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.8); /* Slightly transparent */
+    backdrop-filter: blur(10px); /* Blur background */
+  }
+  
+  .navbar-logo {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .navbar-links a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+  }
+  
+  .navbar-links .login-btn {
+    margin-right: 20px;
+  }
+  
+  .signup-btn {
+    background-color: white;
+    color: black;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .signup-btn:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* Hero section styles */
+  .hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: left;
+    background-repeat: no-repeat;
+    background-size: 60%;
+    background-position: right;
+  }
+  
+  .hero-content {
+    max-width: 800px;
+  }
+  
+  
+  .hero-title {
+    margin-left: 5%;
+    font-size: 70px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .hero-description {
+    margin-left: 5%;
+    font-size: 18px;
+    color: #aaa;
+    margin-bottom: 30px;
+  }
+  
+  .hero-buttons .primary-btn,
+  .hero-buttons .secondary-btn,
+  .hero-buttons .third-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  background-color: #02284f;
+  border: 2px solid #ffffff;
+  border-radius: 10px;
+  box-shadow: 5px 5px 0px #000;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  }
+
+  .hero-buttons .primary-btn {
+    margin-left: 5%;
+  }
+
+  .hero-buttons .secondary-btn {
+    margin-left: 10%;
+  }
+
+  .hero-buttons .third-btn {
+    margin-left: 10%;
+  }
+  
+  
+  
+  .hero-buttons .primary-btn:hover {
+  background-color: #fff;
+  color: #02284f;
+  border: 2px solid #02284f;
+  box-shadow: 5px 5px 0px #02284f;
+  }
+  
+  .hero-buttons .secondary-btn:hover {
+    background-color: #fff;
+  color: #02284f;
+  border: 2px solid #02284f;
+  box-shadow: 5px 5px 0px #02284f;
+  }
+
+  .hero-buttons .third-btn:hover {
+    background-color: #fff;
+    color: #02284f;
+    border: 2px solid #02284f;
+    box-shadow: 5px 5px 0px #02284f;
+    }
+  
+  .hero-buttons .primary-btn:active {
+    background-color: #fcf414;
+  box-shadow: none;
+  transform: translateY(4px);
+  }
+

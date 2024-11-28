@@ -9,6 +9,7 @@ import SignUp from './Pages/SignUp.jsx';
 import SignIn from './Pages/SignIn.jsx';
 import HomePage from './Pages/HomePage.jsx';
 import AdminDashboard from './Pages/AdminDashboard.jsx';
+import ProfilePage from './Pages/ProfilePage.jsx';
 import Review from './Pages/Review.jsx';
 import UserProfile from './Pages/UserProfile.jsx';
 import ForgotPassword from './components/ForgotPassword.jsx';
@@ -71,6 +72,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Review />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
             </ProtectedRoute>
           }
         />

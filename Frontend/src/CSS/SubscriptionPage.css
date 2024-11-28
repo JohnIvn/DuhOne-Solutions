@@ -29,6 +29,98 @@
     transform: scale(1.05);
     box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.7), -5px -10px 20px rgba(10, 20, 40, 0.9);
 }
+.subscription-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 40px 20px;
+    background-color: #051b36;
+    color: #ffffff;
+    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+}
+
+.subscription-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #f8f9fa;
+    font-weight: bold;
+}
+
+.plan-box {
+    background: linear-gradient(145deg, #062a56, #041629);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 15px;
+    text-align: center;
+    color: #ffffff;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5), -5px -5px 15px rgba(10, 20, 40, 0.8);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    width: 100%;
+    max-width: 400px; /* Limit max width */
+}
+
+.plan-box:hover {
+    transform: scale(1.05);
+    box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.7), -5px -10px 20px rgba(10, 20, 40, 0.9);
+}
+
+.plan-box.selected {
+    background: linear-gradient(145deg, #0c3c6b, #062a56);
+    border: 3px solid #1b75e8;
+    color: #1b75e8;
+    box-shadow: 0px 10px 25px rgba(27, 117, 232, 0.5), inset 0px 3px 8px rgba(255, 255, 255, 0.2);
+}
+
+.plan-box h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #1b9ff5;
+}
+
+.plan-box p {
+    font-size: 1rem;
+    margin: 5px 0;
+}
+
+.btn-primary {
+    padding: 12px 25px;
+    font-size: 1.2rem;
+    background-color: #1b75e8;
+    border: none;
+    border-radius: 10px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0a58ca;
+    transform: translateY(-2px);
+}
+
+.btn-primary:disabled {
+    background-color: #0a334e;
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .subscription-container {
+        padding: 20px 10px;
+    }
+
+    .plan-box {
+        margin: 15px 0;
+    }
+
+    .subscription-container h1 {
+        font-size: 2rem;
+    }
+}
 
 .plan-box.selected {
     background: linear-gradient(145deg, #0c3c6b, #062a56);

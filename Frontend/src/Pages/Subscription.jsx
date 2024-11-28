@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import api from '../Api.js';
 import '../CSS/SubscriptionPage.css';
+import NavBarDashboard from '../components/NavBarDashboard.jsx';
+import Footer from '../components/Footer.jsx';
 
 const SubscriptionPage = () => {
     const [selectedPlan, setSelectedPlan] = useState(null);
@@ -38,32 +40,36 @@ const SubscriptionPage = () => {
     ];
 
     return (
-        <div className="subscription-container">
-            <h1 className="text-center">Choose Your Plan</h1>
-            <div className="row">
-                {plans.map((plan) => (
-                    <div
-                        key={plan.id}
-                        className={`col-md-3 plan-box ${selectedPlan === plan.name ? 'selected' : ''}`}
-                        onClick={() => handlePlanSelection(plan.name)}
+        <>
+            <NavBarDashboard />
+            <div className="subscription-container">
+                <h1 className="text-center">Choose Your Plan</h1>
+                <div className="row">
+                    {plans.map((plan) => (
+                        <div
+                            key={plan.id}
+                            className={`col-md-3 plan-box ${selectedPlan === plan.name ? 'selected' : ''}`}
+                            onClick={() => handlePlanSelection(plan.name)}
+                        >
+                            <h3>{plan.name}</h3>
+                            <p>Speed: {plan.speed}</p>
+                            <p>Price: {plan.price}</p>
+                            <p>{plan.details}</p>
+                        </div>
+                    ))}
+                </div>
+                <div className="text-center mt-4">
+                    <button
+                        className="btn btn-primary"
+                        onClick={handleSubmit}
+                        disabled={isLoading}
                     >
-                        <h3>{plan.name}</h3>
-                        <p>Speed: {plan.speed}</p>
-                        <p>Price: {plan.price}</p>
-                        <p>{plan.details}</p>
-                    </div>
-                ))}
+                        {isLoading ? 'Submitting...' : 'Submit Plan'}
+                    </button>
+                </div>
             </div>
-            <div className="text-center mt-4">
-                <button
-                    className="btn btn-primary"
-                    onClick={handleSubmit}
-                    disabled={isLoading}
-                >
-                    {isLoading ? 'Submitting...' : 'Submit Plan'}
-                </button>
-            </div>
-        </div>
+            <Footer />
+        </>
     );
 };
 
