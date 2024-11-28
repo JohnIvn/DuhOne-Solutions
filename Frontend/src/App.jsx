@@ -14,72 +14,78 @@ import UserProfile from './Pages/UserProfile.jsx';
 import ForgotPassword from './components/ForgotPassword.jsx';
 
 const ProtectedRoute = ({ children, requiredRole }) => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');  
-    
-    if (!token) {
-      return <Navigate to="/signin" />;
-    }
-    
-    if (requiredRole && role !== requiredRole) {
-      return <Navigate to="/homepage" />;
-    }
-    
-    return children;
-  };
+  const token = localStorage.getItem('token');
+  const role = localStorage.getItem('role');
+
+  if (!token) {
+    return <Navigate to="/signin" />;
+  }
+
+  if (requiredRole && role !== requiredRole) {
+    return <Navigate to="/homepage" />;
+  }
+
+  return children;
+};
 
 const App = () => {
-    return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/signin" element={<SignIn />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
+  const token = localStorage.getItem('token'); 
 
-                <Route
-                    path="/homepage"
-                    element={
-                        <ProtectedRoute>
-                            <HomePage />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/subscription"
-                    element={
-                        <ProtectedRoute>
-                            <SubscriptionPage />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/userprofile"
-                    element={
-                        <ProtectedRoute>
-                            <UserProfile />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/review"
-                    element={
-                        <ProtectedRoute>
-                            <Review />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route path="/clients" 
-                    element={
-                        <ProtectedRoute requiredRole="Admin">
-                            <AdminDashboard />
-                        </ProtectedRoute>
-                    } 
-                />
-                <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-        </Router>
-    );
+  return (
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={token ? <Navigate to="/homepage" /> : <LandingPage />}  // Redirect to homepage if logged in
+        />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+
+        <Route
+          path="/homepage"
+          element={
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/subscription"
+          element={
+            <ProtectedRoute>
+              <SubscriptionPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/userprofile"
+          element={
+            <ProtectedRoute>
+              <UserProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/review"
+          element={
+            <ProtectedRoute>
+              <Review />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/clients"
+          element={
+            <ProtectedRoute requiredRole="Admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Router>
+  );
 };
 
 export default App;

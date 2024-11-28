@@ -14,7 +14,7 @@ const LandingPage = () => {
                 <a href="#features" class="btn btn-outline-light custom-btn">Learn More</a>
             </header>
 
-            <section id="features" className="py-5">
+            <section id="features" className="py-5" >
                 <div className="container">
                 <div className="row text-center">
                     <div className="col-md-4">

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import api from '../Api';
 import { useNavigate } from 'react-router-dom';
+import NavBarDashboard from '../components/NavBarDashboard.jsx';
+import '../CSS/Homepage.css';
 
 const HomePage = () => {
     const [data, setData] = useState(null);
@@ -28,7 +30,8 @@ const HomePage = () => {
     }, [navigate]);
 
     return (
-        <div>
+        <div className='bgcolor'>
+            <NavBarDashboard />
             <h2>Home Page</h2>
             <p>{data || 'Loading...'}</p>
         </div>
