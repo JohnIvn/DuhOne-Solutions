@@ -32,7 +32,13 @@ const SignIn = () => {
       const response = await axios.post('http://localhost:3000/signin', formData);
       localStorage.setItem('token', response.data.token);
       console.log('Sign in successful:', response.data);
-      navigate('/homepage');
+
+
+      if(response.data.role === 'admin'){
+        navigate('/clients');
+      }else{
+        navigate('/homepage');
+      }
     } catch (error) {
       console.error('Error signing in:', error);
       setError(error.response?.data?.message || 'Failed to sign in. Please try again.');

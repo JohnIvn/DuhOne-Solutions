@@ -45,7 +45,7 @@ export const updateClientStatus = async (req, res) => {
         return res.status(400).json({ message: 'Invalid end date provided' });
       }
 
-      newEndAt.setDate(subscribeAt.getDate() + 30);
+      newEndAt.setDate(subscribeAt.getDate() + 30)
 
       updateData = {
         ...updateData,

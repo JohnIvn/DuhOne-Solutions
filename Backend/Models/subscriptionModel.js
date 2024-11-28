@@ -36,10 +36,5 @@ export const subscription = subscriptionModel.init(
         modelName: "subscriptionModel",
         tableName: "clients_subscription",
         timestamps: false,
-        hooks: {
-            beforeCreate: (subscription) => {
-                subscription.endAT = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); 
-            },
-        },
     }
 );

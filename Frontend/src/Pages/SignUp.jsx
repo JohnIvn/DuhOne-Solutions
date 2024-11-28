@@ -157,7 +157,7 @@ const SignUp = () => {
                 onChange={(e) => handleInputChange('password', e.target.value)}
               />
               <Button
-                type="submit"  // This triggers form submission
+                type="submit"  
                 variant="contained"
                 fullWidth
                 sx={{

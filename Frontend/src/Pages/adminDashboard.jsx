@@ -42,17 +42,15 @@ const AdminDashboard = () => {
       // Find the client by userId
       const client = clients.find((client) => client.userId === clientId);
       if (client) {
-        const newEndDate = calculateEndDate(client.subscribeAt);  // Calculate endAt based on subscribeAt
-        
-        // Send the update request to the backend
+        const newEndDate = calculateEndDate(client.subscribeAt);  
+      
         const response = await api.put(`/clients/${clientId}/status`, {
-          status: newStatus,  // Send the new status
-          endAt: newEndDate,  // Send the new end date (in case of approved)
+          status: newStatus,  
+          endAt: newEndDate,  
         });
         
         console.log("Updated client response:", response.data);
-  
-        // Refetch the clients after updating the status
+
         await fetchClients({ plan: planFilter, status: statusFilter });
       }
     } catch (error) {
