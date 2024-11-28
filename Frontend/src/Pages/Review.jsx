@@ -69,7 +69,7 @@ const ReviewPage = () => {
                         <ul>
                             {reviews.map((review) => (
                                 <li key={review.reviewId}>
-                                    <p><strong>Review:</strong> {review.content}</p>
+                                    <p><strong>Review:</strong> {review.reviewContent}</p>
                                     <p><strong>Rating:</strong> {review.rating} / 5</p>
                                     <p><em>Created by: User {review.createdBy}</em></p>
                                     <hr />
