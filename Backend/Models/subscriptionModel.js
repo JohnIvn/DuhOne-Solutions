@@ -31,6 +31,7 @@ const subscription = subscriptionModel.init(
     },
     paid: {
       type: DataTypes.STRING,
+      defaultValue: 'No',
       allowNull: false,
     },
     status: {
