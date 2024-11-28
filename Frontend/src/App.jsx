@@ -11,19 +11,9 @@ import HomePage from './Pages/HomePage.jsx';
 import AdminDashboard from './Pages/AdminDashboard.jsx';
 import Review from './Pages/Review.jsx';
 
-const ProtectedRoute = ({ children, requiredRole }) => {
+const ProtectedRoute = ({ children }) => {
     const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role'); 
-    
-    if (!token) {
-        return <Navigate to="/signin" />;
-    }
-    
-    if (requiredRole && role !== requiredRole) {
-        return <Navigate to="/homepage" />; 
-    }
-
-    return children;
+    return token ? children : <Navigate to="/signin" />;
 };
 
 const App = () => {
@@ -33,13 +23,8 @@ const App = () => {
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/signin" element={<SignIn />} />
-                <Route path="/clients" 
-                    element={
-                        <ProtectedRoute requiredRole="admin">
-                            <AdminDashboard />
-                        </ProtectedRoute>
-                    } 
-                />
+                <Route path="/clients" element={<AdminDashboard />} />
+
                 <Route
                     path="/homepage"
                     element={
