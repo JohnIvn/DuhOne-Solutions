@@ -22,6 +22,10 @@ export const ClientModel = Client.init(
       type: DataTypes.STRING,
       defaultValue: 'pending',
     },
+    paid: {
+      type: DataTypes.STRING,
+      defaultValue: "false"
+    },
     subscribeAt: {
       type: DataTypes.DATE,
       defaultValue: null,

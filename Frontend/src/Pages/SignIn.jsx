@@ -6,11 +6,13 @@ import { Google as GoogleIcon, Facebook as FacebookIcon, Visibility, VisibilityO
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+
 const SignIn = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
+
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -24,6 +26,7 @@ const SignIn = () => {
     }));
   };
 
+
   const handleSignIn = async (event) => {
     event.preventDefault();
 
@@ -33,12 +36,14 @@ const SignIn = () => {
       localStorage.setItem('token', response.data.token);
       console.log('Sign in successful:', response.data);
 
-
-      if(response.data.role === 'admin'){
-        navigate('/clients');
-      }else{
+      if(response.data.role === 'Admin') {
+        navigate('/clients')
+      }else if(response.data.role === 'User'){
         navigate('/homepage');
+      }else{
+        console.log('no role');
       }
+
     } catch (error) {
       console.error('Error signing in:', error);
       setError(error.response?.data?.message || 'Failed to sign in. Please try again.');
@@ -118,9 +123,9 @@ const SignIn = () => {
                 value={formData.password}
                 onChange={(e) => handleInputChange('password', e.target.value)}
               />
-             <Button type="submit" variant="contained" fullWidth sx={{ mt: 2, mb: 2, backgroundColor: '#333', color: '#000000' }}>
+              <Button type="submit" variant="contained" fullWidth sx={{ mt: 2, mb: 2, backgroundColor: '#333', color: '#000000' }}>
                 Sign in
-            </Button>
+              </Button>
               <Typography variant="body2" sx={{ color: '#ffffff', textAlign: 'center' }}>
                 Don't have an account? <Link href="/signup" variant="body2" sx={{ color: '#ffffff' }}>Sign up</Link>
               </Typography>
@@ -150,6 +155,13 @@ const SignIn = () => {
               >
                 Sign in with Facebook
               </Button>
+
+              {/* Forgot Password Link */}
+              <Typography variant="body2" sx={{ color: '#ffffff', textAlign: 'center', mt: 2 }}>
+                <Link href="/forgot-password" variant="body2" sx={{ color: '#ffffff' }}>
+                  Forgot Password?
+                </Link>
+              </Typography>
             </Box>
           </Box>
         </Grid>

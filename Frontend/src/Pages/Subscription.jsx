@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import api from '../Api.js';
 import '../CSS/SubscriptionPage.css';
 
+
 const SubscriptionPage = () => {
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [isLoading, setIsLoading] = useState(false);

@@ -7,8 +7,13 @@ import signInRouter from './Routes/signInRoute.js'
 import homePageRouter from './Routes/homePageRoute.js'
 import subscriptionRouter from './Routes/subscriptionRoute.js'
 import dashboardRouter from './Routes/dashBoardRoute.js'
-import userSettingsRouter from './Routes/userSettingsRoute.js'
+import userProfileRoute from './Routes/userProfileRoute.js'
 import clientRouter from './Routes/clientsRoute.js'
+import changePasswordRoute from './Routes/forgotPasswordRoute.js'
+import reviewRouter from './Routes/reviewRoute.js';
+import { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview } from './Services/tableCreate.js';
+import createDatabaseIfNotExists from './Services/databaseCreate.js';
+import db from './database.js'
 dotenv.config()
 
 const app = express()
@@ -23,9 +28,30 @@ app.use('/signup', signUpRouter);
 app.use('/homepage', homePageRouter);
 app.use('/subscription', subscriptionRouter);
 app.use('/dashboard', dashboardRouter);
-app.use('/settings', userSettingsRouter);
+app.use('/userprofile', userProfileRoute);
 app.use('/clients', clientRouter);
+app.use('/review', reviewRouter);
+app.use(changePasswordRoute); 
 
-app.listen(process.env.PORT, () => {
-    console.log('app is listening to port: ' + process.env.PORT);
-})
+async function initializeApp() {
+    try {
+      await createDatabaseIfNotExists();
+  
+      await db.authenticate();
+  
+      await createTableUserAccounts();
+      await createTableAdminAccounts();
+      await createTableSubscriptions();
+      await createTableReview();
+      console.log('Tables have been created or checked.');
+  
+      app.listen(process.env.PORT, () => {
+        console.log(`App is listening on port: ${process.env.PORT}`);
+      });
+    } catch (error) {
+      console.error('Error initializing the application:', error);
+      process.exit(1);
+    }
+  }
+  
+  initializeApp();

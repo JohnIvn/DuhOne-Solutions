@@ -9,6 +9,9 @@ import SignUp from './Pages/SignUp.jsx';
 import SignIn from './Pages/SignIn.jsx';
 import HomePage from './Pages/HomePage.jsx';
 import AdminDashboard from './Pages/AdminDashboard.jsx';
+import UserProfile from './Pages/UserProfile.jsx';
+import ForgotPassword from './components/ForgotPassword.jsx';
+import ReviewPage from './Pages/Reviews.jsx';
 
 const ProtectedRoute = ({ children }) => {
     const token = localStorage.getItem('token');
@@ -23,20 +26,39 @@ const App = () => {
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/signin" element={<SignIn />} />
                 <Route path="/clients" element={<AdminDashboard />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
 
                 <Route
                     path="/homepage"
                     element={
-                        <ProtectedRoute>    
+                        <ProtectedRoute>
                             <HomePage />
                         </ProtectedRoute>
                     }
                 />
+
+                <Route
+                    path="/review"
+                    element={
+                        <ProtectedRoute>
+                            <ReviewPage />
+                        </ProtectedRoute>
+                    }
+                />
+
                 <Route
                     path="/subscription"
                     element={
                         <ProtectedRoute>
                             <SubscriptionPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/userprofile"
+                    element={
+                        <ProtectedRoute>
+                            <UserProfile />
                         </ProtectedRoute>
                     }
                 />

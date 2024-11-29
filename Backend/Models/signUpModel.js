@@ -1,5 +1,7 @@
 import db from '../database.js';
 import { Sequelize, DataTypes, Model } from 'sequelize';
+import dotenv from 'dotenv'
+dotenv.config();
 
 class UserAccountModel extends Model {}
 
@@ -17,6 +19,10 @@ const UserAccount = UserAccountModel.init(
     lastName: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    role: {
+      type: DataTypes.STRING,
+      defaultValue: process.env.DEFAULT_ROLE
     },
     email: {
       type: DataTypes.STRING,
