@@ -33,11 +33,10 @@ const SignIn = () => {
     try {
       const response = await axios.post('http://localhost:3000/signin', formData);
   
-      console.log("Response from backend:", response.data);  // Log the response to check role
+      console.log("Response from backend:", response.data);  
   
-      // Store token and role in localStorage
       localStorage.setItem('token', response.data.token);
-      localStorage.setItem('role', response.data.role);  // Make sure role is stored
+      localStorage.setItem('role', response.data.role); 
       console.log(localStorage.getItem('role'));
       console.log('Sign in successful:', response.data);
   
@@ -68,6 +67,7 @@ const SignIn = () => {
         display: 'flex',
         minHeight: '100vh',
         minWidth: '100%',
+        marginTop: '4%',
         backgroundImage: 'url("https://media.istockphoto.com/id/1146367630/vector/abstract-navy-background.jpg?s=612x612&w=0&k=20&c=4odz8sgWFQHHwQ09ouonbKdvotg79421iCgJ8-99RyE=")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',

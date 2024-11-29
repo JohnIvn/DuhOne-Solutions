@@ -9,9 +9,7 @@ const LandingPage = () => {
             <NavBar />
 
             <header className="hero text-white text-center py-5" >
-                <h1 className="display-4">Welcome to Our Website</h1>
-                <p className="lead">Your one-stop solution for amazing experiences.</p>
-                <a href="#features" class="btn btn-outline-light custom-btn">Learn More</a>
+                <h1 className="display-4">Welcome to DuhOne</h1>
             </header>
 
             <section id="features" className="py-5" >

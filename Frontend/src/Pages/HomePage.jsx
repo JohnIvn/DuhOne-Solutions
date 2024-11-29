@@ -40,11 +40,17 @@ const HomePage = () => {
                 <p className="hero-description">
                 Our website allows you to quickly view you current internet status. Whether you're managing your network or just need to know your online identity, our tool provides instant results with no hassle. It's the simplest way to get your IP information whenever you need it.
                 </p>
-                <div className="hero-buttons">
-                    <button className="primary-btn">My Account</button>
-                    <button className="secondary-btn">Available Plans</button>
-                    <button className="third-btn">Contact Us</button>
-                </div>
+                    <div className="hero-buttons">
+                        <a href="/profile">
+                            <button className="primary-btn">My Account</button>
+                        </a>
+                        <a href="/subscription">
+                            <button className="secondary-btn">Available Plans</button>
+                        </a>
+                        <a href="/review">
+                            <button className="third-btn">Contact Us</button>
+                        </a>
+                    </div>
                 </div>
             </section>
             {/* <h2>Home Page</h2>

@@ -23,7 +23,7 @@ export const validateSignUpField = (field, value) => {
       if (!value.trim()) error = 'Email is required.';
       else if (!emailRegex.test(value)) error = 'Email must be a valid Gmail address.';
       else if (value.split('@gmail.com')[0].length < 5) {
-        error = 'Gmail username must be at least 3 characters long.';
+        error = 'Gmail username must be at least 5 characters long.';
       } else if (value.length > 50) {
         error = 'Email cannot exceed 50 characters.';
       }
