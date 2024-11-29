@@ -154,7 +154,7 @@ const ForgotPassword = () => {
                 />
 
                 <ReCAPTCHA
-                  sitekey="6LfExY0qAAAAAMabiwm7M24Sa9-1K7pL0ZO6YOdi" 
+                  sitekey="" 
                   onChange={handleCaptchaChange}
                 />
 
