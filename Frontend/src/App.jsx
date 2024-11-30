@@ -12,7 +12,7 @@ import AdminDashboard from './Pages/AdminDashboard.jsx';
 import ProfilePage from './Pages/ProfilePage.jsx';
 import Review from './Pages/Review.jsx';
 import UserProfile from './Pages/UserProfile.jsx';
-import ForgotPassword from './Components/ForgotPassworda.jsx';
+import ForgotPassword from './components/forgotPassworda.jsx';
 
 const ProtectedRoute = ({ children, requiredRole }) => {
   const token = localStorage.getItem('token');
