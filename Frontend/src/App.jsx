@@ -37,7 +37,8 @@ const App = () => {
       <Routes>
         <Route
           path="/"
-          element={token ? <Navigate to="/homepage" /> : <LandingPage />}  // Redirect to homepage if logged in
+          element={token ?  <LandingPage /> : <Navigate to="/homepage" />}
+          //element={token ? <Navigate to="/homepage" /> : <LandingPage />}  // Redirect to homepage if logged in
         />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />

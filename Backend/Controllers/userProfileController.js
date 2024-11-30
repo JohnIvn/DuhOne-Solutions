@@ -1,23 +1,21 @@
-import UserProfileModel from '../Models/userProfileModel.js';
+import UserProfileModel from "../Models/userProfileModel.js";
 
 export const getUserProfile = async (req, res) => {
     try {
         const { userId } = req.user; 
         console.log("userId: ", userId);
 
-        const response = await UserProfileModel.findOne({
+        const userProfile = await UserProfileModel.findOne({
             where: { userId }
         });
 
-        if (!response) {
+        if (!userProfile) {
             return res.status(404).json({ message: 'User profile not found' });
         }
-        console.log("response: ", response);
-
-        return res.json(response);
+        console.log("response: ", userProfile);
+        return res.json(userProfile);
 
     } catch (error) {
-
         console.error(error);
         return res.status(500).json({ message: 'Failed to fetch user profile' });
     }
@@ -27,11 +25,7 @@ export const getUserProfile = async (req, res) => {
 export const updateUserProfile = async (req, res) => {
     try {
         const { userId } = req.user;
-        const { firstName, lastName, email, role } = req.body;
-
-        if (!firstName || !lastName || !email || !role) {
-            return res.status(400).json({ message: 'All fields (firstName, lastName, email, role) are required' });
-        }
+        const { firstName, lastName, phoneNumber, street, city, barangay, zipCode } = req.body;
 
         const userProfile = await UserProfileModel.findOne({
             where: { userId }
@@ -44,8 +38,11 @@ export const updateUserProfile = async (req, res) => {
         const updatedUserProfile = await userProfile.update({
             firstName,
             lastName,
-            email,
-            role,
+            phoneNumber,
+            street,
+            city, 
+            barangay, 
+            zipCode
         });
 
         return res.json(updatedUserProfile);

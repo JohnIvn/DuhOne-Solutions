@@ -1,6 +1,7 @@
 import db from '../database.js';
 import bcrypt from 'bcrypt';
 import { UserAccount, AdminAccount } from '../Models/signUpModel.js';
+import UserProfileModel from '../Models/userProfileModel.js';
 
 const SignUp = async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
@@ -25,6 +26,13 @@ const SignUp = async (req, res) => {
             email: newUserAccount.email,    
             password,     
         });
+
+        await UserProfileModel.create({
+            userId: newUserAccount.userId,
+            firstName: newUserAccount.firstName,
+            lastName: newUserAccount.lastName,
+            email: newUserAccount.email
+        })
 
         return res.status(201).json({ message: 'Account created successfully' });
     } catch (error) {

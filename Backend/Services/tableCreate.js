@@ -1,6 +1,7 @@
 // tableCreate.js
 import { UserAccount, AdminAccount } from '../Models/signUpModel.js';
 import { subscription } from '../Models/subscriptionModel.js';
+import UserProfileModel from '../Models/userProfileModel.js';
 import { Review } from '../Models/reviewModel.js';
 
 async function createTableUserAccounts() {
@@ -11,6 +12,15 @@ async function createTableUserAccounts() {
     console.error('Error checking/updating UserAccount table', error);
   }
 }
+
+async function createTableUserProfile(){
+  try{
+    await UserProfileModel.sync({alert: false});
+    console.log('User Profile table is checked and updated if necessary');
+  }catch(error){
+    console.error('Error checking/Updating UserProfile tabke ', error);
+  }
+};
 
 async function createTableAdminAccounts() {
   try {
@@ -40,4 +50,4 @@ async function createTableReview() {
   }
 }
 
-export { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview }
+export { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableUserProfile }

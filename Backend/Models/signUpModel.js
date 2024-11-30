@@ -81,7 +81,7 @@ const AdminAccount = AdminAccountModel.init(
     sequelize: db,
     modelName: 'AdminAccount',
     tableName: 'adminaccounts',
-    timestamps: true, 
+    timestamps: false, 
   }
 );
 

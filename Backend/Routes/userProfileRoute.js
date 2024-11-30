@@ -1,18 +1,11 @@
 import express from 'express'
+import { getUserProfile, updateUserProfile } from '../Controllers/userProfileController.js';
 import authenticateToken from '../authentication.js'
 const router = express.Router()
 
-router.get('/', authenticateToken, (req, res) => {
-    const {userId, firstName, lastName, email} = req.user;
+router.get('/', authenticateToken, getUserProfile);
 
-    return res.status(200).json({
-        message: "you are authenticated", 
-        userId: userId,
-        firstName: firstName,
-        lastName: lastName,
-        email: email 
-    })
-    
-});
+router.post('/', authenticateToken, updateUserProfile);
+
 
 export default router;

@@ -16,7 +16,7 @@ const UserProfile = () => {
                 setFirstName(response.data.firstName);
                 setLastName(response.data.lastName);
                 setEmail(response.data.email);
-                setRole(response.data.role);
+                setPhoneNumber();
             } catch (error) {
                 setErrorMessage(error.response?.data?.message || 'Error fetching user profile');
             }
@@ -30,10 +30,13 @@ const UserProfile = () => {
 
         try {
             const response = await api.put('/userprofile', {
-                firstName,
-                lastName,
-                email,
-                role
+            firstName,
+            lastName,
+            phoneNumber,
+            street,
+            city, 
+            barangay, 
+            zipCode
             });
 
             alert('Profile updated successfully!');

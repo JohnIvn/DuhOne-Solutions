@@ -1,35 +1,59 @@
-import React, { useState } from "react";
-import '../CSS/ProfilePage.css';
-import NavBarDashboard from '../components/NavBarDashboard.jsx';
-import Footer from '../components/Footer.jsx';
+import React, { useState, useEffect } from "react";
+import "../CSS/ProfilePage.css";
+import NavBarDashboard from "../components/NavBarDashboard.jsx";
+import Footer from "../components/Footer.jsx";
+import api from "../Api.js";
 
 const ProfilePage = () => {
   const [showPlanning, setShowPlanning] = useState(false);
-  const [showAccount, setShowAccount] = useState(false); // Track when to show My Account view
-  const [myAccount, setMyAccount] = useState(null);  // State to hold account data
+  const [showAccount, setShowAccount] = useState(false);
+  const [myAccount, setMyAccount] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  // Form data state
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phoneNumber: '',
-    street: '',
-    city: '',
-    barangay: '',
-    zipCode: ''
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    street: "",
+    city: "",
+    barangay: "",
+    zipCode: "",
   });
+
+  // Fetch user profile data
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await api.get("/userprofile");
+        setFormData(response.data);
+        setMyAccount(response.data);
+      } catch (error) {
+        console.error("Error fetching user profile:", error.message);
+        alert("Failed to load user profile. Please try again later.");
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handleUpdate = () => {
-    setMyAccount(formData);  // Store the form data when 'Update' is clicked
+  const handleUpdate = async () => {
+    setIsUpdating(true);
+    try {
+      const response = await api.post("/userprofile", formData);
+      setMyAccount(response.data);
+      alert("Profile updated successfully!");
+    } catch (error) {
+      console.error("Error updating user profile:", error.message);
+      alert("Failed to update profile. Please try again.");
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   return (
@@ -46,28 +70,37 @@ const ProfilePage = () => {
                     <div className="user-avatar">
                       <img
                         src="https://bootdey.com/img/Content/avatar/avatar7.png"
-                        alt="Maxwell Admin"
+                        alt="User Avatar"
                       />
                     </div>
-                    <h5 className="user-name">User1234</h5>
-                    <h6 className="user-email">User@gmail.com</h6>
+                    <h5 className="user-name">{myAccount?.firstName || "User"}</h5>
+                    <h6 className="user-email">{myAccount?.email || "user@example.com"}</h6>
                   </div>
                   <div className="about">
                     <button
                       className="btn btn-primary mb-2"
-                      onClick={() => { setShowPlanning(false); setShowAccount(false); }}
+                      onClick={() => {
+                        setShowPlanning(false);
+                        setShowAccount(false);
+                      }}
                     >
                       Personal Information
                     </button>
                     <button
                       className="btn btn-primary mb-2"
-                      onClick={() => { setShowPlanning(true); setShowAccount(false); }}
+                      onClick={() => {
+                        setShowPlanning(true);
+                        setShowAccount(false);
+                      }}
                     >
                       Planning
                     </button>
                     <button
                       className="btn btn-primary"
-                      onClick={() => { setShowAccount(true); setShowPlanning(false); }}
+                      onClick={() => {
+                        setShowAccount(true);
+                        setShowPlanning(false);
+                      }}
                     >
                       My Account
                     </button>
@@ -88,23 +121,39 @@ const ProfilePage = () => {
                 ) : showAccount ? (
                   <div className="account-info">
                     <h6 className="text-primary">My Account Information</h6>
-                    <p><strong>First Name:</strong> {myAccount?.firstName}</p>
-                    <p><strong>Last Name:</strong> {myAccount?.lastName}</p>
-                    <p><strong>Email:</strong> {myAccount?.email}</p>
-                    <p><strong>Phone Number:</strong> {myAccount?.phoneNumber}</p>
-                    <p><strong>Street:</strong> {myAccount?.street}</p>
-                    <p><strong>City:</strong> {myAccount?.city}</p>
-                    <p><strong>Barangay:</strong> {myAccount?.barangay}</p>
-                    <p><strong>Zip Code:</strong> {myAccount?.zipCode}</p>
+                    <p>
+                      <strong>First Name:</strong> {myAccount?.firstName}
+                    </p>
+                    <p>
+                      <strong>Last Name:</strong> {myAccount?.lastName}
+                    </p>
+                    <p>
+                      <strong>Email:</strong> {myAccount?.email}
+                    </p>
+                    <p>
+                      <strong>Phone Number:</strong> {myAccount?.phoneNumber}
+                    </p>
+                    <p>
+                      <strong>Street:</strong> {myAccount?.street}
+                    </p>
+                    <p>
+                      <strong>City:</strong> {myAccount?.city}
+                    </p>
+                    <p>
+                      <strong>Barangay:</strong> {myAccount?.barangay}
+                    </p>
+                    <p>
+                      <strong>Zip Code:</strong> {myAccount?.zipCode}
+                    </p>
                   </div>
                 ) : (
                   <>
                     {/* Personal Details Section */}
                     <div className="row gutters">
-                      <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                      <div className="col-xl-12">
                         <h6 className="mb-2 text-primary">Personal Details</h6>
                       </div>
-                      <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                      <div className="col-xl-6">
                         <div className="form-group">
                           <label htmlFor="fullName">First Name</label>
                           <input
@@ -118,7 +167,7 @@ const ProfilePage = () => {
                           />
                         </div>
                       </div>
-                      <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                      <div className="col-xl-6">
                         <div className="form-group">
                           <label htmlFor="eMail">Last Name</label>
                           <input
@@ -132,27 +181,27 @@ const ProfilePage = () => {
                           />
                         </div>
                       </div>
-                      <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                      <div className="col-xl-6">
                         <div className="form-group">
-                          <label htmlFor="phone">Email</label>
+                          <label htmlFor="email">Email</label>
                           <input
-                            type="text"
+                            type="email"
                             className="form-control"
-                            id="phone"
+                            id="email"
                             name="email"
                             value={formData.email}
                             onChange={handleInputChange}
-                            placeholder="user@gmail.com"
+                            placeholder="user@example.com"
                           />
                         </div>
                       </div>
-                      <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                      <div className="col-xl-6">
                         <div className="form-group">
-                          <label htmlFor="website">Phone Number</label>
+                          <label htmlFor="phoneNumber">Phone Number</label>
                           <input
-                            type="text"
+                            type="tel"
                             className="form-control"
-                            id="website"
+                            id="phoneNumber"
                             name="phoneNumber"
                             value={formData.phoneNumber}
                             onChange={handleInputChange}
@@ -164,10 +213,10 @@ const ProfilePage = () => {
 
                     {/* Address Section */}
                     <div className="row gutters">
-                      <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                      <div className="col-xl-12">
                         <h6 className="mt-3 mb-2 text-primary">Address</h6>
                       </div>
-                      <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                      <div className="col-xl-6">
                         <div className="form-group">
                           <label htmlFor="street">Street</label>
                           <input
@@ -181,7 +230,7 @@ const ProfilePage = () => {
                           />
                         </div>
                       </div>
-                      <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                      <div className="col-xl-6">
                         <div className="form-group">
                           <label htmlFor="city">City</label>
                           <input
@@ -195,7 +244,7 @@ const ProfilePage = () => {
                           />
                         </div>
                       </div>
-                      <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                      <div className="col-xl-6">
                         <div className="form-group">
                           <label htmlFor="barangay">Barangay</label>
                           <input
@@ -209,7 +258,7 @@ const ProfilePage = () => {
                           />
                         </div>
                       </div>
-                      <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                      <div className="col-xl-6">
                         <div className="form-group">
                           <label htmlFor="zipCode">Zip Code</label>
                           <input
@@ -224,8 +273,19 @@ const ProfilePage = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <button className="btn btn-primary" onClick={handleUpdate}>Update</button>
+                    <div className="row gutters">
+                      <div className="col-xl-12">
+                        <div className="text-right">
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={handleUpdate}
+                            disabled={isUpdating}
+                          >
+                            {isUpdating ? "Updating..." : "Update"}
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </>
                 )}

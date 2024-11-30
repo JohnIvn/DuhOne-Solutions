@@ -11,7 +11,7 @@ import subscriptionRouter from './Routes/subscriptionRoute.js';
 import dashboardRouter from './Routes/dashBoardRoute.js';
 import userProfileRoute from './Routes/userProfileRoute.js'
 import clientRouter from './Routes/clientsRoute.js';
-import { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview } from './Services/tableCreate.js';
+import {createTableUserProfile ,createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview } from './Services/tableCreate.js';
 import createDatabaseIfNotExists from './Services/databaseCreate.js';
 import db from './database.js';
 
@@ -44,6 +44,7 @@ async function initializeApp() {
     await createTableAdminAccounts();
     await createTableSubscriptions();
     await createTableReview();
+    await createTableUserProfile();
     console.log('Tables have been created or checked.');
 
     app.listen(process.env.PORT, () => {
