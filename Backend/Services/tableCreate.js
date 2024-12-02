@@ -3,6 +3,7 @@ import { UserAccount, AdminAccount } from '../Models/signUpModel.js';
 import { subscription } from '../Models/subscriptionModel.js';
 import UserProfileModel from '../Models/userProfileModel.js';
 import { Review } from '../Models/reviewModel.js';
+import UserImgModel from '../Models/imageModel.js';
 
 async function createTableUserAccounts() {
   try {
@@ -50,4 +51,13 @@ async function createTableReview() {
   }
 }
 
-export { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableUserProfile }
+async function createTableImageContainer() {
+  try {
+    await UserImgModel.sync({ alter: false });
+    console.log('Image table is checked and updated if necessary');
+  } catch (error) {
+    console.error('Error checking/updating Image table', error);
+  }
+}
+
+export { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableUserProfile, createTableImageContainer }

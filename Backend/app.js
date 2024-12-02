@@ -11,7 +11,8 @@ import subscriptionRouter from './Routes/subscriptionRoute.js';
 import dashboardRouter from './Routes/dashBoardRoute.js';
 import userProfileRoute from './Routes/userProfileRoute.js'
 import clientRouter from './Routes/clientsRoute.js';
-import {createTableUserProfile ,createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview } from './Services/tableCreate.js';
+import imageRouter from './Routes/imageRoute.js';
+import {createTableUserProfile ,createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableImageContainer } from './Services/tableCreate.js';
 import createDatabaseIfNotExists from './Services/databaseCreate.js';
 import db from './database.js';
 
@@ -33,6 +34,7 @@ app.use('/userprofile', userProfileRoute);
 app.use('/clients', clientRouter);
 app.use('/review', reviewRouter);
 app.use(changePasswordRoute); 
+app.use('/api/user-images', imageRouter);
 
 async function initializeApp() {
   try {
@@ -45,6 +47,7 @@ async function initializeApp() {
     await createTableSubscriptions();
     await createTableReview();
     await createTableUserProfile();
+    await createTableImageContainer();
     console.log('Tables have been created or checked.');
 
     app.listen(process.env.PORT, () => {
