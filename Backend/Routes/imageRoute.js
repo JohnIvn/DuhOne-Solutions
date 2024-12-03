@@ -6,7 +6,6 @@ import { uploadUserImage, getProfile } from '../Controllers/imageController.js';
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
-// Apply authentication middleware to this route
 router.post('/', authenticateToken, upload.single('image'), uploadUserImage);
 
 router.get('/', authenticateToken, getProfile);

@@ -1,5 +1,8 @@
 import { subscription } from '../Models/subscriptionModel.js';
 import UserProfileModel from '../Models/userProfileModel.js';
+import PDFDocument from 'pdfkit';
+import fs from 'fs';
+import path from 'path';
 
 export const subscriptionController = async (req, res) => {
     try {
@@ -51,10 +54,38 @@ export const subscriptionController = async (req, res) => {
             await userProfile.update({ plan });
         }
 
-        return res.status(201).json({
-            message: "Subscription created successfully!",
-            subscription: newSubscription,
+        // Generate PDF for the subscription
+        const doc = new PDFDocument();
+        const receiptsFolderPath = path.join(__dirname, '../Receipts');  // Save to receipts folder
+        if (!fs.existsSync(receiptsFolderPath)) {
+            fs.mkdirSync(receiptsFolderPath);  // Create receipts folder if it doesn't exist
+        }
+
+        const pdfPath = path.join(receiptsFolderPath, `${userId}_subscription.pdf`);
+
+        const writeStream = fs.createWriteStream(pdfPath);
+        doc.pipe(writeStream);
+
+        // Add content to PDF
+        doc.fontSize(18).text('Subscription Details', { align: 'center' });
+        doc.moveDown();
+        doc.fontSize(12).text(`Name: ${name}`);
+        doc.text(`Email: ${email}`);
+        doc.text(`Plan: ${plan}`);
+        doc.text(`Status: ${newSubscription.status}`);
+        doc.text(`Paid: ${newSubscription.paid}`);
+        doc.text(`Subscription Created At: ${new Date().toISOString()}`);
+
+        // Wait for the finish event before responding
+        writeStream.on('finish', () => {
+            return res.status(201).json({
+                message: "Subscription created successfully!",
+                subscription: newSubscription,
+                pdfPath: pdfPath, // Optionally send back the path to the generated PDF
+            });
         });
+
+        doc.end(); // Close the document to trigger the finish event
 
     } catch (error) {
         console.error("Error in subscription creation: ", error.message);
