@@ -10,6 +10,7 @@ export const ClientModel = Client.init(
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
+      unique: true
     },
     name: {
       type: DataTypes.STRING,
@@ -24,7 +25,7 @@ export const ClientModel = Client.init(
     },
     paid: {
       type: DataTypes.STRING,
-      defaultValue: "false"
+      defaultValue: "False"
     },
     subscribeAt: {
       type: DataTypes.DATE,

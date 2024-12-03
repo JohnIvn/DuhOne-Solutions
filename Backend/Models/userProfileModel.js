@@ -12,6 +12,7 @@ UserProfileModel.init({
   },
   userId: { 
     type: DataTypes.INTEGER,
+    unique: true,
     allowNull: false,
     references: {
       model: UserAccount,
@@ -52,6 +53,12 @@ UserProfileModel.init({
     type: DataTypes.INTEGER,
     allowNull: true,
   },
+  plan: {
+    type: DataTypes.STRING
+  },
+  paymentMethod: {
+    type: DataTypes.STRING
+  }
 }, {
   sequelize: db,
   modelName: 'UserProfileModel',

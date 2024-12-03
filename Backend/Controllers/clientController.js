@@ -21,7 +21,7 @@ export const getClients = async (req, res) => {
   }
 };
 
-export const updateClientStatus = async (req, res) => {
+export const updateClientStatus = async (req, res) => { 
   try {
     const { id } = req.params;
     const { status } = req.body;

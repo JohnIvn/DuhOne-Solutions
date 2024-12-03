@@ -13,6 +13,7 @@ import ProfilePage from './Pages/ProfilePage.jsx';
 import Review from './Pages/Review.jsx';
 import UserProfile from './Pages/UserProfile.jsx';
 import ForgotPassword from './components/forgotPassworda.jsx';
+import TransactionForm from './Pages/TransactionForm.jsx';
 
 const ProtectedRoute = ({ children, requiredRole }) => {
   const token = localStorage.getItem('token');
@@ -57,6 +58,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <SubscriptionPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/subscription/transaction"
+          element={
+            <ProtectedRoute>
+              <TransactionForm />
             </ProtectedRoute>
           }
         />

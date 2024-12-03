@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../Api.js';
 import '../CSS/SubscriptionPage.css';
 import NavBarDashboard from '../components/NavBarDashboard.jsx';
@@ -7,6 +8,7 @@ import Footer from '../components/Footer.jsx';
 const SubscriptionPage = () => {
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handlePlanSelection = (plan) => {
         setSelectedPlan(plan);
@@ -22,8 +24,8 @@ const SubscriptionPage = () => {
 
         try {
             const response = await api.post('/subscription', { plan: selectedPlan });
-            alert('Subscription request sent successfully!');
-            console.log('Response:', response.data);
+            alert('Plan selected! Proceeding to finalize subscription.');
+            navigate('/subscription/transaction', { state: { selectedPlan } });
         } catch (error) {
             alert('Failed to send subscription request. Please try again.');
             console.error('Error in handleSubmit:', error);
