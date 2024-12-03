@@ -65,35 +65,62 @@ export const subscriptionController = async (req, res) => {
         const receiptFilePath = path.join(receiptDir, `receipt_${userId}.pdf`);
         doc.pipe(fs.createWriteStream(receiptFilePath));
 
-        // Header of the receipt letter
-        doc.fontSize(18).text("Your Subscription Receipt", { align: 'center' }).moveDown(2);
-        
-        doc.fontSize(12).text(`Date: ${new Date().toLocaleDateString()}`, { align: 'left' }).moveDown();
-        
-        doc.text(`Dear ${name},`, { align: 'left' }).moveDown();
+        // Header
+        doc
+            .fontSize(18)
+            .font('Helvetica-Bold')
+            .text("Subscription Receipt", { align: 'center' })
+            .moveDown();
+        doc
+            .fontSize(12)
+            .font('Helvetica')
+            .text(`Receipt Date: ${new Date().toLocaleDateString()}`, { align: 'right' });
+
+        doc.moveDown(2);
 
         // Subscription Details Section
-        doc.fontSize(12).text("Thank you for subscribing to our service. Below are the details of your subscription:", { align: 'left' }).moveDown();
-        
-        doc.fontSize(12).text(`Plan: ${plan}`, { align: 'left' }).moveDown();
-        doc.text(`Subscription Status: ${newSubscription.status}`, { align: 'left' }).moveDown();
-        doc.text(`Subscription Created At: ${new Date().toLocaleString()}`, { align: 'left' }).moveDown();
+        doc
+            .fontSize(14)
+            .font('Helvetica-Bold')
+            .text("Subscription Details", { align: 'left' })
+            .moveDown();
+        doc
+            .fontSize(12)
+            .font('Helvetica')
+            .text(`Name: ${name}`)
+            .text(`Plan: ${plan}`)
+            .text(`Subscription Status: ${newSubscription.status}`)
+            .text(`Subscription Created At: ${new Date().toLocaleString()}`)
+            .moveDown(2);
 
-        // User Profile Details
-        doc.fontSize(12).text("Your profile information:", { align: 'left' }).moveDown();
-        doc.text(`Name: ${name}`, { align: 'left' }).moveDown();
-        doc.text(`Email: ${email}`, { align: 'left' }).moveDown();
-        doc.text(`Phone Number: ${userProfile.phoneNumber || 'N/A'}`, { align: 'left' }).moveDown();
-        doc.text(`Street: ${userProfile.street || 'N/A'}`, { align: 'left' }).moveDown();
-        doc.text(`City: ${userProfile.city || 'N/A'}`, { align: 'left' }).moveDown();
-        doc.text(`Barangay: ${userProfile.barangay || 'N/A'}`, { align: 'left' }).moveDown();
-        doc.text(`Zip Code: ${userProfile.zipCode || 'N/A'}`, { align: 'left' }).moveDown();
+        // User Profile Information Section
+        doc
+            .fontSize(14)
+            .font('Helvetica-Bold')
+            .text("Your Profile Information", { align: 'left' })
+            .moveDown();
+        doc
+            .fontSize(12)
+            .font('Helvetica')
+            .text(`Name: ${name}`)
+            .text(`Email: ${email}`)
+            .text(`Phone Number: ${userProfile.phoneNumber || 'N/A'}`)
+            .text(`Street: ${userProfile.street || 'N/A'}`)
+            .text(`City: ${userProfile.city || 'N/A'}`)
+            .text(`Barangay: ${userProfile.barangay || 'N/A'}`)
+            .text(`Zip Code: ${userProfile.zipCode || 'N/A'}`)
+            .moveDown(2);
 
-        // Footer of the receipt
-        doc.moveDown();
-        doc.fontSize(10).text("If you have any questions, feel free to contact our support team at support@yourcompany.com", { align: 'center' }).moveDown();
-        
-        doc.fontSize(10).text("Thank you for choosing our service!", { align: 'center' });
+        // Footer
+        doc
+            .fontSize(10)
+            .font('Helvetica')
+            .text(
+                "If you have any questions, feel free to contact our support team at support@yourcompany.com.",
+                { align: 'center' }
+            )
+            .moveDown();
+        doc.text("Thank you for choosing our service!", { align: 'center' });
 
         doc.end();
 
@@ -103,9 +130,8 @@ export const subscriptionController = async (req, res) => {
         res.status(201).json({
             message: "Subscription created successfully! A receipt has been sent to your email.",
             subscription: newSubscription,
-            receiptUrl: `/Receipts/receipt_${userId}.pdf`, 
+            receiptUrl: `/Receipts/receipt_${userId}.pdf`,
         });
-
     } catch (error) {
         console.error("Error in subscription creation: ", error.message);
         return res.status(500).json({
