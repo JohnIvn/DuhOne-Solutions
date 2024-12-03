@@ -1,33 +1,31 @@
 import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
+import path from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-dotenv.config({ path: resolve(__dirname, '../.env') });
-
+// Set up the email transporter with your SMTP service configuration
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
-  }
+    service: 'gmail',  // Use Gmail or your preferred email service
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
+    },
 });
 
-const mailOptions = {
-  from: process.env.MAIL_FROM,
-  to: process.env.MAIL_TO,
-  subject: 'Test Email',
-  text: 'This is a test email sent from Nodemailer.',
-  html: '<b>This is a test email sent from Nodemailer.</b>',
+// Create a function to send an email with the attachment
+export const sendSubscriptionReceipt = (recipientEmail, receiptFilePath, userId) => {
+    const mailOptions = {
+        from: process.env.MAIL_FROM,
+        to: recipientEmail, // Use recipientEmail from the request body
+        subject: 'Subscription Receipt', // Subject line
+        text: 'Please find your subscription receipt attached.', // Email body
+        attachments: [
+            {
+                filename: `receipt_${userId}.pdf`,
+                path: receiptFilePath, // Path to the generated PDF file
+                contentType: 'application/pdf',
+            },
+        ],
+    };
+
+    // Send the email with the PDF attachment
+    return transporter.sendMail(mailOptions);
 };
-
-transporter.sendMail(mailOptions, (error, info) => {
-  if (error) {
-    console.log('Error occurred:', error);
-  } else {
-    console.log('Email sent:', info.response);
-  }
-});

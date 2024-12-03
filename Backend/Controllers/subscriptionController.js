@@ -4,6 +4,7 @@ import PDFDocument from 'pdfkit';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { sendSubscriptionReceipt } from '../Services/mailSender.js'; // Import the sendSubscriptionReceipt function
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -64,33 +65,43 @@ export const subscriptionController = async (req, res) => {
         const receiptFilePath = path.join(receiptDir, `receipt_${userId}.pdf`);
         doc.pipe(fs.createWriteStream(receiptFilePath));
 
-        // doc.image('path/to/logo.png', { width: 100, align: 'center' }); 
-        // doc.moveDown();
+        // Header of the receipt letter
+        doc.fontSize(18).text("Your Subscription Receipt", { align: 'center' }).moveDown(2);
         
-        doc.fontSize(20).text("Subscription Receipt", { align: 'center', underline: true });
+        doc.fontSize(12).text(`Date: ${new Date().toLocaleDateString()}`, { align: 'left' }).moveDown();
         
-        doc.rect(50, 150, 500, 250).stroke();
+        doc.text("Dear " + name + ",", { align: 'left' }).moveDown();
 
-        doc.fontSize(14).text("Name: ", 60, 170, { continued: true }).font('Helvetica-Bold').text(name);
-        doc.moveDown();
-        doc.fontSize(14).text("Email: ", 60, 200, { continued: true }).font('Helvetica-Bold').text(email);
-        doc.moveDown();
-        doc.fontSize(14).text("Plan: ", 60, 230, { continued: true }).font('Helvetica-Bold').text(plan);
-        doc.moveDown();
-        doc.fontSize(14).text("Subscription Status: ", 60, 260, { continued: true }).font('Helvetica-Bold').text(newSubscription.status);
-        doc.moveDown();
-        doc.fontSize(14).text("Subscription Created At: ", 60, 290, { continued: true }).font('Helvetica-Bold').text(new Date().toLocaleString());
-
-        doc.moveDown();
-        doc.fontSize(12).font('Helvetica-Oblique').text("Thank you for subscribing to our service!", { align: 'center' });
-
-        doc.moveDown();
-        doc.fontSize(10).text("For support, contact us at: support@yourcompany.com", { align: 'center' });
+        // Subscription Details Section
+        doc.fontSize(12).text("Thank you for subscribing to our service. Below are the details of your subscription:", { align: 'left' }).moveDown();
         
+        doc.fontSize(12).text(`Plan: ${plan}`, { align: 'left' }).moveDown();
+        doc.text(`Subscription Status: ${newSubscription.status}`, { align: 'left' }).moveDown();
+        doc.text(`Subscription Created At: ${new Date().toLocaleString()}`, { align: 'left' }).moveDown();
+
+        // User Profile Details
+        doc.fontSize(12).text("Your profile information:", { align: 'left' }).moveDown();
+        doc.text(`Name: ${name}`, { align: 'left' }).moveDown();
+        doc.text(`Email: ${email}`, { align: 'left' }).moveDown();
+        doc.text(`Phone Number: ${userProfile.phoneNumber || 'N/A'}`, { align: 'left' }).moveDown();
+        doc.text(`Street: ${userProfile.street || 'N/A'}`, { align: 'left' }).moveDown();
+        doc.text(`City: ${userProfile.city || 'N/A'}`, { align: 'left' }).moveDown();
+        doc.text(`Barangay: ${userProfile.barangay || 'N/A'}`, { align: 'left' }).moveDown();
+        doc.text(`Zip Code: ${userProfile.zipCode || 'N/A'}`, { align: 'left' }).moveDown();
+
+        // Footer of the receipt
+        doc.moveDown();
+        doc.fontSize(10).text("If you have any questions, feel free to contact our support team at support@yourcompany.com", { align: 'center' }).moveDown();
+        
+        doc.fontSize(10).text("Thank you for choosing our service!", { align: 'center' });
+
         doc.end();
 
+        // Send the subscription receipt email
+        await sendSubscriptionReceipt(email, receiptFilePath, userId);
+
         res.status(201).json({
-            message: "Subscription created successfully!",
+            message: "Subscription created successfully! A receipt has been sent to your email.",
             subscription: newSubscription,
             receiptUrl: `/Receipts/receipt_${userId}.pdf`, 
         });
