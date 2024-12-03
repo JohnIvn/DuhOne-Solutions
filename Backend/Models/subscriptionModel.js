@@ -15,6 +15,7 @@ const subscription = subscriptionModel.init(
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      unique: true,
       references: {
         model: UserAccount, 
         key: 'userId', 
