@@ -70,7 +70,7 @@ export const subscriptionController = async (req, res) => {
         
         doc.fontSize(12).text(`Date: ${new Date().toLocaleDateString()}`, { align: 'left' }).moveDown();
         
-        doc.text("Dear " + name + ",", { align: 'left' }).moveDown();
+        doc.text(`Dear ${name},`, { align: 'left' }).moveDown();
 
         // Subscription Details Section
         doc.fontSize(12).text("Thank you for subscribing to our service. Below are the details of your subscription:", { align: 'left' }).moveDown();
