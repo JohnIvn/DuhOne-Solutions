@@ -11,7 +11,8 @@ import subscriptionRouter from './Routes/subscriptionRoute.js';
 import dashboardRouter from './Routes/dashBoardRoute.js';
 import userProfileRoute from './Routes/userProfileRoute.js'
 import clientRouter from './Routes/clientsRoute.js';
-import imageRouter from './Routes/imageRoute.js';
+import imageRoute from './Routes/imageRoute.js';
+import getProfile from './Routes/imageRoute.js';
 import {createTableUserProfile ,createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableImageContainer } from './Services/tableCreate.js';
 import createDatabaseIfNotExists from './Services/databaseCreate.js';
 import db from './database.js';
@@ -34,7 +35,8 @@ app.use('/userprofile', userProfileRoute);
 app.use('/clients', clientRouter);
 app.use('/review', reviewRouter);
 app.use(changePasswordRoute); 
-app.use('/api/user-images', imageRouter);
+app.use('/upload-image', imageRoute);
+app.use('/profile', getProfile);
 
 async function initializeApp() {
   try {

@@ -11,7 +11,8 @@ import HomePage from './Pages/HomePage.jsx';
 import AdminDashboard from './Pages/AdminDashboard.jsx';
 import ProfilePage from './Pages/ProfilePage.jsx';
 import Review from './Pages/Review.jsx';
-import UserProfile from './Pages/UserProfile.jsx';
+import UserProfile from './Pages/userProfile.jsx';
+import UploadImagePage from './Pages/UploadImagePage.jsx'
 import ForgotPassword from './components/forgotPassworda.jsx';
 
 const ProtectedRoute = ({ children, requiredRole }) => {
@@ -35,6 +36,8 @@ const App = () => {
   return (
     <Router>
       <Routes>
+      <Route path="/img" element={<UploadImagePage />} />
+      
         <Route
           path="/"
           element={token ?  <LandingPage /> : <Navigate to="/homepage" />}

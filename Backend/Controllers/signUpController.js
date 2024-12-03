@@ -2,6 +2,7 @@ import db from '../database.js';
 import bcrypt from 'bcrypt';
 import { UserAccount, AdminAccount } from '../Models/signUpModel.js';
 import UserProfileModel from '../Models/userProfileModel.js';
+import UserImgModel from '../Models/imageModel.js';
 
 const SignUp = async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
@@ -25,6 +26,10 @@ const SignUp = async (req, res) => {
             userId: newUserAccount.userId,
             email: newUserAccount.email,    
             password,     
+        });
+
+        const newUserImage = await UserImgModel.create({
+            userId: newUserAccount.userId,
         });
 
         await UserProfileModel.create({

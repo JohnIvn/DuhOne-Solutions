@@ -12,12 +12,4 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// const verifyRecaptcha = async (recaptchaResponse) => {
-//     const secretKey = ''; 
-//     const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${recaptchaResponse}`;
-  
-//     const { data } = await axios.post(url);
-//     return data.success;
-//   };
-
 export default api;
