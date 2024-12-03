@@ -16,11 +16,23 @@ const ForgotPassword = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [captchaVerified, setCaptchaVerified] = useState(false); 
+  const [siteKey, setSiteKey] = useState("");  // New state for the site key
 
   const navigate = useNavigate();
 
   useEffect(() => {
     console.log("ForgotPassword component mounted");
+  }, []);
+
+  useEffect(() => {
+    axios.get("http://localhost:3000/api/recaptcha")
+      .then((response) => {
+        setSiteKey(response.data.siteKey); // Store the site key in the state
+      })
+      .catch((error) => {
+        console.error("Error fetching site key:", error);
+        setError("Failed to load reCAPTCHA site key");
+      });
   }, []);
 
   const handleEmailChange = (e) => setEmail(e.target.value);
@@ -72,7 +84,6 @@ const ForgotPassword = () => {
   const handleClickShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
 
   return (
-
     <>
       <NavBar />
       <Box
@@ -154,7 +165,7 @@ const ForgotPassword = () => {
                 />
 
                 <ReCAPTCHA
-                  sitekey="6LfExY0qAAAAAMabiwm7M24Sa9-1K7pL0ZO6YOdi" 
+                  sitekey={siteKey} 
                   onChange={handleCaptchaChange}
                 />
 
@@ -182,7 +193,6 @@ const ForgotPassword = () => {
       </Box>
       <Footer />
     </>
-
   );
 };
 

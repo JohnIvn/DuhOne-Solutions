@@ -13,6 +13,7 @@ import userProfileRoute from './Routes/userProfileRoute.js'
 import clientRouter from './Routes/clientsRoute.js';
 import imageRoute from './Routes/imageRoute.js';
 import getProfile from './Routes/imageRoute.js';
+import gAuthService from './Services/gAuthService.js';
 import {createTableUserProfile ,createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableImageContainer } from './Services/tableCreate.js';
 import createDatabaseIfNotExists from './Services/databaseCreate.js';
 import db from './database.js';
@@ -37,6 +38,7 @@ app.use('/review', reviewRouter);
 app.use(changePasswordRoute); 
 app.use('/upload-image', imageRoute);
 app.use('/profile', getProfile);
+app.use('/api/recaptcha', gAuthService);
 
 async function initializeApp() {
   try {
