@@ -20,6 +20,8 @@ const SignUp = () => {
   const [errors, setErrors] = useState({});
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [verificationCode, setVerificationCode] = useState('');
+  const [isCodeVerified, setIsCodeVerified] = useState(false);
 
   const navigate = useNavigate();
 
@@ -47,6 +49,11 @@ const SignUp = () => {
       return;
     }
 
+    if (!isCodeVerified) {
+      setError('Please verify your email before signing up.');
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await axios.post('http://localhost:3000/signup', formData);
@@ -59,6 +66,55 @@ const SignUp = () => {
       setLoading(false);
     }
   };
+
+  const handleSendCode = async () => {
+    if (!formData.email) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: 'Email is required',
+      }));
+      return;
+    }
+  
+    try {
+      const response = await axios.post('http://localhost:3000/send-code', { email: formData.email });
+      console.log(response.data.message);
+      alert('Verification code sent to your email!');
+    } catch (error) {
+      console.error('Error sending verification code:', error);
+      alert(error.response?.data?.message || 'Failed to send verification code');
+    }
+  };
+
+  const handleVerifyCode = async () => {
+    console.log('Email:', formData.email); 
+    console.log('Verification Code:', verificationCode);
+    
+    if (!verificationCode) {
+      alert('Please enter the verification code.');
+      return;
+    }
+
+    try {
+      // Add headers to ensure proper content type
+      const response = await axios.post('http://localhost:3000/verify-code', { 
+        email: formData.email, 
+        code: verificationCode 
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      console.log('Verification successful:', response.data.message);
+      setIsCodeVerified(true);
+      alert('Email successfully verified!');
+    } catch (error) {
+      console.error('Error verifying code:', error);
+      alert(error.response?.data?.message || 'Verification failed. Please try again.');
+    }
+};
+
+
 
   return (
     <>
@@ -128,11 +184,57 @@ const SignUp = () => {
                   error={!!errors.email}
                   helperText={errors.email}
                   InputLabelProps={{ style: { color: '#ffffff' } }}
-                  InputProps={{ style: { color: '#ffffff' } }}
+                  InputProps={{
+                    style: { color: '#ffffff' },
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          variant="contained"
+                          size="small"
+                          sx={{
+                            backgroundColor: '#333',
+                            color: '#ffffff',
+                            '&:hover': { backgroundColor: '#555' },
+                          }}
+                          onClick={handleSendCode}
+                        >
+                          Send Code
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
                   sx={{ backgroundColor: '#2a2a2a', borderRadius: '5px' }}
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                 />
+
+                {/* New Verification Code Field */}
+                <TextField
+                  label="Verification Code"
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  InputLabelProps={{ style: { color: '#ffffff' } }}
+                  InputProps={{ style: { color: '#ffffff' } }}
+                  sx={{ backgroundColor: '#2a2a2a', borderRadius: '5px' }}
+                  value={verificationCode}
+                  onChange={(e) => setVerificationCode(e.target.value)}
+                />
+                <Button
+                  variant="contained"
+                  fullWidth
+                  sx={{
+                    mt: 1,
+                    backgroundColor: isCodeVerified ? '#28a745' : '#333',
+                    color: '#ffffff',
+                    '&:hover': { backgroundColor: isCodeVerified ? '#218838' : '#555' },
+                  }}
+                  onClick={handleVerifyCode}
+                  disabled={isCodeVerified} // Disable button if code is verified
+                >
+                  {isCodeVerified ? 'Verified' : 'Verify Code'}
+                </Button>
+
                 <TextField
                   label="Password"
                   type={showPassword ? 'text' : 'password'}
@@ -160,50 +262,27 @@ const SignUp = () => {
                   onChange={(e) => handleInputChange('password', e.target.value)}
                 />
                 <Button
-                  type="submit"  // This triggers form submission
+                  type="submit"
                   variant="contained"
                   fullWidth
                   sx={{
-                  mt: 2,
-                  mb: 2,
-                  backgroundColor: '#333',
-                  color: '#000000',
-                          }}
-                  >
-                  Sign Up
-                  </Button>
-
-
-                <Typography variant="body2" sx={{ color: '#ffffff', textAlign: 'center' }}>
-                  Already have an account? <Link href="/signin" variant="body2" sx={{ color: '#ffffff' }}>Sign in</Link>
-                </Typography>
-                <Divider sx={{ my: 2, color: '#ffffff', backgroundColor: 'rgba(0, 0, 0, 0.01)' }}>or</Divider>
-                <Button
-                  variant="outlined"
-                  startIcon={<GoogleIcon />}
-                  fullWidth
-                  sx={{
-                    mb: 1,
+                    mt: 2,
+                    backgroundColor: '#007bff',
                     color: '#ffffff',
-                    borderColor: '#ffffff',
-                    '&:hover': { backgroundColor: '#2a2a2a', borderColor: '#ffffff' },
+                    '&:hover': { backgroundColor: '#0056b3' },
                   }}
+                  disabled={loading}
                 >
-                  Sign up with Google
-                </Button>
-                <Button
-                  variant="outlined"
-                  startIcon={<FacebookIcon />}
-                  fullWidth
-                  sx={{
-                    color: '#ffffff',
-                    borderColor: '#ffffff',
-                    '&:hover': { backgroundColor: '#2a2a2a', borderColor: '#ffffff' },
-                  }}
-                >
-                  Sign up with Facebook
+                  {loading ? 'Signing Up...' : 'Sign Up'}
                 </Button>
               </Box>
+              <Divider sx={{ my: 3, bgcolor: '#555' }} />
+              <Typography variant="body2" sx={{ color: '#bbbbbb', textAlign: 'center' }}>
+                Already have an account?{' '}
+                <Link href="/signin" sx={{ color: '#ffffff', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>
+                  Sign in
+                </Link>
+              </Typography>
             </Box>
           </Grid>
         </Grid>
@@ -211,6 +290,6 @@ const SignUp = () => {
       <Footer />
     </>
   );
-}
+};
 
 export default SignUp;

@@ -29,3 +29,5 @@ export const sendSubscriptionReceipt = (recipientEmail, receiptFilePath, userId)
     // Send the email with the PDF attachment
     return transporter.sendMail(mailOptions);
 };
+
+export default transporter

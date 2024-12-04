@@ -17,6 +17,8 @@ import gAuthService from './Services/gAuthService.js';
 import {createTableUserProfile ,createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableImageContainer } from './Services/tableCreate.js';
 import createDatabaseIfNotExists from './Services/databaseCreate.js';
 import db from './database.js';
+import verifyCodeRoute from './Routes/verifyCodeRoute.js';
+import sendCodeRoute from './Routes/sendCodeRoute.js';
 
 dotenv.config();
 
@@ -39,6 +41,9 @@ app.use(changePasswordRoute);
 app.use('/upload-image', imageRoute);
 app.use('/profile', getProfile);
 app.use('/api/recaptcha', gAuthService);
+app.use('/send-code', sendCodeRoute);
+app.use('/verify-code', verifyCodeRoute);
+
 
 async function initializeApp() {
   try {
