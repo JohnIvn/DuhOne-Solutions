@@ -22,6 +22,8 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
   const [isCodeVerified, setIsCodeVerified] = useState(false);
+  const [isCooldown, setIsCooldown] = useState(false);
+  const [countdown, setCountdown] = useState(0); 
 
   const navigate = useNavigate();
 
@@ -75,16 +77,34 @@ const SignUp = () => {
       }));
       return;
     }
-  
+
+    if (isCooldown) return; // Prevent sending if in cooldown
+
     try {
       const response = await axios.post('http://localhost:3000/send-code', { email: formData.email });
       console.log(response.data.message);
       alert('Verification code sent to your email!');
+      
+      // Start cooldown with 30 seconds
+      setIsCooldown(true);
+      setCountdown(30);
+
+      const interval = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev === 1) {
+            clearInterval(interval);  // Clear the interval once the countdown ends
+            setIsCooldown(false);     // Reset cooldown
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);  // Update countdown every second
     } catch (error) {
       console.error('Error sending verification code:', error);
       alert(error.response?.data?.message || 'Failed to send verification code');
     }
   };
+
 
   const handleVerifyCode = async () => {
     console.log('Email:', formData.email); 
@@ -197,8 +217,9 @@ const SignUp = () => {
                             '&:hover': { backgroundColor: '#555' },
                           }}
                           onClick={handleSendCode}
+                          disabled={isCooldown}  // Disable button during cooldown
                         >
-                          Send Code
+                          {isCooldown ? `Wait ${countdown}s` : 'Send Code'}
                         </Button>
                       </InputAdornment>
                     ),
