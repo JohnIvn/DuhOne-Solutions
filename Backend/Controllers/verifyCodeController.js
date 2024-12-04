@@ -13,7 +13,6 @@ const verifyCode = (req, res) => {
       console.log('Stored code:', storedCode);
       console.log('Code expiration time:', new Date(expires));
 
-      // Check if the code is expired
       if (Date.now() > expires) {
         delete verificationCodes[email];
         console.log('Verification code expired, deleting');

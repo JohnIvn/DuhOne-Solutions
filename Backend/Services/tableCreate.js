@@ -4,6 +4,8 @@ import { subscription } from '../Models/subscriptionModel.js';
 import UserProfileModel from '../Models/userProfileModel.js';
 import { Review } from '../Models/reviewModel.js';
 import UserImgModel from '../Models/imageModel.js';
+import BankAccount from '../Models/bankAccountModel.js';
+import OnlinePaymentAccount from '../Models/onlinePaymentlAccountModel.js'
 
 async function createTableUserAccounts() {
   try {
@@ -53,11 +55,29 @@ async function createTableReview() {
 
 async function createTableImageContainer() {
   try {
-    await UserImgModel.sync({ alter: false });
+    await BankAccount.sync({ alter: false });
     console.log('Image table is checked and updated if necessary');
   } catch (error) {
     console.error('Error checking/updating Image table', error);
   }
 }
 
-export { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableUserProfile, createTableImageContainer }
+async function createTableBankAccount() {
+  try {
+    await UserImgModel.sync({ alter: false });
+    console.log('Bank table is checked and updated if necessary');
+  } catch (error) {
+    console.error('Error checking/updating Image table', error);
+  }
+}
+
+async function createTableOnlinePaymentAccount() {
+  try {
+    await OnlinePaymentAccount.sync({ alter: false });
+    console.log('Online Payment table is checked and updated if necessary');
+  } catch (error) {
+    console.error('Error checking/updating Image table', error);
+  }
+}
+
+export { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableUserProfile, createTableImageContainer, createTableBankAccount, createTableOnlinePaymentAccount }
