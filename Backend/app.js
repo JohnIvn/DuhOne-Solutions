@@ -2,6 +2,9 @@ import express from 'express';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url'; 
+
 import signUpRouter from './Routes/signUpRoute.js';
 import signInRouter from './Routes/signInRoute.js';
 import homePageRouter from './Routes/homePageRoute.js';
@@ -11,8 +14,6 @@ import subscriptionRouter from './Routes/subscriptionRoute.js';
 import dashboardRouter from './Routes/dashBoardRoute.js';
 import userProfileRoute from './Routes/userProfileRoute.js'
 import clientRouter from './Routes/clientsRoute.js';
-import imageRoute from './Routes/imageRoute.js';
-import getProfile from './Routes/imageRoute.js';
 import gAuthService from './Services/gAuthService.js';
 import {createTableUserProfile ,createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableImageContainer } from './Services/tableCreate.js';
 import createDatabaseIfNotExists from './Services/databaseCreate.js';
@@ -23,7 +24,10 @@ import sendCodeRoute from './Routes/sendCodeRoute.js';
 dotenv.config();
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
@@ -34,12 +38,10 @@ app.use('/signup', signUpRouter);
 app.use('/homepage', homePageRouter);
 app.use('/subscription', subscriptionRouter);
 app.use('/dashboard', dashboardRouter);
-app.use('/userprofile', userProfileRoute);
+app.use('/profile', userProfileRoute); 
 app.use('/clients', clientRouter);
 app.use('/review', reviewRouter);
 app.use(changePasswordRoute); 
-app.use('/upload-image', imageRoute);
-app.use('/profile', getProfile);
 app.use('/api/recaptcha', gAuthService);
 app.use('/send-code', sendCodeRoute);
 app.use('/verify-code', verifyCodeRoute);

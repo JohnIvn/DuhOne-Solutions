@@ -1,6 +1,6 @@
 import db from '../database.js';
 import bcrypt from 'bcrypt';
-import { UserAccount, AdminAccount } from '../Models/signUpModel.js';
+import { UserAccount, AdminAccount } from '../Models/userAccountModel.js';
 import UserProfileModel from '../Models/userProfileModel.js';
 import UserImgModel from '../Models/imageModel.js';
 
@@ -14,10 +14,7 @@ const SignUp = async (req, res) => {
         if (existingAccount) {
             return res.status(400).json({ message: 'Account already exists!' });
         }
-
         const newUserAccount = await UserAccount.create({
-            firstName,
-            lastName,
             email,
             password: hashedPassword,
         });
@@ -34,8 +31,8 @@ const SignUp = async (req, res) => {
 
         await UserProfileModel.create({
             userId: newUserAccount.userId,
-            firstName: newUserAccount.firstName,
-            lastName: newUserAccount.lastName,
+            firstName,
+            lastName,
             email: newUserAccount.email
         })
 

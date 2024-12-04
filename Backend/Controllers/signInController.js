@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import db from '../database.js';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
-import SignInModel from '../Models/signInModel.js';
+import { SignInModel } from '../Models/userAccountModel.js';
 
 dotenv.config();
 
@@ -14,7 +14,7 @@ const SignIn = async (req, res) => {
       const user = await SignInModel.findOne({ where: { email } });
   
       if (!user) {
-        return res.status(400).json({ message: 'Invalid credentials.' });
+        return res.status(400).json({ message: 'User not Found' });
       }
   
       const verified = await bcrypt.compare(password, user.password);

@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { UserAccount } from './Models/signUpModel.js';
+import { UserAccount } from '../Models/userAccountModel.js';
 
 dotenv.config();
 

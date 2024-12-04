@@ -23,14 +23,6 @@ const UserAccount = UserAccountModel.init(
       defaultValue: process.env.DEFAULT_ROLE,
       allowNull: false,
     },
-    firstName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    lastName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -45,6 +37,32 @@ const UserAccount = UserAccountModel.init(
     modelName: 'UserAccount',
     tableName: 'useraccounts',
     timestamps: false,
+  }
+);
+
+class SignInModel extends Model {}
+SignInModel.init(
+  {
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      primaryKey: true
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    role: {
+      type: DataTypes.STRING,
+      defaultValue: 'User',
+    }
+  },
+  {
+    sequelize: db,  
+    modelName: 'SignInModel',
+    tableName: 'useraccounts',  
+    timestamps: false,  
   }
 );
 
@@ -100,4 +118,4 @@ AdminAccount.belongsTo(UserAccount, {
   },
 });
 
-export { UserAccount, AdminAccount };
+export { UserAccount, AdminAccount, SignInModel };

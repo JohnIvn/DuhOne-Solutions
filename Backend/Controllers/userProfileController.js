@@ -1,6 +1,8 @@
 import UserProfileModel from "../Models/userProfileModel.js";
 
 export const getUserProfile = async (req, res) => {
+    
+    console.log('get user profile has been called.');
     try {
         const { userId } = req.user; 
         console.log("userId: ", userId);

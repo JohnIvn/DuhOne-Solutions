@@ -1,7 +1,7 @@
 // Models/imageModel.js
 import { Sequelize, DataTypes, Model } from "sequelize";
 import db from "../database.js";
-import { UserAccount } from '../Models/signUpModel.js'; 
+import { UserAccount } from '../Models/userAccountModel.js'; 
 
 class UserImgModel extends Model {}
 
@@ -21,8 +21,8 @@ UserImgModel.init({
     onDelete: 'CASCADE', 
     onUpdate: 'CASCADE',
   },
-  imageData: {
-    type: DataTypes.BLOB('long'),
+  imagePath: {
+    type: DataTypes.STRING,
     allowNull: true,
   }
 }, {
