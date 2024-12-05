@@ -121,9 +121,9 @@ const fetchProfileImage = async () => {
 
     <img
     
-      src={profileImage || 'https://bootdey.com/img/Content/avatar/avatar7.png'}
+      src={profileImage || 'https://i.pinimg.com/736x/d2/98/4e/d2984ec4b65a8568eab3dc2b640fc58e.jpg'}
       alt={myAccount?.firstName ? `${myAccount.firstName}'s avatar` : 'User Avatar'}
-      onError={(e) => e.target.src = 'https://bootdey.com/img/Content/avatar/avatar7.png'}  // Fallback image on error
+      onError={(e) => e.target.src = 'https://i.pinimg.com/736x/d2/98/4e/d2984ec4b65a8568eab3dc2b640fc58e.jpg'}  // Fallback image on error
     />
     <input
       type="file"

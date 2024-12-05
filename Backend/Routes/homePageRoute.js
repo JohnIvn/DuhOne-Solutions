@@ -1,17 +1,10 @@
 import express from 'express';
 import authenticateToken from '../Middleware/authentication.js'; 
+import { getProfilePicture } from '../Controllers/imageController.js';
 
 const router = express.Router();
 
-router.get('/', authenticateToken, (req, res) => {
+router.get('/', authenticateToken, getProfilePicture);
 
-    const { firstName, lastName, email } = req.user;
-
-    return res.status(200).json({
-        message: `You are authenticated, ${firstName}  ${lastName}`,
-        user: { firstName, lastName, email },
-    });
-    
-});
 
 export default router;
