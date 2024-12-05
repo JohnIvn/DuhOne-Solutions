@@ -4,7 +4,7 @@ import PDFDocument from 'pdfkit';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { sendSubscriptionReceipt } from '../Services/mailSender.js'; // Import the sendSubscriptionReceipt function
+import { sendSubscriptionReceipt } from '../Services/mailSender.js'; 
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,6 +14,7 @@ export const subscriptionController = async (req, res) => {
         const { userId, firstName, lastName, email } = req.user || {};
         const { plan } = req.body;
 
+        console.log('request user data: ', req.user);
         console.log("Request Body: ", req.body);
 
         if (!userId || !plan) {
@@ -34,7 +35,7 @@ export const subscriptionController = async (req, res) => {
                 userId,
                 name,
                 plan,
-                paid: 'No',
+                paid: 'False',
                 status: 'pending',
                 subscribeAt: null,
                 endAt: null,

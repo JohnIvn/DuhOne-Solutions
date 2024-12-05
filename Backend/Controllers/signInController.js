@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import { SignInModel } from '../Models/userAccountModel.js';
 
+
 dotenv.config();
 
 const SignIn = async (req, res) => {
@@ -32,8 +33,8 @@ const SignIn = async (req, res) => {
       return res.status(200).json({
         message: 'Login successful.',
         token: token,
-        role: user.role,  // Ensure role is included in the response
-        redirectTo: user.role === 'admin' ? '/clients' : '/homepage',  // Redirect logic based on role
+        role: user.role,  
+        redirectTo: user.role === 'admin' ? '/clients' : '/homepage',  
       });
   
     } catch (error) {

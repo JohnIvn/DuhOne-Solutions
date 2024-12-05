@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { UserAccount } from '../Models/userAccountModel.js';
+import UserProfileModel from '../Models/userProfileModel.js';
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ export const authenticateToken = async (req, res, next) => {
     try {
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
         const user = await UserAccount.findOne({ where: { email: decodedToken.email } });
+        const profile = await UserProfileModel.findOne({where: {email: decodedToken.email}});
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -22,8 +24,8 @@ export const authenticateToken = async (req, res, next) => {
         req.user = {
             userId: user.userId,
             role: user.role,
-            firstName: user.firstName,
-            lastName: user.lastName,
+            firstName: profile.firstName,
+            lastName: profile.lastName,
             email: user.email,
         };
         next(); 
