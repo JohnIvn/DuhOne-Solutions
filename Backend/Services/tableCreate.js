@@ -1,5 +1,5 @@
 // tableCreate.js
-import { UserAccount, AdminAccount } from '../Models/signUpModel.js';
+import { UserAccount, AdminAccount } from '../Models/userAccountModel.js';
 import { subscription } from '../Models/subscriptionModel.js';
 import UserProfileModel from '../Models/userProfileModel.js';
 import { Review } from '../Models/reviewModel.js';

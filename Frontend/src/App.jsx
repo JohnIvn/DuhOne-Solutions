@@ -11,8 +11,7 @@ import HomePage from './Pages/HomePage.jsx';
 import AdminDashboard from './Pages/AdminDashboard.jsx';
 import ProfilePage from './Pages/ProfilePage.jsx';
 import Review from './Pages/Review.jsx';
-import UserProfile from './Pages/userProfile.jsx';
-import UploadImagePage from './Pages/UploadImagePage.jsx';
+
 import ForgotPassword from './components/forgotPassworda.jsx';
 import TransactionForm from './Pages/TransactionForm.jsx';
 
@@ -37,7 +36,6 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/img" element={<UploadImagePage />} />
         
         <Route
           path="/"
@@ -71,14 +69,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/userprofile"
-          element={
-            <ProtectedRoute>
-              <UserProfile />
-            </ProtectedRoute>
-          }
-        />
+    
         <Route
           path="/review"
           element={

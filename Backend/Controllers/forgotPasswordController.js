@@ -1,4 +1,4 @@
-import SignInModel from "../Models/signInModel.js";
+import { SignInModel } from '../Models/userAccountModel.js';
 import bcrypt from "bcrypt";
 
 const changePassword = async (req, res) => {

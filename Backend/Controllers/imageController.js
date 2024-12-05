@@ -1,53 +1,53 @@
-// controllers/userImgController.js
 import fs from 'fs';
+import path from 'path';
 import UserImgModel from '../Models/imageModel.js';
+import fsPromises from 'fs/promises';
 
-const uploadUserImage = (req, res) => {
-    // Get userId from the authenticated user (after token validation)
-    const userId = req.user.userId;  // This assumes authenticateToken has populated req.user
+const uploadUserImage = async (req, res) => {
+  const { userId } = req.user; 
+  const imagePath = req.file.filename; 
 
-    if (!userId) {
-        return res.status(400).send('User not authenticated or userId is missing.');
+  try {
+    const existingImage = await UserImgModel.findOne({ where: { userId } });
+
+    if (existingImage) {
+      existingImage.imagePath = imagePath;
+      await existingImage.save(); 
+    } else {
+      await UserImgModel.create({
+        userId,
+        imagePath, 
+      });
     }
 
-    const imagePath = req.file.path; // Assuming the file was uploaded via Multer
-
-    fs.readFile(imagePath, (err, data) => {
-        if (err) {
-            console.error('Error reading file:', err);
-            return res.status(500).send('Server Error');
-        }
-
-        UserImgModel.create({ userId, imageData: data })
-            .then(() => {
-                fs.unlink(imagePath, (err) => {
-                    if (err) console.error('Error deleting file:', err);
-                });
-                res.send('User image uploaded and stored in database.');
-            })
-            .catch((err) => {
-                console.error('Error inserting into database:', err);
-                res.status(500).send('Database Error');
-            });
+    return res.status(200).json({
+      message: 'Profile image uploaded successfully',
+      path: `/uploads/${imagePath}`, 
     });
-};
-
-const getProfile = async (req, res) => {
-  try {
-      const user = await UserAccount.findOne({
-          where: { userId: req.user.userId }, // Assuming userId is attached after JWT verification
-          attributes: ['firstName', 'lastName', 'email', 'imageData'], // Adjust attributes as needed
-      });
-
-      if (!user) {
-          return res.status(404).json({ message: 'User not found' });
-      }
-
-      res.json(user); // Send back user data
   } catch (error) {
-      console.error('Error fetching user profile:', error);
-      res.status(500).json({ message: 'Server Error' });
+    console.error('Error uploading image:', error);
+    return res.status(500).json({ message: 'Error uploading profile image' });
   }
 };
 
-export { uploadUserImage, getProfile };
+
+const getProfilePicture = async (req, res) => {
+  const { userId } = req.user; 
+
+  try {
+
+    const userImage = await UserImgModel.findOne({ where: { userId } });
+
+    if (!userImage) {
+      return res.status(404).json({ message: 'Profile not found' });
+    }
+    const imageUrl = `/uploads/${userImage.imagePath}`;
+
+    return res.status(200).json({ path: imageUrl });
+  } catch (error) {
+    console.error('Error details:', error);
+    return res.status(500).json({ message: 'An unexpected error occurred. Please try again later.' });
+  }
+};
+
+export { uploadUserImage, getProfilePicture };

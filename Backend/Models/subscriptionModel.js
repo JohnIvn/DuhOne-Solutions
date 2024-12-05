@@ -1,6 +1,6 @@
 import { Sequelize, DataTypes, Model } from "sequelize";
 import db from '../database.js';
-import { UserAccount } from '../Models/signUpModel.js'; 
+import { UserAccount } from './userAccountModel.js'; 
 
 class subscriptionModel extends Model {}
 

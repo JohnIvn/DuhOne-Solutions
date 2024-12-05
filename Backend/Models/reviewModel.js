@@ -1,6 +1,6 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import db from '../database.js';
-import { UserAccount } from '../Models/signUpModel.js'; 
+import { UserAccount } from '../Models/userAccountModel.js'; 
 
 class ReviewModel extends Model {}
 
