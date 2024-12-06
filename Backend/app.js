@@ -21,6 +21,7 @@ import createDatabaseIfNotExists from './Services/databaseCreate.js';
 import db from './database.js';
 import verifyCodeRoute from './Routes/verifyCodeRoute.js';
 import sendCodeRoute from './Routes/sendCodeRoute.js';
+import { insertPackagesIfNotExist } from './Services/packageInserter.js';
 
 dotenv.config();
 
@@ -65,6 +66,7 @@ async function initializeApp() {
     await createTableBankAccount();
     await createTableOnlinePaymentAccount();
     await createTablePackage(); 
+    await insertPackagesIfNotExist();
 
     console.log('Tables have been created or checked.');
 
