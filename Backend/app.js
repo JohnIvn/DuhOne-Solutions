@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url'; 
+import helmet from 'helmet';
 import hpp from 'hpp';
 
 import signUpRouter from './Routes/signUpRoute.js';
@@ -29,6 +30,7 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+app.use(helmet());
 app.use(hpp());
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

@@ -4,6 +4,7 @@ import axios from "axios";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom"; 
+import ReCAPTCHA from "react-google-recaptcha"; 
 import NavBar from "../components/NavBar.jsx";
 import Footer from "../components/Footer.jsx";
 
@@ -15,8 +16,24 @@ const ForgotPassword = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [captchaVerified, setCaptchaVerified] = useState(false); 
+  const [siteKey, setSiteKey] = useState("");  // New state for the site key
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log("ForgotPassword component mounted");
+  }, []);
+
+  useEffect(() => {
+    axios.get("http://localhost:3000/api/recaptcha")
+      .then((response) => {
+        setSiteKey(response.data.siteKey); // Store the site key in the state
+      })
+      .catch((error) => {
+        console.error("Error fetching site key:", error);
+        setError("Failed to load reCAPTCHA site key");
+      });
+  }, []);
 
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setNewPassword(e.target.value);
@@ -39,6 +56,11 @@ const ForgotPassword = () => {
       return;
     }
 
+    if (!captchaVerified) {
+      setError("Please complete the reCAPTCHA.");
+      return;
+    }
+
     try {
       const response = await axios.post("http://localhost:3000/forgot-password", {
         email,
@@ -53,12 +75,8 @@ const ForgotPassword = () => {
 
       navigate("/signin"); 
     } catch (error) {
-       if (error.response && error.response.status === 404) {
-      setError("this gmail doesn't exist.");
-    } else {
       console.error("Error during POST request:", error);
       setError("Error updating password. Please try again.");
-    }
     }
   };
 
@@ -144,6 +162,11 @@ const ForgotPassword = () => {
                     ),
                   }}
                   sx={{ backgroundColor: "#2a2a2a", borderRadius: "5px" }}
+                />
+
+                <ReCAPTCHA
+                  sitekey={siteKey}
+                  onChange={handleCaptchaChange}
                 />
 
                 <Button
