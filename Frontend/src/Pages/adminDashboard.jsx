@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Button, Dropdown, Spinner, Table, Container } from "react-bootstrap";
+import { Button, Dropdown, Spinner, Table, Container, Modal, Form } from "react-bootstrap";
 import api from "../Api.js"; 
 import "../CSS/AdminDashboard.css";
 import NavBarDashboard from '../components/NavBarDashboard.jsx';
@@ -12,6 +12,11 @@ const AdminDashboard = () => {
   const [paidFilter, setPaidFilter] = useState(""); 
   const [loading, setLoading] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  // State for Modal
+  const [showModal, setShowModal] = useState(false);
+  const [modalClientId, setModalClientId] = useState(null);
+  const [customMessage, setCustomMessage] = useState("");
 
   const availablePlans = ["Basic", "Standard", "Premium", "Ultimate"];
   const availableStatuses = ["approved", "pending", "denied", "suspended"];
@@ -58,6 +63,31 @@ const AdminDashboard = () => {
       }
     } catch (error) {
       console.error("Error updating client status:", error);
+    }
+  };
+
+  const sendMessage = async (clientId, message) => {
+    try {
+      const response = await api.post(`/clients/${clientId}/send-message`, { message });
+      console.log("Message sent response:", response.data);
+      alert("Message sent successfully!");
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert("Failed to send message. Please try again.");
+    }
+  };
+
+  const handleSuspend = (clientId) => {
+    updateStatus(clientId, "suspended");
+  };
+
+  const handleSendMessage = () => {
+    if (modalClientId && customMessage) {
+      sendMessage(modalClientId, customMessage);
+      setShowModal(false);
+      setCustomMessage("");
+    } else {
+      alert("Please write a message before sending.");
     }
   };
 
@@ -124,6 +154,8 @@ const AdminDashboard = () => {
           </Button>
         </div>
 
+        
+
         <div className="clients-section">
           {loading ? (
             <div className="loading-spinner">
@@ -168,26 +200,39 @@ const AdminDashboard = () => {
                             <Button
                               variant="success"
                               size="sm"
-                              onClick={() => {
-                                console.log("Approve clicked");
-                                updateStatus(client.userId, "approved");
-                              }}
+                              onClick={() => updateStatus(client.userId, "approved")}
                             >
                               Approve
                             </Button>
                             <Button
                               variant="danger"
                               size="sm"
-                              onClick={() => {
-                                console.log("Deny clicked");
-                                updateStatus(client.userId, "denied");
-                              }}
+                              onClick={() => updateStatus(client.userId, "denied")}
                               className="ml-2"
                             >
                               Deny
                             </Button>
                           </>
                         )}
+                        <Button
+                          variant="warning"
+                          size="sm"
+                          onClick={() => handleSuspend(client.userId)}
+                          className="ml-2"
+                        >
+                          Suspend
+                        </Button>
+                        <Button
+                          variant="info"
+                          size="sm"
+                          onClick={() => {
+                            setModalClientId(client.userId);
+                            setShowModal(true);
+                          }}
+                          className="ml-2"
+                        >
+                          Send Message
+                        </Button>
                       </td>
                     </tr>
                   ))
@@ -197,6 +242,34 @@ const AdminDashboard = () => {
           )}
         </div>
       </Container>
+
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Send Custom Message</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group>
+              <Form.Label>Message</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={customMessage}
+                onChange={(e) => setCustomMessage(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleSendMessage}>
+            Send
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <Footer />
     </>
   );

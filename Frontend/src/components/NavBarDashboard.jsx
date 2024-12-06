@@ -10,7 +10,7 @@ const NavBarDashboard = () => {
     const fetchProfileImage = async () => {
       try {
         const response = await api.get('/homepage');
-    
+
         const { path } = response.data;
         setProfileImage(`http://localhost:3000${path}`);  
         console.log("profile image: ", profileImage);
@@ -26,7 +26,7 @@ const NavBarDashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
-    navigate('/signin'); // Redirect to sign-in
+    navigate('/signin'); 
   };
 
   return (

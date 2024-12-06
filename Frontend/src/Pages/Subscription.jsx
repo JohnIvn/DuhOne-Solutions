@@ -24,7 +24,6 @@ const SubscriptionPage = () => {
         setIsLoading(true);
     
         try {
-            // Extract and convert the price as before
             const selectedPlanDetails = plans.find(plan => plan.name === selectedPlan);
             if (!selectedPlanDetails) {
                 throw new Error('Selected plan details not found.');

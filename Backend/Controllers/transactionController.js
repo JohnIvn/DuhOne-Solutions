@@ -3,7 +3,6 @@ import { BankAccount } from "../Models/bankAccountModel.js";
 import { ClientModel } from "../Models/clientModel.js";
 import schedule from 'node-schedule'
 
-
 export const subscriptionTransactionGetCredentials = async (req, res) => {
     try {
         const { userId } = req.user;
