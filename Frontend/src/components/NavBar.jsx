@@ -30,7 +30,7 @@ const NavBar = () => {
                 <div className="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul className="navbar-nav mx-auto gap-3">
                         <li className="nav-item">
-                            <a className="nav-link active" href="homepage">Products & Services</a>
+                            <a className="nav-link active" href="homepage" >Products & Services</a>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link active" href="homepage">Partners</a>

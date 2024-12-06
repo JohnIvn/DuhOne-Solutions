@@ -2,15 +2,15 @@ const Footer = () => {
     return (
         <footer
             style={{
-                backgroundColor: "#4a3f33", // Dark brown color for the footer
+                backgroundColor: "black", // Dark brown color for the footer
                 color: "#ffffff", // White text
                 textAlign: "center",
-                padding: "20px 0",
+                padding: "30px 0",
                 position: "relative",
+                borderTop: "20px solid white"
             }}
         >
-            <div style={{ borderTop: "10px solid #c06d28", marginBottom: "30px" }}></div> {/* Top orange border */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "0 10%" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "0 5%" }}>
                 {/* Left Section */}
                 <div style={{ fontSize: "20px" }}>
                     <span>&copy; DuhOne Solutions Inc.</span>

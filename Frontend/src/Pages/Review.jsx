@@ -8,6 +8,7 @@ const ReviewPage = () => {
     const [reviews, setReviews] = useState([]);
     const [newReview, setNewReview] = useState('');
     const [rating, setRating] = useState(5);
+    const [hoverRating, setHoverRating] = useState(0);
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
@@ -55,91 +56,204 @@ const ReviewPage = () => {
         }
     };
 
+    const renderStars = () => {
+        return [1, 2, 3, 4, 5].map((value) => (
+            <span
+                key={value}
+                style={{
+                    cursor: 'pointer',
+                    color: value <= (hoverRating || rating) ? '#ffc107' : '#e4e5e9',
+                    fontSize: '24px',
+                    transition: 'color 0.3s',
+                }}
+                onClick={() => setRating(value)}
+                onMouseEnter={() => setHoverRating(value)}
+                onMouseLeave={() => setHoverRating(0)}
+            >
+                ★
+            </span>
+        ));
+    };
+
     return (
         <>
             <NavBarDashboard />
-            <div style={{ padding: '50px', fontFamily: 'Arial, sans-serif', backgroundColor: '#f9f9f9', color: '#333', mt: -5  }}>
-                <h2 style={{ textAlign: 'center', color: '#444' }}>Review Page</h2>
+            <div
+                style={{
+                    marginTop:"-15px",
+                    padding: '50px',
+                    fontFamily: 'Arial, sans-serif',
+                    backgroundColor: '#f5f5f5',
+                    color: '#333',
+                }}
+            >
+                <div
+                    style={{
+                        maxWidth: '800px',
+                        margin: '0 auto',
+                        backgroundColor: '#fff',
+                        padding: '30px',
+                        borderRadius: '10px',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    }}
+                >
+                    <h2
+                        style={{
+                            textAlign: 'center',
+                            color: '#333',
+                            marginBottom: '20px',
+                            fontWeight: 'bold',
+                        }}
+                    >
+                        Customer Reviews
+                    </h2>
 
-                {loading ? (
-                    <p style={{ textAlign: 'center' }}>Loading reviews...</p>
-                ) : (
-                    <div style={{ margin: '20px 0' }}>
-                        <h3 style={{ color: '#444' }}>Reviews</h3>
-                        {reviews.length > 0 ? (
-                            <ul style={{ listStyleType: 'none', padding: 0 }}>
-                                {reviews.map((review) => (
-                                    <li key={review.reviewId} style={{ marginBottom: '15px', padding: '10px', border: '1px solid #ddd', borderRadius: '5px' }}>
-                                        <p>
-                                            <strong>Review:</strong> {review.reviewContent}
-                                        </p>
-                                        <p>
-                                            <strong>Rating:</strong> {review.rating} / 5
-                                        </p>
-                                        <p style={{ fontStyle: 'italic', color: '#666' }}>Created by: User {review.createdBy}</p>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p style={{ textAlign: 'center', color: '#666' }}>No reviews yet. Be the first to review!</p>
-                        )}
-                    </div>
-                )}
-
-                {errorMessage && <p style={{ color: 'red', textAlign: 'center' }}>{errorMessage}</p>}
-
-                <div style={{ margin: '20px 0', padding: '20px', border: '1px solid #ddd', borderRadius: '8px', backgroundColor: '#fff' }}>
-                    <h3 style={{ color: '#444' }}>Submit a Review</h3>
-                    <form onSubmit={handleSubmitReview}>
-                        <div style={{ marginBottom: '15px' }}>
-                            <label htmlFor="newReview" style={{ display: 'block', marginBottom: '5px', color: '#555' }}>
-                                Review:
-                            </label>
-                            <textarea
-                                id="newReview"
-                                value={newReview}
-                                onChange={(e) => setNewReview(e.target.value)}
-                                required
-                                rows="4"
-                                cols="50"
-                                style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px' }}
-                            ></textarea>
+                    {loading ? (
+                        <p style={{ textAlign: 'center', fontSize: '16px', color: '#666' }}>
+                            Loading reviews...
+                        </p>
+                    ) : (
+                        <div style={{ marginBottom: '30px' }}>
+                            <h3 style={{ color: '#555', marginBottom: '15px', fontWeight: '600' }}>
+                                Recent Reviews
+                            </h3>
+                            {reviews.length > 0 ? (
+                                <ul style={{ listStyleType: 'none', padding: 0 }}>
+                                    {reviews.map((review) => (
+                                        <li
+                                            key={review.reviewId}
+                                            style={{
+                                                marginBottom: '20px',
+                                                padding: '15px',
+                                                border: '1px solid #ddd',
+                                                borderRadius: '8px',
+                                                backgroundColor: '#fafafa',
+                                            }}
+                                        >
+                                            <p
+                                                style={{
+                                                    marginBottom: '10px',
+                                                    fontSize: '16px',
+                                                    fontWeight: '500',
+                                                }}
+                                            >
+                                                "{review.reviewContent}"
+                                            </p>
+                                            <p
+                                                style={{
+                                                    marginBottom: '10px',
+                                                    fontSize: '14px',
+                                                    color: '#888',
+                                                }}
+                                            >
+                                                <strong>Rating:</strong> {review.rating} / 5
+                                            </p>
+                                            <p
+                                                style={{
+                                                    fontStyle: 'italic',
+                                                    fontSize: '13px',
+                                                    color: '#999',
+                                                }}
+                                            >
+                                                Created by: User {review.createdBy}
+                                            </p>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p style={{ textAlign: 'center', color: '#666' }}>
+                                    No reviews yet. Be the first to review!
+                                </p>
+                            )}
                         </div>
-                        <div style={{ marginBottom: '15px' }}>
-                            <label htmlFor="rating" style={{ display: 'block', marginBottom: '5px', color: '#555' }}>
-                                Rating:
-                            </label>
-                            <select
-                                id="rating"
-                                value={rating}
-                                onChange={(e) => setRating(Number(e.target.value))}
-                                style={{ padding: '5px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px' }}
+                    )}
+
+                    {errorMessage && (
+                        <p style={{ color: 'red', textAlign: 'center', fontSize: '14px' }}>
+                            {errorMessage}
+                        </p>
+                    )}
+
+                    <div
+                        style={{
+                            padding: '20px',
+                            border: '1px solid #ddd',
+                            borderRadius: '8px',
+                            backgroundColor: '#fafafa',
+                        }}
+                    >
+                        <h3 style={{ color: '#444', marginBottom: '15px', fontWeight: '600' }}>
+                            Submit Your Review
+                        </h3>
+                        <form onSubmit={handleSubmitReview}>
+                            <div style={{ marginBottom: '20px' }}>
+                                <label
+                                    htmlFor="newReview"
+                                    style={{
+                                        display: 'block',
+                                        marginBottom: '10px',
+                                        color: '#555',
+                                        fontWeight: '500',
+                                    }}
+                                >
+                                    Your Review
+                                </label>
+                                <textarea
+                                    id="newReview"
+                                    value={newReview}
+                                    onChange={(e) => setNewReview(e.target.value)}
+                                    required
+                                    rows="5"
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px',
+                                        border: '1px solid #ddd',
+                                        borderRadius: '6px',
+                                        fontSize: '14px',
+                                        lineHeight: '1.5',
+                                    }}
+                                ></textarea>
+                            </div>
+                            <div style={{ marginBottom: '20px' }}>
+                                <label
+                                    htmlFor="rating"
+                                    style={{
+                                        display: 'block',
+                                        marginBottom: '10px',
+                                        color: '#555',
+                                        fontWeight: '500',
+                                    }}
+                                >
+                                    Your Rating
+                                </label>
+                                <div style={{ display: 'flex', gap: '8px' }}>{renderStars()}</div>
+                            </div>
+                            <button
+                                type="submit"
+                                style={{
+                                    display: 'block',
+                                    width: '100%',
+                                    backgroundColor: '#007bff',
+                                    color: '#fff',
+                                    border: 'none',
+                                    padding: '12px 20px',
+                                    fontSize: '16px',
+                                    fontWeight: '600',
+                                    cursor: 'pointer',
+                                    borderRadius: '6px',
+                                    transition: 'background-color 0.3s ease',
+                                }}
+                                onMouseOver={(e) =>
+                                    (e.target.style.backgroundColor = '#0056b3')
+                                }
+                                onMouseOut={(e) =>
+                                    (e.target.style.backgroundColor = '#007bff')
+                                }
                             >
-                                {[1, 2, 3, 4, 5].map((value) => (
-                                    <option key={value} value={value}>
-                                        {value}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <button
-                            type="submit"
-                            style={{
-                                backgroundColor: '#28a745',
-                                color: '#fff',
-                                border: 'none',
-                                padding: '10px 15px',
-                                fontSize: '16px',
-                                cursor: 'pointer',
-                                borderRadius: '4px',
-                                transition: 'background-color 0.3s ease',
-                            }}
-                            onMouseOver={(e) => (e.target.style.backgroundColor = '#218838')}
-                            onMouseOut={(e) => (e.target.style.backgroundColor = '#28a745')}
-                        >
-                            Submit Review
-                        </button>
-                    </form>
+                                Submit Review
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
             <Footer />

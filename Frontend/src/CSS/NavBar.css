@@ -1,8 +1,8 @@
 /* Navbar Styling */
 .custom-navbar {
     background-color: rgb(9, 26, 51);
-    border-bottom: 1px solid white;
-    padding: 0.5rem 1rem;
+    border-bottom: 10px solid white;
+    padding: 1rem 2rem;
 }
 
 /* Logo */
@@ -19,6 +19,7 @@
 
 /* Gap Between Links */
 .navbar-nav .nav-item {
+    color: white;
     margin: 0 1rem;
 }
 
@@ -55,6 +56,18 @@
     color: black;
     text-decoration: none;
 }
+
+.custom-navbar .nav-link {
+    color: white !important; /* Default text color is white */
+    text-decoration: none;  /* Removes underline */
+    transition: color 0.3s ease; /* Smooth color transition */
+}
+
+.custom-navbar .nav-link:hover {
+    color: black !important; /* Changes color to black on hover */
+}
+
+
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
