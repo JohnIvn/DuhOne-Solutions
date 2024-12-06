@@ -1,54 +1,69 @@
-body {
-    color: white !important;
+/* Navbar Styling */
+.custom-navbar {
+    background-color: rgb(9, 26, 51);
+    border-bottom: 1px solid white;
+    padding: 0.5rem 1rem;
 }
 
-.navbar, .navbar-nav, .nav-item, .nav-link, .dropdown-menu, .dropdown-item, .form-label, .form-check-label {
-    color: white !important;
+/* Logo */
+.navbar-logo {
+    height: 40px;
 }
 
-.navbar {
-    background-color: rgb(0, 0, 0, 0) !important;
-}
-
-button {
-    color: white !important;
-}
-
-a {
-    color: white !important;
-}
-
-.navbar-nav .nav-item.separator {
+/* Center Align Links */
+.navbar-nav {
     display: flex;
-    align-items: center; 
-    margin-bottom: 3px;
-    padding: 0 10px; 
+    justify-content: center;
+    align-items: center;
 }
 
-.navbar-nav .nav-item.separator .separator-text {
-    font-size: 20px;
-    line-height: 0.3; 
+/* Gap Between Links */
+.navbar-nav .nav-item {
+    margin: 0 1rem;
 }
 
-@media (max-width: 768px) {
-    .separator-text {
-        display: none; 
-    }
-
-    .nav-link {
-        margin: 0px 0;
-    }
-
-    .navbar-nav {
-        align-items: flex-start;
-    }
-
-    .navbar-nav .nav-item {
-        margin-left: 0 !important; 
-    }
+/* Link Styling */
+.nav-link {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: color 0.3s ease-in-out;
 }
-.navbar-nav .nav-item .nav-link:hover {
-    color: #007bff;
-    background-color: rgba(0, 123, 255, 0.1); 
+
+.nav-link:hover {
+    color: lightgray;
+}
+
+/* Sign-in Container */
+.navbar-signin-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.signin-link {
+    color: white;
+    padding: 0.5rem 1rem;
+    border: 1px solid white;
     border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.signin-link:hover {
+    background-color: white;
+    color: black;
+    text-decoration: none;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .navbar-nav {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .navbar-signin-container {
+        justify-content: center;
+    }
 }

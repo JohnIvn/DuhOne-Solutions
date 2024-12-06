@@ -58,7 +58,7 @@ const ReviewPage = () => {
     return (
         <>
             <NavBarDashboard />
-            <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif', backgroundColor: '#f9f9f9', color: '#333'  }}>
+            <div style={{ padding: '50px', fontFamily: 'Arial, sans-serif', backgroundColor: '#f9f9f9', color: '#333', mt: -5  }}>
                 <h2 style={{ textAlign: 'center', color: '#444' }}>Review Page</h2>
 
                 {loading ? (

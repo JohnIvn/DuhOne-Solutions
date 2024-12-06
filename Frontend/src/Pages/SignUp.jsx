@@ -145,12 +145,11 @@ const SignUp = () => {
           display: 'flex',
           minHeight: '100vh',
           minWidth: '100%',
-          marginTop: '4%',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          background: "linear-gradient(to bottom right, #051b36, #000000)",
+
         }}
       >
-        <Grid container spacing={0} sx={{ bgcolor: 'rgba(0, 0, 0, 0.7)', borderRadius: 2, padding: 4 }}>
+        <Grid container spacing={0} sx={{ borderRadius: 2, padding: 4 }}>
           <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', color: '#ffffff' }}>
             <Typography variant="h4" gutterBottom>
               Join Us Today!
