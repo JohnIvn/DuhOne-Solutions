@@ -66,7 +66,6 @@ export const subscriptionController = async (req, res) => {
         const receiptFilePath = path.join(receiptDir, `receipt_${userId}.pdf`);
         doc.pipe(fs.createWriteStream(receiptFilePath));
 
-        // Header
         doc
             .fontSize(18)
             .font('Helvetica-Bold')
@@ -79,7 +78,6 @@ export const subscriptionController = async (req, res) => {
 
         doc.moveDown(2);
 
-        // Subscription Details Section
         doc
             .fontSize(14)
             .font('Helvetica-Bold')
@@ -94,7 +92,6 @@ export const subscriptionController = async (req, res) => {
             .text(`Subscription Created At: ${new Date().toLocaleString()}`)
             .moveDown(2);
 
-        // User Profile Information Section
         doc
             .fontSize(14)
             .font('Helvetica-Bold')
@@ -125,7 +122,6 @@ export const subscriptionController = async (req, res) => {
 
         doc.end();
 
-        // Send the subscription receipt email
         await sendSubscriptionReceipt(email, receiptFilePath, userId);
 
         res.status(201).json({
