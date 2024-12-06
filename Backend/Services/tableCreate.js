@@ -5,7 +5,8 @@ import UserProfileModel from '../Models/userProfileModel.js';
 import { Review } from '../Models/reviewModel.js';
 import UserImgModel from '../Models/imageModel.js';
 import { BankAccount } from '../Models/bankAccountModel.js';
-import {OnlinePaymentAccount} from '../Models/onlinePaymentlAccountModel.js'
+import { OnlinePaymentAccount } from '../Models/onlinePaymentlAccountModel.js';
+import PackageModel from '../Models/packageModel.js';
 
 async function createTableUserAccounts() {
   try {
@@ -66,7 +67,7 @@ async function createTableBankAccount() {
     await UserImgModel.sync({ alter: false });
     console.log('Bank table is checked and updated if necessary');
   } catch (error) {
-    console.error('Error checking/updating Image table', error);
+    console.error('Error checking/updating Bank Account table', error);
   }
 }
 
@@ -75,8 +76,17 @@ async function createTableOnlinePaymentAccount() {
     await OnlinePaymentAccount.sync({ alter: false });
     console.log('Online Payment table is checked and updated if necessary');
   } catch (error) {
-    console.error('Error checking/updating Image table', error);
+    console.error('Error checking/updating Online Payment table', error);
   }
 }
 
-export { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableUserProfile, createTableImageContainer, createTableBankAccount, createTableOnlinePaymentAccount }
+async function createTablePackage() {
+  try {
+    await PackageModel.sync({ alter: false });
+    console.log('Package table is checked and updated if necessary');
+  } catch (error) {
+    console.error('Error checking/updating Package table', error);
+  }
+}
+
+export { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableUserProfile, createTableImageContainer, createTableBankAccount, createTableOnlinePaymentAccount, createTablePackage }

@@ -8,11 +8,10 @@ import LandingPage from './LandingPage.jsx';
 import SignUp from './Pages/SignUp.jsx';
 import SignIn from './Pages/SignIn.jsx';
 import HomePage from './Pages/HomePage.jsx';
-import AdminDashboard from './Pages/AdminDashboard.jsx';
+import AdminDashboard from './Pages/adminDashboard.jsx';
 import ProfilePage from './Pages/ProfilePage.jsx';
 import Review from './Pages/Review.jsx';
-
-import ForgotPassword from './components/forgotPassworda.jsx';
+import ForgotPassword from './Components/ForgotPassworda.jsx';
 import TransactionForm from './Pages/TransactionForm.jsx';
 
 const ProtectedRoute = ({ children, requiredRole }) => {

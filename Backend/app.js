@@ -16,7 +16,7 @@ import dashboardRouter from './Routes/dashBoardRoute.js';
 import userProfileRoute from './Routes/userProfileRoute.js'
 import clientRouter from './Routes/clientsRoute.js';
 import gAuthService from './Services/gAuthService.js';
-import {createTableUserProfile ,createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableImageContainer, createTableBankAccount, createTableOnlinePaymentAccount } from './Services/tableCreate.js';
+import {createTableUserProfile ,createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableImageContainer, createTableBankAccount, createTableOnlinePaymentAccount, createTablePackage } from './Services/tableCreate.js';
 import createDatabaseIfNotExists from './Services/databaseCreate.js';
 import db from './database.js';
 import verifyCodeRoute from './Routes/verifyCodeRoute.js';
@@ -64,6 +64,8 @@ async function initializeApp() {
     await createTableImageContainer();
     await createTableBankAccount();
     await createTableOnlinePaymentAccount();
+    await createTablePackage(); 
+
     console.log('Tables have been created or checked.');
 
     app.listen(process.env.PORT, () => {
