@@ -1,8 +1,8 @@
-import db from '../database.js';
 import bcrypt from 'bcrypt';
 import { UserAccount, AdminAccount } from '../Models/userAccountModel.js';
 import UserProfileModel from '../Models/userProfileModel.js';
 import UserImgModel from '../Models/imageModel.js';
+import { BankAccount } from '../Models/bankAccountModel.js';
 
 const SignUp = async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
@@ -14,27 +14,41 @@ const SignUp = async (req, res) => {
         if (existingAccount) {
             return res.status(400).json({ message: 'Account already exists!' });
         }
+
         const newUserAccount = await UserAccount.create({
             email,
             password: hashedPassword,
         });
 
-        const newAdminAccount = await AdminAccount.create({
+        await AdminAccount.create({
             userId: newUserAccount.userId,
             email: newUserAccount.email,    
             password,     
         });
 
-        const newUserImage = await UserImgModel.create({
+        await UserImgModel.create({
             userId: newUserAccount.userId,
         });
 
         await UserProfileModel.create({
+
             userId: newUserAccount.userId,
             firstName,
             lastName,
             email: newUserAccount.email
-        })
+
+        });
+
+        const AccountNumber = `ACC${Math.floor(1000000000 + Math.random() * 9000000000)}`;
+        const RoutingNumber = `RTN${Math.floor(100000 + Math.random() * 900000)}`;
+        const Balance = parseFloat((5000 + Math.random() * 10000).toFixed(2));
+
+        await BankAccount.create({
+            bankAccountId: newUserAccount.userId,
+            accountNumber: AccountNumber, 
+            routingNumber: RoutingNumber,
+            balance: Balance
+        });
 
         return res.status(201).json({ message: 'Account created successfully' });
     } catch (error) {

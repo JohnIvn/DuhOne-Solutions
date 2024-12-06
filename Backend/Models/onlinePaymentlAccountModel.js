@@ -3,7 +3,7 @@ import db from '../database.js';
 
 class OnlinePaymentAccountModel extends Model {}
 
-const OnlinePaymentAccount = OnlinePaymentAccountModel.init(
+export const OnlinePaymentAccount = OnlinePaymentAccountModel.init(
   {
     paypalAccountId: {
       type: DataTypes.INTEGER,
@@ -31,5 +31,3 @@ const OnlinePaymentAccount = OnlinePaymentAccountModel.init(
     timestamps: true,
   }
 );
-
-export default OnlinePaymentAccount;

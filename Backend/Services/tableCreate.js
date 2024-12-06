@@ -4,8 +4,8 @@ import { subscription } from '../Models/subscriptionModel.js';
 import UserProfileModel from '../Models/userProfileModel.js';
 import { Review } from '../Models/reviewModel.js';
 import UserImgModel from '../Models/imageModel.js';
-import BankAccount from '../Models/bankAccountModel.js';
-import OnlinePaymentAccount from '../Models/onlinePaymentlAccountModel.js'
+import { BankAccount } from '../Models/bankAccountModel.js';
+import {OnlinePaymentAccount} from '../Models/onlinePaymentlAccountModel.js'
 
 async function createTableUserAccounts() {
   try {
@@ -42,7 +42,6 @@ async function createTableSubscriptions() {
     console.error('Error checking/updating Subscriptions table', error);
   }
 }
-
 
 async function createTableReview() {
   try {

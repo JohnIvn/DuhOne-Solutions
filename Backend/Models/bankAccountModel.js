@@ -3,7 +3,7 @@ import db from '../database.js';
 
 class BankAccountModel extends Model {}
 
-const BankAccount = BankAccountModel.init(
+export const BankAccount = BankAccountModel.init(
   {
     bankAccountId: {
       type: DataTypes.INTEGER,
@@ -12,7 +12,7 @@ const BankAccount = BankAccountModel.init(
     },
     bankName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     accountNumber: {
       type: DataTypes.STRING,
@@ -39,5 +39,3 @@ const BankAccount = BankAccountModel.init(
     timestamps: true,
   }
 );
-
-export default BankAccount;
