@@ -16,6 +16,7 @@ import subscriptionRouter from './Routes/subscriptionRoute.js';
 import dashboardRouter from './Routes/dashBoardRoute.js';
 import userProfileRoute from './Routes/userProfileRoute.js'
 import clientRouter from './Routes/clientsRoute.js';
+import packageRouter from './Routes/packageRoute.js';
 import gAuthService from './Services/gAuthService.js';
 import {createTableUserProfile ,createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableImageContainer, createTableBankAccount, createTableOnlinePaymentAccount, createTablePackage } from './Services/tableCreate.js';
 import createDatabaseIfNotExists from './Services/databaseCreate.js';
@@ -30,7 +31,7 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(helmet());
+// app.use(helmet());
 app.use(hpp());
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -51,6 +52,8 @@ app.use(changePasswordRoute);
 app.use('/api/recaptcha', gAuthService);
 app.use('/send-code', sendCodeRoute);
 app.use('/verify-code', verifyCodeRoute);
+// app.use('/api', packageRouter);
+app.use('/api/package', packageRouter); 
 
 
 async function initializeApp() {

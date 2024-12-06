@@ -12,14 +12,15 @@ const __dirname = path.dirname(__filename);
 export const subscriptionController = async (req, res) => {
     try {
         const { userId, firstName, lastName, email } = req.user || {};
-        const { plan } = req.body;
+        const { plan, package_id } = req.body; 
+        console.log(plan)
 
-        console.log('request user data: ', req.user);
+        console.log('Request user data: ', req.user);
         console.log("Request Body: ", req.body);
 
-        if (!userId || !plan) {
+        if (!userId || !package_id) {
             return res.status(400).json({
-                message: "Bad Request: Missing required fields (userId or plan).",
+                message: "Bad Request: Missing required fields (userId or package_id).",
             });
         }
 
@@ -54,7 +55,7 @@ export const subscriptionController = async (req, res) => {
         });
 
         if (!isNewProfile) {
-            await userProfile.update({ plan });
+            await userProfile.update({ package_id }); // Use the correctly defined package_id
         }
 
         const receiptDir = path.join(__dirname, '../Receipts');
@@ -87,7 +88,7 @@ export const subscriptionController = async (req, res) => {
             .fontSize(12)
             .font('Helvetica')
             .text(`Name: ${name}`)
-            .text(`Plan: ${plan}`)
+            .text(`Package ID: ${package_id}`) // Correctly refer to package_id
             .text(`Subscription Status: ${newSubscription.status}`)
             .text(`Subscription Created At: ${new Date().toLocaleString()}`)
             .moveDown(2);
@@ -137,3 +138,4 @@ export const subscriptionController = async (req, res) => {
         });
     }
 };
+

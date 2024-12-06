@@ -14,7 +14,13 @@ PackageModel.init({
     },
     price: {
       type: DataTypes.FLOAT
-    }
+    },
+    speed: {
+      type: DataTypes.STRING
+    },
+    description: {
+      type: DataTypes.STRING
+    },
 }, {
     sequelize: db,
     modelName: "PackageModel",

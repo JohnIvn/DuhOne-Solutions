@@ -11,6 +11,9 @@ const TransactionForm = () => {
     const [paymentMethod, setPaymentMethod] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
+    // Get the plan's name from the selectedPlan passed in state
+    const planName = state?.selectedPlan?.plan || "No plan selected";  // Default if no plan
+
     useEffect(() => {
         const fetchUserData = async () => {
             try {
@@ -120,10 +123,12 @@ const TransactionForm = () => {
                         required
                     />
                 </div>
+                {/* Plan Name Display */}
                 <div className="form-group">
-                    <label>Plan</label>
-                    <input type="text" value={userData.plan} readOnly />
+                    <label>Selected Plan</label>
+                    <input type="text" value={planName} readOnly />
                 </div>
+                {/* Payment Method Selection */}
                 <div className="form-group">
                     <label>Payment Method</label>
                     <select

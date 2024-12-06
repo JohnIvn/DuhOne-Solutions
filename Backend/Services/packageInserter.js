@@ -6,10 +6,10 @@ export const insertPackagesIfNotExist = async () => {
   
       if (existingPackages.length === 0) {
         const packages = [
-          { plan: 'Basic', price: 1699 },
-          { plan: 'Standard', price: 1999 },
-          { plan: 'Premium', price: 2499 },
-          { plan: 'Ultimate', price: 2999 },
+          { plan: 'Basic', price: 1699, speed: '35 Mbps' , description: 'Unlimited data'},
+          { plan: 'Standard', price: 1999, speed: '50 Mbps' , description: 'Unlimited data' },
+          { plan: 'Premium', price: 2499, speed: '75 Mbps' , description: 'Unlimited data + Free Router' },
+          { plan: 'Ultimate', price: 2999, speed: '100 Mbps' , description: 'Unlimited data + Free Installation' },
         ];
   
         await PackageModel.bulkCreate(packages);
