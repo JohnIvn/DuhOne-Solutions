@@ -23,6 +23,10 @@ const BankAccount = BankAccountModel.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    currencyType: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     balance: {
         type: DataTypes.FLOAT,
         allowNull: true,
