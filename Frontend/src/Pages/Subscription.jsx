@@ -6,6 +6,7 @@ import NavBarDashboard from '../components/NavBarDashboard.jsx';
 import Footer from '../components/Footer.jsx';
 
 const SubscriptionPage = () => {
+    const [selectedPrice, setSelectedPrice] = useState(null);
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
@@ -19,20 +20,46 @@ const SubscriptionPage = () => {
             alert('Please select a plan before submitting.');
             return;
         }
-
+    
         setIsLoading(true);
-
+    
         try {
-            const response = await api.post('/subscription', { plan: selectedPlan });
-            alert('Plan selected! Proceeding to finalize subscription.');
-            navigate('/subscription/transaction', { state: { selectedPlan } });
+            // Extract and convert the price as before
+            const selectedPlanDetails = plans.find(plan => plan.name === selectedPlan);
+            if (!selectedPlanDetails) {
+                throw new Error('Selected plan details not found.');
+            }
+            const priceString = selectedPlanDetails.price.replace('₱', '').replace(',', '');
+            const price = parseFloat(priceString);
+    
+            if (isNaN(price)) {
+                throw new Error('Invalid price format.');
+            }
+    
+            const updatePaymentResponse = await api.post('/subscription/updatePayment', {
+                price,
+            });
+    
+            if (updatePaymentResponse.status === 200) {
+                const response = await api.post('/subscription', {
+                    plan: selectedPlan,
+                    price,
+                });
+    
+                alert('Plan selected! Proceeding to finalize subscription.');
+                navigate('/subscription/transaction', { state: { selectedPlan } });
+            } else {
+                alert('Failed to update payment. Please check your balance.');
+            }
         } catch (error) {
-            alert('Failed to send subscription request. Please try again.');
+            alert('An error occurred. Please try again.');
             console.error('Error in handleSubmit:', error);
         } finally {
             setIsLoading(false);
         }
     };
+    
+    
 
     const plans = [
         { id: 1, name: 'Basic', speed: '35 Mbps', price: '₱1699', details: 'Unlimited data' },
