@@ -12,7 +12,7 @@ const __dirname = path.dirname(__filename);
 export const subscriptionController = async (req, res) => {
     try {
         const { userId, firstName, lastName, email } = req.user || {};
-        const { plan, package_id } = req.body; 
+        const { plan, package_id, price } = req.body; 
         console.log(plan)
 
         console.log('Request user data: ', req.user);
@@ -55,7 +55,7 @@ export const subscriptionController = async (req, res) => {
         });
 
         if (!isNewProfile) {
-            await userProfile.update({ package_id }); // Use the correctly defined package_id
+            await userProfile.update({ package_id });
         }
 
         const receiptDir = path.join(__dirname, '../Receipts');
@@ -64,40 +64,31 @@ export const subscriptionController = async (req, res) => {
         }
 
         const doc = new PDFDocument({ margin: 50 });
-        const receiptFilePath = path.join(receiptDir, `receipt_${userId}.pdf`);
+        const receiptFilePath = path.join(receiptDir, `invoice_${userId}.pdf`);
         doc.pipe(fs.createWriteStream(receiptFilePath));
 
         doc
-            .fontSize(18)
+            .fontSize(16)
             .font('Helvetica-Bold')
-            .text("Subscription Receipt", { align: 'center' })
+            .text("DuhOne Solutions", { align: 'center' })
+            .fontSize(12)
+            .font('Helvetica')
+            .text("Subscription Invoice", { align: 'center' })
             .moveDown();
+
         doc
             .fontSize(12)
             .font('Helvetica')
-            .text(`Receipt Date: ${new Date().toLocaleDateString()}`, { align: 'right' });
-
-        doc.moveDown(2);
-
-        doc
-            .fontSize(14)
-            .font('Helvetica-Bold')
-            .text("Subscription Details", { align: 'left' })
-            .moveDown();
-        doc
-            .fontSize(12)
-            .font('Helvetica')
-            .text(`Name: ${name}`)
-            .text(`Package ID: ${package_id}`) // Correctly refer to package_id
-            .text(`Subscription Status: ${newSubscription.status}`)
-            .text(`Subscription Created At: ${new Date().toLocaleString()}`)
+            .text(`Invoice Date: ${new Date().toLocaleDateString()}`, { align: 'right' })
+            .text(`Due Date: ${new Date(new Date().setMonth(new Date().getMonth() + 1)).toLocaleDateString()}`, { align: 'right' })
             .moveDown(2);
 
         doc
             .fontSize(14)
             .font('Helvetica-Bold')
-            .text("Your Profile Information", { align: 'left' })
+            .text("Billing Information", { align: 'left' })
             .moveDown();
+
         doc
             .fontSize(12)
             .font('Helvetica')
@@ -110,25 +101,39 @@ export const subscriptionController = async (req, res) => {
             .text(`Zip Code: ${userProfile.zipCode || 'N/A'}`)
             .moveDown(2);
 
-        // Footer
+        doc
+            .fontSize(14)
+            .font('Helvetica-Bold')
+            .text("Subscription Details", { align: 'left' })
+            .moveDown();
+    
+        doc
+            .fontSize(12)
+            .font('Helvetica-Bold')
+            .text(`Package ID: ${package_id}`, { continued: true })
+            .text(`Plan: ${plan}`, { align: 'right' })
+            .moveDown()
+            .fontSize(12)
+            .font('Helvetica')
+            .text(`Subscription Status: ${newSubscription.status}`)
+            .text(`Amount Due: ₱ ${price}`)
+        .moveDown(2);
         doc
             .fontSize(10)
             .font('Helvetica')
-            .text(
-                "If you have any questions, feel free to contact our support team at support@yourcompany.com.",
-                { align: 'center' }
-            )
+            .text("If you have any questions, please contact support@duhonesolutions.com.", { align: 'center' })
             .moveDown();
-        doc.text("Thank you for choosing our service!", { align: 'center' });
 
+        doc.text("Thank you for your business!", { align: 'center' });
+        
         doc.end();
 
-        await sendSubscriptionReceipt(email, receiptFilePath, userId);
+        await sendSubscriptionReceipt(email, receiptFilePath, userId, plan);
 
         res.status(201).json({
-            message: "Subscription created successfully! A receipt has been sent to your email.",
+            message: "Invoice created successfully! A copy has been sent to your email.",
             subscription: newSubscription,
-            receiptUrl: `/Receipts/receipt_${userId}.pdf`,
+            receiptUrl: `/Receipts/invoice_${userId}.pdf`,
         });
     } catch (error) {
         console.error("Error in subscription creation: ", error.message);
@@ -138,4 +143,3 @@ export const subscriptionController = async (req, res) => {
         });
     }
 };
-
