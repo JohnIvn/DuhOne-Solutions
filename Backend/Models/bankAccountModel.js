@@ -1,5 +1,8 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import db from '../database.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 class BankAccountModel extends Model {}
 
@@ -25,11 +28,12 @@ export const BankAccount = BankAccountModel.init(
     },
     currencyType: {
       type: DataTypes.STRING,
+      defaultValue: process.env.DEFAULT_CURRENCY,
       allowNull: true,
     },
     balance: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
+      type: DataTypes.FLOAT,
+      allowNull: true,
     },    
     createdAt: {
       type: DataTypes.DATE,
