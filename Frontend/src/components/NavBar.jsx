@@ -4,7 +4,7 @@ const NavBar = () => {
     return (
         <nav className="navbar navbar-expand-lg">
             <div className="container-fluid d-flex justify-content-between">
-                <a className="navbar-brand" href="landingpage">DuhOne Solutions</a>
+                <a className="navbar-brand" href="landingpage">DuhOne</a>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>

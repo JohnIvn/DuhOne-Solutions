@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import NavBarDashboard from '../components/NavBarDashboard.jsx';
 import Footer from '../components/Footer.jsx';
 import '../CSS/Homepage.css';
+import mobilePhoneImage from '../assets/tech.png'; // Adjust the path as necessary
+
 
 const HomePage = () => {
     const [data, setData] = useState(null);
@@ -36,10 +38,9 @@ const HomePage = () => {
             <section className="hero">
                 <div className="hero-content">
 
-                <h1 className="hero-title">Quickly discover your IP address with our easy-to-use website.</h1>
+                <h1 className="hero-title">Connecting you to fast, reliable internet and customer care.</h1>
                 <p className="hero-description">
-                Our website allows you to quickly view you current internet status. Whether you're managing your network or just need to know your online identity, our tool provides instant results with no hassle. It's the simplest way to get your IP information whenever you need it.
-                </p>
+                Welcome to our website, your gateway to fast, reliable internet and top-notch customer care. We offer flexible plans to suit your needs and easy access to support for any issues. Enjoy seamless connectivity and peace of mind with our reliable services.                </p>
                     <div className="hero-buttons">
                         <a href="/profile">
                             <button className="primary-btn">My Account</button>
@@ -51,6 +52,14 @@ const HomePage = () => {
                             <button className="third-btn">Contact Us</button>
                         </a>
                     </div>
+                </div>
+                {/* Add the image on the right side */}
+                <div className="hero-image">
+                    <img 
+                        src={mobilePhoneImage} 
+                        alt="Mobile Phone" 
+                        className="hero-image-img"
+                    />
                 </div>
             </section>
             {/* <h2>Home Page</h2>

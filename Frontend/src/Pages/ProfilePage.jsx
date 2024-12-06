@@ -9,8 +9,6 @@ const ProfilePage = () => {
   const [showAccount, setShowAccount] = useState(false);
   const [myAccount, setMyAccount] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [profileImage, setProfileImage] = useState(null);
-  const [uploadingImage, setUploadingImage] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -23,10 +21,11 @@ const ProfilePage = () => {
     zipCode: "",
   });
 
+  // Fetch user profile data
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await api.get("/profile");
+        const response = await api.get("/userprofile");
         setFormData(response.data);
         setMyAccount(response.data);
       } catch (error) {
@@ -35,25 +34,9 @@ const ProfilePage = () => {
       }
     };
 
-const fetchProfileImage = async () => {
-  try {
-    const response = await api.get('/profile/get-Image');
-
-    const { path } = response.data;
-    setProfileImage(`http://localhost:3000${path}`);  
-    console.log("profile image: ", profileImage);
-  } catch (error) {
-    console.error('Error fetching profile image:', error.message);
-    alert('Failed to load profile image. Please try again later.');
-  }
-};
-
-
     fetchUserProfile();
-    fetchProfileImage();
-  }, []); 
+  }, []);
 
-  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -62,7 +45,7 @@ const fetchProfileImage = async () => {
   const handleUpdate = async () => {
     setIsUpdating(true);
     try {
-      const response = await api.post("/profile", formData);
+      const response = await api.post("/userprofile", formData);
       setMyAccount(response.data);
       alert("Profile updated successfully!");
     } catch (error) {
@@ -72,39 +55,6 @@ const fetchProfileImage = async () => {
       setIsUpdating(false);
     }
   };
-
-  
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];  
-  
-    if (!file) {
-      alert('Please select an image to upload.');
-      return;
-    }
-  
-    const uploadData = new FormData();
-    uploadData.append('image', file);  
-  
-    setUploadingImage(true);  
-  
-    try {
-      const response = await api.post('/profile/image-upload', uploadData, {
-        headers: {
-          'Content-Type': 'multipart/form-data', 
-        },
-      });
-  
-      console.log('Image uploaded successfully:', response.data);
-      alert('Image uploaded successfully!');
-  
-    } catch (error) {
-      console.error('Error uploading image:', error.message);
-      alert('Failed to upload image. Please try again.');
-    } finally {
-      setUploadingImage(false); 
-    }
-  };
-  
 
   return (
     <>
@@ -116,27 +66,16 @@ const fetchProfileImage = async () => {
             <div className="card h-100">
               <div className="card-body">
                 <div className="account-settings">
-                <div className="user-profile">
-  <div className="user-avatar">
-
-    <img
-    
-      src={profileImage || 'https://i.pinimg.com/736x/d2/98/4e/d2984ec4b65a8568eab3dc2b640fc58e.jpg'}
-      alt={myAccount?.firstName ? `${myAccount.firstName}'s avatar` : 'User Avatar'}
-      onError={(e) => e.target.src = 'https://i.pinimg.com/736x/d2/98/4e/d2984ec4b65a8568eab3dc2b640fc58e.jpg'}  // Fallback image on error
-    />
-    <input
-      type="file"
-      accept="image/*"
-      onChange={handleImageUpload}
-      disabled={uploadingImage}
-      className="mt-2"
-    />
-  </div>
-  <h5 className="user-name">{myAccount?.firstName || "User"}</h5>
-  <h6 className="user-email">{myAccount?.email || "user@example.com"}</h6>
-</div>
-
+                  <div className="user-profile">
+                    <div className="user-avatar">
+                      <img
+                        src="https://bootdey.com/img/Content/avatar/avatar7.png"
+                        alt="User Avatar"
+                      />
+                    </div>
+                    <h5 className="user-name">{myAccount?.firstName || "User"}</h5>
+                    <h6 className="user-email">{myAccount?.email || "user@example.com"}</h6>
+                  </div>
                   <div className="about">
                     <button
                       className="btn btn-primary mb-2"
@@ -334,17 +273,19 @@ const fetchProfileImage = async () => {
                         </div>
                       </div>
                     </div>
-                    <div className="d-flex justify-content-between">
-                      <button className="btn btn-secondary" onClick={() => alert("Changes discarded")}>
-                        Cancel
-                      </button>
-                      <button
-                        className="btn btn-primary"
-                        onClick={handleUpdate}
-                        disabled={isUpdating}
-                      >
-                        {isUpdating ? "Updating..." : "Save Changes"}
-                      </button>
+                    <div className="row gutters">
+                      <div className="col-xl-12">
+                        <div className="text-right">
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={handleUpdate}
+                            disabled={isUpdating}
+                          >
+                            {isUpdating ? "Updating..." : "Update"}
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </>
                 )}

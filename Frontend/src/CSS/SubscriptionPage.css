@@ -4,6 +4,7 @@
     color: #ffffff; 
     min-height: 100vh;
     font-family: 'Arial', sans-serif;
+    margin-top: -1%;
 }
 .subscription-container h1 {
     font-size: 2.5rem;
@@ -168,4 +169,83 @@
     .subscription-container h1 {
         font-size: 2rem;
     }
+}
+
+
+/* Modal Styles */
+.modal-content {
+    border-radius: 8px; /* Round the corners of the modal */
+    background-color: #161e25; /* Change background color */
+    padding: 20px;
+}
+
+.modal-header {
+    background-color: #161e25; /* Change header background */
+    color: white; /* Set text color */
+    border-bottom: 10px solid #ffffff;
+}
+
+.modal-header .close {
+    color: white; /* Close button color */
+}
+
+.modal-body {
+    background-color: #161e25; /* Change body background */
+    padding: 20px;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-weight: bold; /* Make labels bold */
+    color: #333; /* Set label text color */
+}
+
+.form-group input, .form-group select {
+    border-radius: 4px; /* Rounded corners for input/select */
+    border: 1px solid #ccc; /* Lighter border */
+    padding: 10px; /* Padding inside input */
+    width: 100%;
+    font-size: 16px;
+}
+
+.form-group input:focus, .form-group select:focus {
+    border-color: #007bff; /* Highlight border color on focus */
+}
+
+.invalid-feedback {
+    color: red; /* Color of invalid feedback */
+    font-size: 12px;
+}
+
+/* Button Styles */
+.btn-success {
+    background-color: #28a745; /* Green button */
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838; /* Darker green on hover */
+    border-color: #1e7e34;
+}
+
+/* Error message */
+.error-message {
+    color: red;
+    font-weight: bold;
+}
+
+/* Adjusting the overall modal appearance */
+.modal-dialog {
+    max-width: 600px; /* Set a max width for the modal */
+    margin: 30px auto; /* Center the modal */
+}
+
+.modal-footer {
+    background-color: #f1f1f1; /* Change the footer background */
+    padding: 10px;
+    text-align: right; /* Align footer content to the right */
 }

@@ -134,9 +134,9 @@ const TransactionForm = () => {
                         <option value="" disabled>
                             Select a payment method
                         </option>
-                        <option value="Philippine National Bank">Philippine National Bank</option>
-                        <option value="BDO Unibank, Inc.">BDO Unibank, Inc.</option>
-                        <option value="Metropolitan Bank and Trust Company (Metrobank)">Metropolitan Bank and Trust Company (Metrobank)</option>
+                        <option value="Credit Card">Credit Card</option>
+                        <option value="PayPal">PayPal</option>
+                        <option value="Bank Transfer">Bank Transfer</option>
                     </select>
                 </div>
                 <button type="submit" className="btn btn-success">

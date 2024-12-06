@@ -7,7 +7,7 @@ const Footer = () => {
                 <a href="/" className="mb-3 me-2 mb-md-0 text-white text-decoration-none lh-1">
                     <i className="bi bi-bootstrap" width="30" height="24"></i>
                 </a>
-                <span className="mb-3 mb-md-0 text-white ms-2">DuhOne Solutions 2024 Inc.</span> 
+                <span className="mb-3 mb-md-0 text-white ms-2">DuhOne 2024 Inc.</span> 
             </div>
 
             <ul className="nav col-md-4 justify-content-end list-unstyled d-flex">

@@ -14,7 +14,7 @@ const AdminDashboard = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const availablePlans = ["Basic", "Standard", "Premium", "Ultimate"];
-  const availableStatuses = ["approved", "pending", "denied", "suspended"];
+  const availableStatuses = ["approved", "pending", "denied"];
   const availablePaidStatuses = ["True", "False"]; 
 
   const calculateEndDate = (subscribeAt) => {
