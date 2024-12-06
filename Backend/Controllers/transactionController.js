@@ -22,7 +22,7 @@ export const subscriptionTransactionGetCredentials = async (req, res) => {
 export const subscriptionTransactionUpdateCredentials = async (req, res) => {
     try {
         const { userId } = req.user;
-        const { phoneNumber, street, city, barangay, zipCode, plan, paymentMethod } = req.body;
+        const { phoneNumber, street, city, barangay, zipCode, name, paymentMethod } = req.body;  // changed 'plan' to 'name'
         console.log(req.body);
         const account = await UserProfileModel.findOne({ where: { userId } });
 
@@ -36,7 +36,7 @@ export const subscriptionTransactionUpdateCredentials = async (req, res) => {
             city,
             barangay,
             zipCode,
-            plan,
+            name,  
             paymentMethod,
         });
 
@@ -58,7 +58,7 @@ export const subscriptionTransactionUpdateCredentials = async (req, res) => {
 export const updatePayment = async (req, res) => {
     try {
         const { userId } = req.user;
-        const { plan, price } = req.body;
+        const { name, price } = req.body;  
         console.log("userId: ", userId);
         const account = await BankAccount.findOne({
             where: { BankAccountId: userId }
