@@ -1,55 +1,77 @@
-import React, { useEffect, useState } from "react";
-import { Button, Box, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom"; 
+import React from "react";
+import { Button, Box, Typography, createTheme, ThemeProvider } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
-const AdminDashboard = () => {
-    const navigate = useNavigate(); 
-    const handleNavigation = (page) => {
-        navigate(`/${page}`); 
-    };
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#4CAF50", // Green
+      contrastText: "#FFFFFF",
+    },
+    secondary: {
+      main: "#2196F3", // Blue
+      contrastText: "#FFFFFF",
+    },
+    success: {
+      main: "#FF5722", // Orange
+      contrastText: "#FFFFFF",
+    },
+    warning: {
+      main: "#9C27B0", // Purple
+      contrastText: "#FFFFFF",
+    },
+  },
+});
 
-    return (
-        <div>
-            {}
-            <Box sx={{ textAlign: "center", marginBottom: "20px" }}>
-                <Typography variant="h4">Admin Dashboard</Typography>
-            </Box>
+const AdminNavDashboard = () => {
+  const navigate = useNavigate();
 
-            {}
-            <Box sx={{ display: "flex", justifyContent: "center", gap: "20px", marginBottom: "30px" }}>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleNavigation("clients")}
-                >
-                    Clients
-                </Button>
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => handleNavigation("general")}
-                >
-                    General
-                </Button>
-                <Button
-                    variant="contained"
-                    color="success"
-                    onClick={() => handleNavigation("sales")}
-                >
-                    Sales
-                </Button>
-                <Button
-                    variant="contained"
-                    color="warning"
-                    onClick={() => handleNavigation("statistics")}
-                >
-                    Statistics
-                </Button>
-            </Box>
+  const handleNavigation = (page) => {
+    navigate(`/${page}`);
+  };
 
-            {}
-        </div>
-    );
+  return (
+    <ThemeProvider theme={theme}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "20px",
+          marginBottom: "30px",
+          mt: "30px",
+        }}
+      >
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => handleNavigation("clients")}
+        >
+          Clients
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => handleNavigation("general")}
+        >
+          General
+        </Button>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => handleNavigation("sales")}
+        >
+          Sales
+        </Button>
+        <Button
+          variant="contained"
+          color="warning"
+          onClick={() => handleNavigation("statistics")}
+        >
+          Statistics
+        </Button>
+      </Box>
+    </ThemeProvider>
+  );
 };
 
-export default AdminDashboard;
+export default AdminNavDashboard;

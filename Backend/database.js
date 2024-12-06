@@ -17,8 +17,6 @@ const db = new Sequelize(
 
 const setupDatabase = async () => {
   try {
-    // await createDatabaseIfNotExists();
-    // await db.authenticate(); 
     console.log('Database connection successful!');
   } catch (error) {
     console.error('Unable to connect to the database:', error);

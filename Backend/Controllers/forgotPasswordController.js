@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 const changePassword = async (req, res) => {
 
     const { email, password } = req.body;
-
     console.log("Request Body:", req.body);
 
     try {

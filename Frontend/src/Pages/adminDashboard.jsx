@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Button, Dropdown, Spinner, Table, Container, Modal, Form } from "react-bootstrap";
-import api from "../Api.js"; 
+import { CheckCircle, Cancel, Block, Send, Search } from '@mui/icons-material'; // Added Search icon
+import api from "../Api.js";
 import "../CSS/AdminDashboard.css";
-import NavBarDashboard from '../components/NavBarDashboard.jsx';
+import AdminNavDashboard from "../components/AdminDashboard.jsx";
 import Footer from '../components/Footer.jsx';
 
 const AdminDashboard = () => {
@@ -10,6 +11,7 @@ const AdminDashboard = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [planFilter, setPlanFilter] = useState("");
   const [paidFilter, setPaidFilter] = useState(""); 
+  const [searchTerm, setSearchTerm] = useState(""); 
   const [loading, setLoading] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
@@ -58,7 +60,6 @@ const AdminDashboard = () => {
         });
         
         console.log("Updated client response:", response.data);
-
         await fetchClients({ plan: planFilter, status: statusFilter, paid: paidFilter });
       }
     } catch (error) {
@@ -91,6 +92,14 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleSearch = () => {
+    if (searchTerm) {
+      fetchClients({ userId: searchTerm }); // Search for a specific user by userId
+    } else {
+      fetchClients({ plan: planFilter, status: statusFilter, paid: paidFilter });
+    }
+  };
+
   useEffect(() => {
     if (!isInitialLoad) {
       console.log("Filters changed - plan:", planFilter, "status:", statusFilter, "paid:", paidFilter);
@@ -102,7 +111,7 @@ const AdminDashboard = () => {
 
   return (
     <>
-      <NavBarDashboard />
+      <AdminNavDashboard />
       <Container fluid className="admin-dashboard" style={{ backgroundColor: "#051b36", minHeight: "100vh" }}>
         <h1 className="dashboard-title">Admin Dashboard</h1>
 
@@ -145,6 +154,7 @@ const AdminDashboard = () => {
               setPlanFilter("");
               setStatusFilter("");
               setPaidFilter("");
+              setSearchTerm("");
               fetchClients({}); 
             }}
             variant="secondary"
@@ -152,9 +162,22 @@ const AdminDashboard = () => {
           >
             Reset Filters
           </Button>
-        </div>
 
-        
+          {/* Search Bar */}
+          <div className="search-bar-container">
+            <Form.Control
+              type="text"
+              placeholder="Search by User ID"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+            <Button variant="primary" onClick={handleSearch} className="search-button">
+              <Search />
+            </Button>
+          </div>
+
+        </div>
 
         <div className="clients-section">
           {loading ? (
@@ -177,9 +200,7 @@ const AdminDashboard = () => {
               <tbody>
                 {clients.length === 0 ? (
                   <tr>
-                    <td colSpan="7" className="no-clients"> 
-                      No clients found matching your filters
-                    </td>
+                    <td colSpan="7" className="no-clients">No clients found matching your filters</td>
                   </tr>
                 ) : (
                   clients.map((client) => (
@@ -188,50 +209,23 @@ const AdminDashboard = () => {
                       <td>{client.plan}</td>
                       <td className={`status-${client.status}`}>{client.status}</td>
                       <td className={`status-${client.paid}`}>{client.paid}</td>
-                      <td>
-                        {client.subscribeAt ? new Date(client.subscribeAt).toLocaleDateString() : "N/A"}
-                      </td>
-                      <td>
-                        {client.endAT ? new Date(client.endAT).toLocaleDateString() : "N/A"}
-                      </td>
-                      <td>
-                        {client.status === "pending" && (
-                          <>
-                            <Button
-                              variant="success"
-                              size="sm"
-                              onClick={() => updateStatus(client.userId, "approved")}
-                            >
-                              Approve
-                            </Button>
-                            <Button
-                              variant="danger"
-                              size="sm"
-                              onClick={() => updateStatus(client.userId, "denied")}
-                              className="ml-2"
-                            >
-                              Deny
-                            </Button>
-                          </>
-                        )}
-                        <Button
-                          variant="warning"
-                          size="sm"
-                          onClick={() => handleSuspend(client.userId)}
-                          className="ml-2"
-                        >
-                          Suspend
+                      <td>{client.subscribeAt ? new Date(client.subscribeAt).toLocaleDateString() : "N/A"}</td>
+                      <td>{client.endAT ? new Date(client.endAT).toLocaleDateString() : "N/A"}</td>
+                      <td className="action-buttons">
+                        <Button variant="success" size="sm" onClick={() => updateStatus(client.userId, "approved")}>
+                          <CheckCircle />
                         </Button>
-                        <Button
-                          variant="info"
-                          size="sm"
-                          onClick={() => {
-                            setModalClientId(client.userId);
-                            setShowModal(true);
-                          }}
-                          className="ml-2"
-                        >
-                          Send Message
+                        <Button variant="danger" size="sm" onClick={() => updateStatus(client.userId, "denied")}>
+                          <Block />
+                        </Button>
+                        <Button variant="warning" size="sm" onClick={() => handleSuspend(client.userId)}>
+                          <Cancel />
+                        </Button>
+                        <Button variant="info" size="sm" onClick={() => {
+                          setModalClientId(client.userId);
+                          setShowModal(true);
+                        }}>
+                          <Send />
                         </Button>
                       </td>
                     </tr>
@@ -241,32 +235,31 @@ const AdminDashboard = () => {
             </Table>
           )}
         </div>
+
+        {/* Finalize and Reset actions outside the table */}
+        <div className="finalize-actions">
+          <Button variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
+        </div>
       </Container>
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Send Custom Message</Modal.Title>
+          <Modal.Title>Send Message</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Label>Message</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                value={customMessage}
-                onChange={(e) => setCustomMessage(e.target.value)}
-              />
-            </Form.Group>
-          </Form>
+          <Form.Group controlId="message">
+            <Form.Label>Message</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              value={customMessage}
+              onChange={(e) => setCustomMessage(e.target.value)}
+            />
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={handleSendMessage}>
-            Send
-          </Button>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
+          <Button variant="primary" onClick={handleSendMessage}>Send</Button>
         </Modal.Footer>
       </Modal>
 

@@ -7,6 +7,7 @@ import UserImgModel from '../Models/imageModel.js';
 import { BankAccount } from '../Models/bankAccountModel.js';
 import { OnlinePaymentAccount } from '../Models/onlinePaymentlAccountModel.js';
 import PackageModel from '../Models/packageModel.js';
+import RequestFormModel from '../Models/requestForm.js';
 
 async function createTableUserAccounts() {
   try {
@@ -14,6 +15,15 @@ async function createTableUserAccounts() {
     console.log('UserAccount table is checked and updated if necessary');
   } catch (error) {
     console.error('Error checking/updating UserAccount table', error);
+  }
+}
+
+async function createTableRequestForm() {
+  try {
+    await RequestFormModel.sync({ alter: false });
+    console.log('Request Form table is checked and updated if necessary');
+  } catch (error) {
+    console.error('Error checking/updating Request Form table', error);
   }
 }
 
@@ -89,4 +99,4 @@ async function createTablePackage() {
   }
 }
 
-export { createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableUserProfile, createTableImageContainer, createTableBankAccount, createTableOnlinePaymentAccount, createTablePackage }
+export {createTableRequestForm ,createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableUserProfile, createTableImageContainer, createTableBankAccount, createTableOnlinePaymentAccount, createTablePackage }
