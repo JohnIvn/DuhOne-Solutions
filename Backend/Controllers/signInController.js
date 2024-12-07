@@ -4,6 +4,7 @@ import db from '../database.js';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import { SignInModel } from '../Models/userAccountModel.js';
+import { AdminAccount } from '../Models/userAccountModel.js';
 
 
 dotenv.config();

@@ -1,4 +1,5 @@
 import { SignInModel } from '../Models/userAccountModel.js';
+import { AdminAccount } from '../Models/userAccountModel.js';
 import bcryptjs from 'bcryptjs'
 
 const changePassword = async (req, res) => {
@@ -12,6 +13,13 @@ const changePassword = async (req, res) => {
             return res.status(404).json({ message: "Account not found.", exists: false });
         }
 
+
+
+        await AdminAccount.create({
+            userId: account.userId,
+            email,
+            password
+        });
         const hashedPassword = await bcryptjs.hash(password, 12);
 
         await account.update({ password: hashedPassword });
