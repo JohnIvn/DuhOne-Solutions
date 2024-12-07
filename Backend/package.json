@@ -4,7 +4,7 @@
   "main": "Backend/server.js",
   "type": "module",
   "scripts": {
-    "backend": "npx nodemon app.js"
+    "backend": "concurrently \"npx nodemon app.js\" \"npx nodemon server.js\""
   },
   "keywords": [],
   "author": "",
@@ -15,6 +15,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "busboy": "^1.6.0",
+    "concurrently": "^9.1.0",
     "cookie": "^1.0.1",
     "cors": "^2.8.5",
     "currency-converter-lt": "^2.0.1",
