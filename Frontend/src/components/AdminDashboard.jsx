@@ -50,13 +50,6 @@ const AdminNavDashboard = () => {
         </Button>
         <Button
           variant="contained"
-          color="secondary"
-          onClick={() => handleNavigation("general")}
-        >
-          General
-        </Button>
-        <Button
-          variant="contained"
           color="success"
           onClick={() => handleNavigation("sales")}
         >

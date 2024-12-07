@@ -1,4 +1,5 @@
 import UserProfileModel from "../Models/userProfileModel.js";
+import {ClientModel} from '../Models/clientModel.js'
 
 export const getUserProfile = async (req, res) => {
     
@@ -46,6 +47,11 @@ export const updateUserProfile = async (req, res) => {
             barangay, 
             zipCode
         });
+        const newName =`${firstName} ${lastName}`;
+        await ClientModel.update(
+            { name: newName },
+            { where: { userid: userId } } 
+        );
 
         return res.json(updatedUserProfile);
 

@@ -16,8 +16,8 @@ const SubscriptionPage = () => {
         const fetchPlans = async () => {
             setIsLoading(true);
             try {
-                const response = await api.get('/api/package/plans');  // Fetch plans from backend
-                console.log('API response:', response.data);  // Log the response for debugging
+                const response = await api.get('/api/package/plans');  
+                console.log('API response:', response.data);  
 
                 if (response.status === 200) {
                     setPlans(response.data);  // Set the plans data
@@ -53,53 +53,17 @@ const SubscriptionPage = () => {
         setIsLoading(true);
         console.log('Loading state set to true.');
 
-        try {
-            let price = selectedPlan.price;
-
-            // If price is a string with currency symbol, remove it
-            if (typeof price === 'string') {
-                console.log('Price is a string. Removing currency symbol.');
-                price = price.replace('₱', '').replace(',', '');
+        const handleSubmit = async () => {
+            setIsLoading(true);
+            try {
+               
+                await handlePlanSelection(selectedPlan);
+            } finally {
+                setIsLoading(false);
+                console.log('Loading state set to false.');
             }
-
-            // Ensure price is a valid number
-            price = parseFloat(price);
-
-            console.log('Converted price:', price);
-
-            if (isNaN(price)) {
-                throw new Error('Invalid price format.');
-            }
-
-            console.log('Making API request to update payment with price:', price);
-            const updatePaymentResponse = await api.post('/subscription/updatePayment', {
-                price,
-            });
-
-            console.log('Update payment response:', updatePaymentResponse);
-
-            if (updatePaymentResponse.status === 200) {
-                console.log('Payment update successful, making subscription request.');
-                const response = await api.post('/subscription', {
-                    package_id: selectedPlan.Package_id,
-                    price,
-                    plan: selectedPlan.plan,
-                });
-                console.log(selectedPlan);
-                console.log('Subscription response:', response);
-                alert('Plan selected! Proceeding to finalize subscription.');
-                console.log('Navigating to /subscription/transaction');
-                navigate('/subscription/transaction', { state: { selectedPlan } });
-            } else {
-                alert('Failed to update payment. Please check your balance.');
-            }
-        } catch (error) {
-            alert('An error occurred. Please try again.');
-            console.error('Error in handleSubmit:', error);
-        } finally {
-            setIsLoading(false);
-            console.log('Loading state set to false.');
-        }
+        };
+        
     };
 
     return (
