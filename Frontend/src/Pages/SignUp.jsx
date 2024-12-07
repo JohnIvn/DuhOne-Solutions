@@ -81,24 +81,29 @@ const SignUp = () => {
     if (isCooldown) return; // Prevent sending if in cooldown
 
     try {
-      const response = await axios.post('http://localhost:3000/send-code', { email: formData.email });
+
+      const res = await axios.post('http://localhost:3000/signup', {email: formData.email, password: formData.password});
+
+      if(!res.data.exists){
+        const response = await axios.post('http://localhost:3000/send-code', { email: formData.email });
       console.log(response.data.message);
       alert('Verification code sent to your email!');
-      
-      // Start cooldown with 30 seconds
+    
       setIsCooldown(true);
       setCountdown(30);
 
       const interval = setInterval(() => {
         setCountdown((prev) => {
           if (prev === 1) {
-            clearInterval(interval);  // Clear the interval once the countdown ends
-            setIsCooldown(false);     // Reset cooldown
+            clearInterval(interval);  
+            setIsCooldown(false);     
             return 0;
           }
           return prev - 1;
         });
-      }, 1000);  // Update countdown every second
+      }, 1000);  
+      }
+
     } catch (error) {
       console.error('Error sending verification code:', error);
       alert(error.response?.data?.message || 'Failed to send verification code');

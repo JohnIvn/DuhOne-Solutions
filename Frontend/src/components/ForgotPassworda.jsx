@@ -17,7 +17,6 @@ const ForgotPassword = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Validate the new password length
     if (newPassword.length > 0 && newPassword.length < 8) {
       setPasswordError('Password must be at least 8 characters long');
     } else {
