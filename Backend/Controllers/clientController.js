@@ -42,7 +42,7 @@ export const getClients = async (req, res) => {
 export const updateClientStatus = async (req, res) => { 
   try {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, endAt,  } = req.body;
 
     const normalizedStatus = status ? status.trim().toLowerCase() : undefined;
 
@@ -58,10 +58,26 @@ export const updateClientStatus = async (req, res) => {
 
     let updateData = { status: normalizedStatus };
 
-    if (normalizedStatus === 'approved') {
+
+    console.log(normalizedStatus);
+
+
+    if (normalizedStatus === 'active') {
+      
       const subscribeAt = new Date();  
       const endAt = new Date();
       endAt.setDate(subscribeAt.getDate() + 30);  
+
+
+      await ClientModel.update(
+        {
+          subscribeAt, 
+          endAt
+        },
+        {
+          where: { userId: id } // Condition to match the row(s) to update
+        }
+      );
 
       updateData = {
         ...updateData,
@@ -69,7 +85,7 @@ export const updateClientStatus = async (req, res) => {
         endAt,
       };
     }
-
+     
     const [updated] = await ClientModel.update(updateData, { where: { userId: id } });
 
     if (!updated) {
@@ -106,20 +122,17 @@ export const searchByID = async (req, res) => {
   }
 };
 
-
 export const getAllSuspended = async (req, res) => {
   try {
-    // Fetch all clients with the status 'Suspended'
+
     const suspendedClients = await ClientModel.findAll({
-      where: { status: 'Suspended' },  // Using Sequelize syntax to filter by status
+      where: { status: 'Suspended' },  
     });
 
-    // If no clients are found, return a message
     if (suspendedClients.length === 0) {
       return res.json({ message: 'No suspended clients found.' });
     }
 
-    // Respond with the list of suspended clients
     res.status(200).json(suspendedClients);
   } catch (error) {
     console.error('Error fetching suspended clients:', error);

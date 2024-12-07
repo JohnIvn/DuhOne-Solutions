@@ -3,6 +3,7 @@ import "../CSS/ProfilePage.css";
 import NavBarDashboard from "../components/NavBarDashboard.jsx";
 import Footer from "../components/Footer.jsx";
 import api from "../Api.js";
+import '../CSS/ProfilePage.css'
 
 const ProfilePage = () => {
   const [showPlanning, setShowPlanning] = useState(false);
@@ -35,28 +36,32 @@ const ProfilePage = () => {
       }
     };
 
-const fetchProfileImage = async () => {
-  try {
-    const response = await api.get('/profile/get-Image');
-
-    const { path } = response.data;
-    setProfileImage(`http://localhost:3000${path}`);  
-    console.log("profile image: ", profileImage);
-  } catch (error) {
-    console.error('Error fetching profile image:', error.message);
-    alert('Failed to load profile image. Please try again later.');
-  }
-};
-
+    const fetchProfileImage = async () => {
+      try {
+        const response = await api.get('/profile/get-Image');
+        const { path } = response.data;
+        setProfileImage(`http://localhost:3000${path}`);
+        console.log("profile image: ", profileImage);
+      } catch (error) {
+        console.error('Error fetching profile image:', error.message);
+        alert('Failed to load profile image. Please try again later.');
+      }
+    };
 
     fetchUserProfile();
     fetchProfileImage();
-  }, []); 
+  }, []);
 
-  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+
+    if (name === "phoneNumber" || name === "zipCode") {
+      // Allow only numbers
+      const numericValue = value.replace(/\D/g, ""); // Remove non-numeric characters
+      setFormData({ ...formData, [name]: numericValue });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleUpdate = async () => {
@@ -73,38 +78,36 @@ const fetchProfileImage = async () => {
     }
   };
 
-  
   const handleImageUpload = async (e) => {
-    const file = e.target.files[0];  
-  
+    const file = e.target.files[0];
+
     if (!file) {
       alert('Please select an image to upload.');
       return;
     }
-  
+
     const uploadData = new FormData();
-    uploadData.append('image', file);  
-  
-    setUploadingImage(true);  
-  
+    uploadData.append('image', file);
+
+    setUploadingImage(true);
+
     try {
       const response = await api.post('/profile/image-upload', uploadData, {
         headers: {
-          'Content-Type': 'multipart/form-data', 
+          'Content-Type': 'multipart/form-data',
         },
       });
-  
+
       console.log('Image uploaded successfully:', response.data);
       alert('Image uploaded successfully!');
-  
+
     } catch (error) {
       console.error('Error uploading image:', error.message);
       alert('Failed to upload image. Please try again.');
     } finally {
-      setUploadingImage(false); 
+      setUploadingImage(false);
     }
   };
-  
 
   return (
     <>
@@ -116,26 +119,24 @@ const fetchProfileImage = async () => {
             <div className="card h-100">
               <div className="card-body">
                 <div className="account-settings">
-                <div className="user-profile">
-  <div className="user-avatar">
-
-    <img
-    
-      src={profileImage || 'https://i.pinimg.com/736x/d2/98/4e/d2984ec4b65a8568eab3dc2b640fc58e.jpg'}
-      alt={myAccount?.firstName ? `${myAccount.firstName}'s avatar` : 'User Avatar'}
-      onError={(e) => e.target.src = 'https://i.pinimg.com/736x/d2/98/4e/d2984ec4b65a8568eab3dc2b640fc58e.jpg'}  // Fallback image on error
-    />
-    <input
-      type="file"
-      accept="image/*"
-      onChange={handleImageUpload}
-      disabled={uploadingImage}
-      className="mt-2"
-    />
-  </div>
-  <h5 className="user-name">{myAccount?.firstName || "User"}</h5>
-  <h6 className="user-email">{myAccount?.email || "user@example.com"}</h6>
-</div>
+                  <div className="user-profile">
+                    <div className="user-avatar">
+                      <img
+                        src={profileImage || 'https://i.pinimg.com/736x/d2/98/4e/d2984ec4b65a8568eab3dc2b640fc58e.jpg'}
+                        alt={myAccount?.firstName ? `${myAccount.firstName}'s avatar` : 'User Avatar'}
+                        onError={(e) => e.target.src = 'https://i.pinimg.com/736x/d2/98/4e/d2984ec4b65a8568eab3dc2b640fc58e.jpg'}  // Fallback image on error
+                      />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        disabled={uploadingImage}
+                        className="mt-2"
+                      />
+                    </div>
+                    <h5 className="user-name">{myAccount?.firstName || "User"}</h5>
+                    <h6 className="user-email">{myAccount?.email || "user@example.com"}</h6>
+                  </div>
 
                   <div className="about">
                     <button
@@ -279,72 +280,74 @@ const fetchProfileImage = async () => {
                       </div>
                       <div className="col-xl-6">
                         <div className="form-group">
-                          <label htmlFor="street">Street</label>
+                          <label htmlFor="Street">Street</label>
                           <input
                             type="text"
                             className="form-control"
-                            id="street"
+                            id="Street"
                             name="street"
                             value={formData.street}
                             onChange={handleInputChange}
-                            placeholder="Enter street"
+                            placeholder="Enter Street"
                           />
                         </div>
                       </div>
                       <div className="col-xl-6">
                         <div className="form-group">
-                          <label htmlFor="city">City</label>
+                          <label htmlFor="ciTy">City</label>
                           <input
                             type="text"
                             className="form-control"
-                            id="city"
+                            id="ciTy"
                             name="city"
                             value={formData.city}
                             onChange={handleInputChange}
-                            placeholder="Enter city"
+                            placeholder="Enter City"
                           />
                         </div>
                       </div>
                       <div className="col-xl-6">
                         <div className="form-group">
-                          <label htmlFor="barangay">Barangay</label>
+                          <label htmlFor="bZip">Barangay</label>
                           <input
                             type="text"
                             className="form-control"
-                            id="barangay"
+                            id="bZip"
                             name="barangay"
                             value={formData.barangay}
                             onChange={handleInputChange}
-                            placeholder="Enter barangay"
+                            placeholder="Enter Barangay"
                           />
                         </div>
                       </div>
                       <div className="col-xl-6">
                         <div className="form-group">
-                          <label htmlFor="zipCode">Zip Code</label>
+                          <label htmlFor="zIp">Zip Code</label>
                           <input
                             type="text"
                             className="form-control"
-                            id="zipCode"
+                            id="zIp"
                             name="zipCode"
                             value={formData.zipCode}
                             onChange={handleInputChange}
-                            placeholder="Enter zip code"
+                            placeholder="Enter Zip Code"
                           />
                         </div>
                       </div>
                     </div>
-                    <div className="d-flex justify-content-between">
-                      <button className="btn btn-secondary" onClick={() => alert("Changes discarded")}>
-                        Cancel
-                      </button>
-                      <button
-                        className="btn btn-primary"
-                        onClick={handleUpdate}
-                        disabled={isUpdating}
-                      >
-                        {isUpdating ? "Updating..." : "Save Changes"}
-                      </button>
+
+                    {/* Save Changes Button */}
+                    <div className="row gutters">
+                      <div className="col-xl-12 text-right">
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={handleUpdate}
+                          disabled={isUpdating}
+                        >
+                          Save Changes
+                        </button>
+                      </div>
                     </div>
                   </>
                 )}

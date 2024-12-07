@@ -61,16 +61,6 @@ const AdminDashboard = () => {
     }
   };
 
-  const sendMessage = async (clientId, message) => {
-    try {
-      await api.post(`/clients/${clientId}/send-message`, { message });
-      alert("Message sent successfully!");
-    } catch (error) {
-      console.error("Error sending message:", error);
-      alert("Failed to send message. Please try again.");
-    }
-  };
-
   const handleSuspend = (clientId) => {
     updateStatus(clientId, "Suspended");
   };
@@ -157,19 +147,6 @@ const AdminDashboard = () => {
             </Button>
           </div>
 
-          {/* Search Bar */}
-          <div className="search-bar-container d-flex align-items-center">
-            <Form.Control
-              type="text"
-              placeholder="Search by User ID"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input me-2"
-            />
-            <Button variant="primary" onClick={handleSearch} className="search-button">
-              <Search />
-            </Button>
-          </div>
         </div>
 
         <div className="clients-section">

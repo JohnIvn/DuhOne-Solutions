@@ -35,15 +35,10 @@ const SubscriptionPage = () => {
         fetchPlans();
     }, []);
 
-    // Handle plan selection
     const handlePlanSelection = (plan) => {
-        console.log('Selected plan:', plan);  // Debugging log
-        setSelectedPlan(plan);  // Set the entire plan object
+        setSelectedPlan(plan);  
     };
-
-    // Handle form submission
     const handleSubmit = async () => {
-        console.log('Form submission started.');
     
         if (!selectedPlan) {
             alert('Please select a plan before submitting.');
@@ -54,6 +49,7 @@ const SubscriptionPage = () => {
         console.log('Loading state set to true.');
     
         try {
+             console.log(selectedPlan.plan);
             await api.post('/subscription', {
                 plan: selectedPlan.plan,  
                 package_id: selectedPlan.Package_id,
