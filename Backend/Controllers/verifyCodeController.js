@@ -1,4 +1,4 @@
-import { verificationCodes } from '../Services/verificationCodes.js'; // Import verificationCodes
+import { verificationCodes } from '../Services/verificationCodes.js'; 
 
 const verifyCode = (req, res) => {
     const { email, code } = req.body;

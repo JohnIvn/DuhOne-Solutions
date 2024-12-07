@@ -1,198 +1,226 @@
-import React, { useState, useEffect } from "react";
-import { Container, Box, TextField, Button, Typography, Grid, IconButton, InputAdornment } from "@mui/material";
-import axios from "axios";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { useNavigate } from "react-router-dom"; 
-import ReCAPTCHA from "react-google-recaptcha"; 
-import NavBar from "../components/NavBar.jsx";
-import Footer from "../components/Footer.jsx";
+import React, { useState, useEffect } from 'react';
+import { Container, Box, TextField, Button, Typography, Grid, InputAdornment, IconButton } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [captchaVerified, setCaptchaVerified] = useState(false); 
-  const [siteKey, setSiteKey] = useState("");  // New state for the site key
-
+  const [isCooldown, setIsCooldown] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+  const [isCodeVerified, setIsCodeVerified] = useState(false);
+  const [error, setError] = useState('');
+  const [passwordError, setPasswordError] = useState(''); // To store password error message
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("ForgotPassword component mounted");
-  }, []);
+    // Validate the new password length
+    if (newPassword.length > 0 && newPassword.length < 8) {
+      setPasswordError('Password must be at least 8 characters long');
+    } else {
+      setPasswordError('');
+    }
+  }, [newPassword]);
 
-  useEffect(() => {
-    axios.get("http://localhost:3000/api/recaptcha")
-      .then((response) => {
-        setSiteKey(response.data.siteKey); // Store the site key in the state
-      })
-      .catch((error) => {
-        console.error("Error fetching site key:", error);
-        setError("Failed to load reCAPTCHA site key");
-      });
-  }, []);
+  const handleSendCode = async () => {
+    if (!email) {
+      alert('Please enter a valid email');
+      return;
+    }
 
-  const handleEmailChange = (e) => setEmail(e.target.value);
-  const handlePasswordChange = (e) => setNewPassword(e.target.value);
-  const handleConfirmPasswordChange = (e) => setConfirmPassword(e.target.value);
+    if (isCooldown) return; // Prevent sending if in cooldown
 
-  const handleCaptchaChange = (value) => {
-    setCaptchaVerified(!!value);
+    try {
+      const response = await axios.post('http://localhost:3000/send-code', { email });
+      console.log(response.data.message);
+      alert('Verification code sent to your email!');
+
+      // Start cooldown with 30 seconds
+      setIsCooldown(true);
+      setCountdown(30);
+
+      const interval = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev === 1) {
+            clearInterval(interval);  // Clear the interval once the countdown ends
+            setIsCooldown(false);     // Reset cooldown
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);  // Update countdown every second
+    } catch (error) {
+      console.error('Error sending verification code:', error);
+      alert(error.response?.data?.message || 'Failed to send verification code');
+    }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!email || !newPassword || !confirmPassword) {
-      setError("Please fill in all fields.");
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
-    if (!captchaVerified) {
-      setError("Please complete the reCAPTCHA.");
+  const handleVerifyCode = async () => {
+    if (!verificationCode) {
+      alert('Please enter the verification code.');
       return;
     }
 
     try {
-      const response = await axios.post("http://localhost:3000/forgot-password", {
-        email,
-        password: newPassword,
+      const response = await axios.post('http://localhost:3000/verify-code', { 
+        email, 
+        code: verificationCode 
       });
-
-      console.log("Password change response:", response.data);
-      setError("");
-      setEmail("");
-      setNewPassword("");
-      setConfirmPassword("");
-
-      navigate("/signin"); 
+      console.log('Verification successful:', response.data.message);
+      setIsCodeVerified(true);
+      alert('Email successfully verified!');
     } catch (error) {
-      console.error("Error during POST request:", error);
-      setError("Error updating password. Please try again.");
+      console.error('Error verifying code:', error);
+      alert(error.response?.data?.message || 'Verification failed. Please try again.');
     }
   };
 
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
-  const handleClickShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
+  const handleResetPassword = async (event) => {
+    event.preventDefault();
+
+    if (!isCodeVerified) {
+      setError('Please verify your email before resetting your password.');
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:3000/forgot-password', { 
+        email, 
+        password: newPassword
+      });
+      console.log('Password reset successful:', response.data.message);
+      alert('Password successfully reset!');
+      navigate('/signin');
+    } catch (error) {
+      console.error('Error resetting password:', error);
+      setError(error.response?.data?.message || 'Failed to reset password. Please try again.');
+    }
+  };
 
   return (
-    <>
-      <NavBar />
-      <Box
-        sx={{
-          height: "100vh", 
-          width: "100%", 
-          backgroundImage: 'url("https://media.istockphoto.com/id/1146367630/vector/abstract-navy-background.jpg?s=612x612&w=0&k=20&c=4odz8sgWFQHHwQ09ouonbKdvotg79421iCgJ8-99RyE=")',
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Grid container spacing={0} sx={{ bgcolor: "rgba(0, 0, 0, 0.7)", borderRadius: 2, padding: 4, display: "flex", justifyContent: "center", alignItems: "center" }}>
-          <Grid item xs={12} md={6}>
-            <Box sx={{ p: 4, borderRadius: "8px", width: "100%", maxWidth: 400, mx: "auto", backgroundColor: "rgba(28, 28, 28, 0.8)" }}>
-              <Typography variant="h5" gutterBottom sx={{ color: "#ffffff", textAlign: "center" }}>
-                Forgot Password
-              </Typography>
-              {error && <Typography variant="body2" sx={{ color: "#ff0000", textAlign: "center", mb: 2 }}>{error}</Typography>}
-
-              <Box component="form" noValidate autoComplete="off" onSubmit={handleSubmit}>
-                <TextField
-                  label="Email"
-                  type="email"
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                  value={email}
-                  onChange={handleEmailChange}
-                  InputLabelProps={{ style: { color: "#ffffff" } }}
-                  InputProps={{ style: { color: "#ffffff" } }}
-                  sx={{ backgroundColor: "#2a2a2a", borderRadius: "5px" }}
-                />
-
-                <TextField
-                  label="New Password"
-                  type={showPassword ? "text" : "password"}
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                  value={newPassword}
-                  onChange={handlePasswordChange}
-                  InputLabelProps={{ style: { color: "#ffffff" } }}
-                  InputProps={{
-                    style: { color: "#ffffff" },
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={handleClickShowPassword} edge="end">
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={{ backgroundColor: "#2a2a2a", borderRadius: "5px" }}
-                />
-
-                <TextField
-                  label="Confirm Password"
-                  type={showConfirmPassword ? "text" : "password"}
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                  value={confirmPassword}
-                  onChange={handleConfirmPasswordChange}
-                  InputLabelProps={{ style: { color: "#ffffff" } }}
-                  InputProps={{
-                    style: { color: "#ffffff" },
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={handleClickShowConfirmPassword} edge="end">
-                          {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={{ backgroundColor: "#2a2a2a", borderRadius: "5px" }}
-                />
-
-                <ReCAPTCHA
-                  sitekey={siteKey}
-                  onChange={handleCaptchaChange}
-                />
-
-                <Button
-                  type="submit"
-                  variant="contained"
-                  fullWidth
-                  sx={{
-                    mt: 2,
-                    mb: 2,
-                    backgroundColor: "#333",
-                    color: "#ffffff",
-                    "&:hover": {
-                      backgroundColor: "#444",
-                    },
-                  }}
-                  disabled={!captchaVerified}
-                >
-                  Change Password
-                </Button>
-              </Box>
-            </Box>
-          </Grid>
+    <Container maxWidth="md" sx={{ display: 'flex', minHeight: '100vh', marginTop: '4%' }}>
+      <Grid container spacing={2} sx={{ bgcolor: 'rgba(0, 0, 0, 0.7)', borderRadius: 2, padding: 4 }}>
+        <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', color: '#ffffff' }}>
+          <Typography variant="h4" gutterBottom>
+            Forgot Password
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 4 }}>
+            Enter your email to reset your password.
+          </Typography>
         </Grid>
-      </Box>
-      <Footer />
-    </>
+        <Grid item xs={12} md={6}>
+          <Box sx={{ p: 4, borderRadius: '8px', width: '100%', maxWidth: 400, mx: 'auto', backgroundColor: 'rgba(28, 28, 28, 0.8)' }}>
+            <Typography variant="h5" gutterBottom sx={{ color: '#ffffff', textAlign: 'center' }}>
+              Reset Password
+            </Typography>
+            {error && (
+              <Typography variant="body2" sx={{ color: '#ff0000', textAlign: 'center', mb: 2 }}>
+                {error}
+              </Typography>
+            )}
+            <Box component="form" noValidate autoComplete="off" onSubmit={handleResetPassword}>
+              <TextField
+                label="Email"
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                InputLabelProps={{ style: { color: '#ffffff' } }}
+                InputProps={{ style: { color: '#ffffff' } }}
+                sx={{ backgroundColor: '#2a2a2a', borderRadius: '5px' }}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <TextField
+                label="Verification Code"
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                InputLabelProps={{ style: { color: '#ffffff' } }}
+                InputProps={{ style: { color: '#ffffff' } }}
+                sx={{ backgroundColor: '#2a2a2a', borderRadius: '5px' }}
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+              />
+              <Button
+                variant="contained"
+                fullWidth
+                sx={{
+                  mt: 1,
+                  backgroundColor: isCodeVerified ? '#28a745' : '#333',
+                  color: '#ffffff',
+                  '&:hover': { backgroundColor: isCodeVerified ? '#218838' : '#555' },
+                }}
+                onClick={handleVerifyCode}
+                disabled={isCodeVerified} // Disable button if code is verified
+              >
+                {isCodeVerified ? 'Verified' : 'Verify Code'}
+              </Button>
+
+              <Button
+                variant="contained"
+                fullWidth
+                sx={{
+                  mt: 2,
+                  backgroundColor: '#007bff',
+                  color: '#ffffff',
+                  '&:hover': { backgroundColor: '#0056b3' },
+                }}
+                onClick={handleSendCode}  // Send Code Button
+                disabled={isCooldown}
+              >
+                {isCooldown ? `Resend in ${countdown}s` : 'Send Code'}
+              </Button>
+
+              <TextField
+                label="New Password"
+                type={showPassword ? 'text' : 'password'}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+                InputLabelProps={{ style: { color: '#ffffff' } }}
+                InputProps={{
+                  style: { color: '#ffffff' },
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ backgroundColor: '#2a2a2a', borderRadius: '5px' }}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                error={passwordError.length > 0}  // Set error state if password is invalid
+                helperText={passwordError}  // Display error message below the input
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                sx={{
+                  mt: 2,
+                  backgroundColor: '#007bff',
+                  color: '#ffffff',
+                  '&:hover': { backgroundColor: '#0056b3' },
+                }}
+                disabled={passwordError !== ''}
+              >
+                Reset Password
+              </Button>
+            </Box>
+            <Grid container justifyContent="center" sx={{ mt: 2 }}>
+              <Button variant="text" color="secondary" onClick={() => navigate('/signin')}>
+                Back to Sign In
+              </Button>
+            </Grid>
+          </Box>
+        </Grid>
+      </Grid>
+    </Container>
   );
 };
 

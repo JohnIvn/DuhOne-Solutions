@@ -51,7 +51,7 @@ export const subscriptionController = async (req, res) => {
                 lastName,
                 email,
                 plan,
-            },
+            },  
         });
 
         if (!isNewProfile) {

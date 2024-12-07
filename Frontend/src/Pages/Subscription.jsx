@@ -44,28 +44,33 @@ const SubscriptionPage = () => {
     // Handle form submission
     const handleSubmit = async () => {
         console.log('Form submission started.');
-
+    
         if (!selectedPlan) {
             alert('Please select a plan before submitting.');
             return;
         }
-
+    
         setIsLoading(true);
         console.log('Loading state set to true.');
-
-        const handleSubmit = async () => {
-            setIsLoading(true);
-            try {
-               
-                await handlePlanSelection(selectedPlan);
-            } finally {
-                setIsLoading(false);
-                console.log('Loading state set to false.');
-            }
-        };
-        
+    
+        try {
+            await api.post('/subscription', {
+                plan: selectedPlan.plan,  
+                package_id: selectedPlan.Package_id,
+                price: selectedPlan.price,
+            });
+    
+            console.log('Form submitted successfully.');
+            navigate('/subscription/transaction');  
+        } catch (error) {
+            console.error('Error submitting plan:', error);
+            alert('An error occurred while submitting your plan.');
+        } finally {
+            setIsLoading(false);
+            console.log('Loading state set to false.');
+        }
     };
-
+    
     return (
         <>
             <NavBarDashboard />
@@ -94,9 +99,6 @@ const SubscriptionPage = () => {
                         {isLoading ? 'Submitting...' : 'Submit Plan'}
                     </button>
                 </div>
-                {/* <div className="text-center mt-4">
-                    <h3>Currently selected plan: {selectedPlan ? selectedPlan.plan : 'None'}</h3>
-                </div> */}
             </div>
             <Footer />
         </>

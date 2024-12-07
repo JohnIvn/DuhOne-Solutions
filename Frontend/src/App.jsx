@@ -11,7 +11,7 @@ import HomePage from './Pages/HomePage.jsx';
 import AdminDashboard from './Pages/adminDashboard.jsx';
 import ProfilePage from './Pages/ProfilePage.jsx';
 import Review from './Pages/Review.jsx';
-import ForgotPassword from './Components/ForgotPassworda.jsx';
+import ForgotPassword from './components/ForgotPassworda.jsx';
 import TransactionForm from './Pages/TransactionForm.jsx';
 import Suspended from './Pages/suspended.jsx';
 
