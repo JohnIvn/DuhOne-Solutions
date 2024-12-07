@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Button, Dropdown, Spinner, Table, Container, Modal, Form } from "react-bootstrap";
-import { CheckCircle, Cancel, Block, Send, Search } from '@mui/icons-material';
+import { CheckCircle, Cancel, Send, Search } from '@mui/icons-material';
 import api from "../Api.js";
 import "../CSS/AdminDashboard.css";
 import AdminNavDashboard from "../components/AdminDashboard.jsx";
 import Footer from '../components/Footer.jsx';
 
-const AdminDashboard = () => {
+const Suspended = () => {
   const [clients, setClients] = useState([]);
-  const [statusFilter, setStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("Suspended");  // Default to Suspended
   const [planFilter, setPlanFilter] = useState("");
   const [paidFilter, setPaidFilter] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -20,7 +20,7 @@ const AdminDashboard = () => {
   const [customMessage, setCustomMessage] = useState("");
 
   const availablePlans = ["Basic", "Standard", "Premium", "Ultimate"];
-  const availableStatuses = ["Active", "Pending", "Inactive"];
+  const availableStatuses = ["Suspended"]; 
   const availablePaidStatuses = ["True", "False"];
 
   const calculateEndDate = (subscribeAt) => {
@@ -32,8 +32,10 @@ const AdminDashboard = () => {
   const fetchClients = useCallback(async (filters = {}) => {
     setLoading(true);
     try {
-      const response = await api.get("/clients", { params: filters });
-      const updatedClients = response.data.map((client) => ({
+      const response = await api.get("/clients/suspended", { params: filters });
+      // Check if response.data is an array
+      const clientsData = Array.isArray(response.data) ? response.data : [];
+      const updatedClients = clientsData.map((client) => ({
         ...client,
         endAT: client.subscribeAt ? calculateEndDate(client.subscribeAt) : null,
       }));
@@ -45,19 +47,20 @@ const AdminDashboard = () => {
     }
   }, []);
 
-  const updateStatus = async (clientId, newStatus) => {
+  const unsuspendClient = async (clientId) => {
     try {
       const client = clients.find((client) => client.userId === clientId);
       if (client) {
-        const newEndDate = calculateEndDate(client.subscribeAt);
+        const newEndDate = calculateEndDate(client.subscribeAt); // Adjust if needed
         await api.put(`/clients/${clientId}/status`, {
-          status: newStatus,
+          status: "Pending",  // Set the status to Pending
           endAt: newEndDate,
         });
-        await fetchClients({ plan: planFilter, status: statusFilter, paid: paidFilter });
+        // Re-fetch the updated clients list after updating the status
+        await fetchClients({ plan: planFilter, status: "Suspended", paid: paidFilter });
       }
     } catch (error) {
-      console.error("Error updating client status:", error);
+      console.error("Error unsuspending client:", error);
     }
   };
 
@@ -69,10 +72,6 @@ const AdminDashboard = () => {
       console.error("Error sending message:", error);
       alert("Failed to send message. Please try again.");
     }
-  };
-
-  const handleSuspend = (clientId) => {
-    updateStatus(clientId, "Suspended");
   };
 
   const handleSendMessage = () => {
@@ -87,15 +86,15 @@ const AdminDashboard = () => {
 
   const handleSearch = () => {
     if (searchTerm) {
-      fetchClients({ userId: searchTerm });
+      fetchClients({ userId: searchTerm, status: "Suspended" });  
     } else {
-      fetchClients({ plan: planFilter, status: statusFilter, paid: paidFilter });
+      fetchClients({ plan: planFilter, status: "Suspended", paid: paidFilter });  // Default search only for Suspended
     }
   };
 
   useEffect(() => {
     if (!isInitialLoad) {
-      fetchClients({ plan: planFilter, status: statusFilter, paid: paidFilter });
+      fetchClients({ plan: planFilter, status: "Suspended", paid: paidFilter });  
     } else {
       setIsInitialLoad(false);
     }
@@ -105,7 +104,7 @@ const AdminDashboard = () => {
     <>
       <AdminNavDashboard />
       <Container fluid className="admin-dashboard" style={{ backgroundColor: "#051b36", minHeight: "100vh" }}>
-        <h1 className="dashboard-title">Admin Dashboard</h1>
+        <h1 className="dashboard-title">Suspended Accounts</h1>
 
         <div className="filters-container d-flex justify-content-between align-items-center">
           <div className="filter-group d-flex">
@@ -115,17 +114,6 @@ const AdminDashboard = () => {
                 {availablePlans.map((plan) => (
                   <Dropdown.Item key={plan} eventKey={plan}>
                     {plan}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
-
-            <Dropdown onSelect={(e) => setStatusFilter(e)} className="filter-dropdown me-2">
-              <Dropdown.Toggle>{statusFilter || "Select Status"}</Dropdown.Toggle>
-              <Dropdown.Menu>
-                {availableStatuses.map((status) => (
-                  <Dropdown.Item key={status} eventKey={status}>
-                    {status}
                   </Dropdown.Item>
                 ))}
               </Dropdown.Menu>
@@ -145,10 +133,9 @@ const AdminDashboard = () => {
             <Button
               onClick={() => {
                 setPlanFilter("");
-                setStatusFilter("");
                 setPaidFilter("");
                 setSearchTerm("");
-                fetchClients({});
+                fetchClients({ status: "Suspended" });  
               }}
               variant="secondary"
               className="reset-button"
@@ -193,7 +180,7 @@ const AdminDashboard = () => {
               <tbody>
                 {clients.length === 0 ? (
                   <tr>
-                    <td colSpan="7" className="no-clients">No clients found matching your filters</td>
+                    <td colSpan="7" className="no-clients">No suspended clients found.</td>
                   </tr>
                 ) : (
                   clients.map((client) => (
@@ -205,14 +192,9 @@ const AdminDashboard = () => {
                       <td>{client.subscribeAt ? new Date(client.subscribeAt).toLocaleDateString() : "N/A"}</td>
                       <td>{client.endAT ? new Date(client.endAT).toLocaleDateString() : "N/A"}</td>
                       <td className="action-buttons">
-                        <Button variant="success" size="sm" onClick={() => updateStatus(client.userId, "Active")}>
-                          <CheckCircle />
-                        </Button>
-                        <Button variant="danger" size="sm" onClick={() => updateStatus(client.userId, "Deactive")}>
-                          <Cancel />
-                        </Button>
-                        <Button variant="warning" size="sm" onClick={() => handleSuspend(client.userId)}>
-                          <Block />
+                        {/* New button to unsuspend the client */}
+                        <Button variant="success" size="sm" onClick={() => unsuspendClient(client.userId)}>
+                          <CheckCircle /> Unsuspend
                         </Button>
                       </td>
                     </tr>
@@ -250,4 +232,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default Suspended;

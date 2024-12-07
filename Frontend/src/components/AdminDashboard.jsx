@@ -51,9 +51,9 @@ const AdminNavDashboard = () => {
         <Button
           variant="contained"
           color="success"
-          onClick={() => handleNavigation("sales")}
+          onClick={() => handleNavigation("suspended")}
         >
-          Sales
+          Suspended
         </Button>
         <Button
           variant="contained"

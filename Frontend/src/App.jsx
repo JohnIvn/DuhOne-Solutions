@@ -13,6 +13,7 @@ import ProfilePage from './Pages/ProfilePage.jsx';
 import Review from './Pages/Review.jsx';
 import ForgotPassword from './Components/ForgotPassworda.jsx';
 import TransactionForm from './Pages/TransactionForm.jsx';
+import Suspended from './Pages/suspended.jsx';
 
 const ProtectedRoute = ({ children, requiredRole }) => {
   const token = localStorage.getItem('token');
@@ -93,6 +94,17 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
+
+          <Route
+          path="/suspended"
+          element={
+            <ProtectedRoute requiredRole="Admin">
+              <Suspended />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Redirect invalid URLs */}
         <Route
           path="*"
