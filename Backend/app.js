@@ -24,6 +24,7 @@ import db from './database.js';
 import verifyCodeRoute from './Routes/verifyCodeRoute.js';
 import sendCodeRoute from './Routes/sendCodeRoute.js';
 import { insertPackagesIfNotExist } from './Services/packageInserter.js';
+import validateEmail from './Controllers/validateEmail.js';
 
 dotenv.config();
 
@@ -54,6 +55,7 @@ app.use('/send-code', sendCodeRoute);
 app.use('/verify-code', verifyCodeRoute);
 // app.use('/api', packageRouter);
 app.use('/api/package', packageRouter); 
+app.use('/validateEmail', validateEmail)
 
 
 async function initializeApp() {
