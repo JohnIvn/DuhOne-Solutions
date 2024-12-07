@@ -5,10 +5,11 @@ const changePassword = async (req, res) => {
     const { email, password } = req.body;
     console.log(req.body);
     try {
+
         const account = await SignInModel.findOne({ where: { email } });
 
         if (!account) {
-            return res.status(404).json({ message: "Account not found." });
+            return res.status(404).json({ message: "Account not found.", exists: false });
         }
 
         const hashedPassword = await bcryptjs.hash(password, 12);

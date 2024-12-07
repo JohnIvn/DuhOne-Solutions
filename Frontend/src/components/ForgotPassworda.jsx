@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Box, TextField, Button, Typography, Grid, InputAdornment, IconButton } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Password, Visibility, VisibilityOff } from '@mui/icons-material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -34,24 +34,28 @@ const ForgotPassword = () => {
     if (isCooldown) return; // Prevent sending if in cooldown
 
     try {
-      const response = await axios.post('http://localhost:3000/send-code', { email });
-      console.log(response.data.message);
+
+      
+      const existing = await axios.post('http://localhost:3000/forgot-password', {email, password: newPassword})
+      if(!existing.data.exists){
+        const response = await axios.post('http://localhost:3000/send-code', { email });
+        setIsCooldown(true);
+        setCountdown(30);
+  
+        const interval = setInterval(() => {
+          setCountdown((prev) => {
+            if (prev === 1) {
+              clearInterval(interval);  // Clear the interval once the countdown ends
+              setIsCooldown(false);     // Reset cooldown
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);  // Update countdown every second
+      } 
       alert('Verification code sent to your email!');
 
-      // Start cooldown with 30 seconds
-      setIsCooldown(true);
-      setCountdown(30);
-
-      const interval = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev === 1) {
-            clearInterval(interval);  // Clear the interval once the countdown ends
-            setIsCooldown(false);     // Reset cooldown
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);  // Update countdown every second
+   
     } catch (error) {
       console.error('Error sending verification code:', error);
       alert(error.response?.data?.message || 'Failed to send verification code');

@@ -55,13 +55,6 @@ const AdminNavDashboard = () => {
         >
           Suspended
         </Button>
-        <Button
-          variant="contained"
-          color="warning"
-          onClick={() => handleNavigation("statistics")}
-        >
-          Statistics
-        </Button>
       </Box>
     </ThemeProvider>
   );
