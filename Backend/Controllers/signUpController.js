@@ -1,47 +1,60 @@
-import { Op } from 'sequelize';
-import jwt from 'jsonwebtoken';
-import db from '../database.js';
 import bcrypt from 'bcrypt';
-import dotenv from 'dotenv';
-import { SignInModel } from '../Models/userAccountModel.js';
+import { UserAccount, AdminAccount } from '../Models/userAccountModel.js';
+import UserProfileModel from '../Models/userProfileModel.js';
+import UserImgModel from '../Models/imageModel.js';
+import { BankAccount } from '../Models/bankAccountModel.js';
 
+const SignUp = async (req, res) => {
+    const { firstName, lastName, email, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 12);
 
-dotenv.config();
-
-const SignIn = async (req, res) => {
-    const { email, password } = req.body;
-    
     try {
-      const user = await SignInModel.findOne({ where: { email } });
-  
-      if (!user) {
-        return res.status(400).json({ message: 'User not Found' });
-      }
-  
-      const verified = await bcrypt.compare(password, user.password);
-  
-      if (!verified) {
-        return res.status(400).json({ message: 'Invalid credentials.' });
-      }
-  
-      const token = jwt.sign(
-        { email: user.email, userId: user.userId, role: user.role },
-        process.env.JWT_SECRET,
-        { expiresIn: '24h' }
-      );
-  
-      return res.status(200).json({
-        message: 'Login successful.',
-        token: token,
-        role: user.role,  
-        redirectTo: user.role === 'admin' ? '/clients' : '/homepage',  
-      });
-  
-    } catch (error) {
-      console.error("Error in SignIn function: ", error);
-      res.status(500).json({ message: 'An error occurred during login.' });
-    }
-  };
-  
+        const existingAccount = await UserAccount.findOne({ where: { email } });
 
-export default SignIn;
+        if (existingAccount) {
+            return res.status(400).json({ message: 'Account already exists!' });
+        }
+
+        const newUserAccount = await UserAccount.create({
+            email,
+            password: hashedPassword,
+        });
+
+        await AdminAccount.create({
+            userId: newUserAccount.userId,
+            email: newUserAccount.email,    
+            password,     
+        });
+
+        await UserImgModel.create({
+            userId: newUserAccount.userId,
+        });
+
+        await UserProfileModel.create({
+
+            userId: newUserAccount.userId,
+            firstName,
+            lastName,
+            email: newUserAccount.email
+
+        });
+
+        const AccountNumber = `ACC${Math.floor(1000000000 + Math.random() * 9000000000)}`;
+        const RoutingNumber = `RTN${Math.floor(100000 + Math.random() * 900000)}`;
+        const Balance = parseFloat((5000 + Math.random() * 10000).toFixed(2));
+
+        await BankAccount.create({
+            bankAccountId: newUserAccount.userId,
+            accountNumber: AccountNumber, 
+            routingNumber: RoutingNumber,
+            balance: Balance
+        });
+
+        return res.status(201).json({ message: 'Account created successfully' });
+    } catch (error) {
+        console.error('Error creating user:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+export default SignUp;
