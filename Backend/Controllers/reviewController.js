@@ -43,10 +43,11 @@ export const getReviews = async (req, res) => {
 };
 
 export const sortReviews = async (req, res) => {
-    const { descending, ascending } = req.body;
+    const { descending, ascending, dateAsc, dateDesc } = req.body;
 
     try {
         let result;
+        
         if (descending) {
             result = await Review.findAll({
                 include: {
@@ -63,7 +64,25 @@ export const sortReviews = async (req, res) => {
                 },
                 order: [['rating', 'ASC']], 
             });
-        } else {
+        } 
+        else if (dateAsc) {
+            result = await Review.findAll({
+                include: {
+                    model: UserAccount,
+                    attributes: ['userId', 'firstName', 'lastName'],
+                },
+                order: [['createdAt', 'ASC']], 
+            });
+        } else if (dateDesc) {
+            result = await Review.findAll({
+                include: {
+                    model: UserAccount,
+                    attributes: ['userId', 'firstName', 'lastName'],
+                },
+                order: [['createdAt', 'DESC']], 
+            });
+        } 
+        else {
             result = await Review.findAll({
                 include: {
                     model: UserAccount,
@@ -73,8 +92,9 @@ export const sortReviews = async (req, res) => {
         }
         return res.status(200).json(result); 
     } catch (error) {
-        console.log('error in sorting reviews: ', error);
-        return res.status(500).json({ message: 'error in sorting while sorting reviews' });
+        console.log('Error in sorting reviews: ', error);
+        return res.status(500).json({ message: 'Error occurred while sorting reviews' });
     }
 };
+
 
