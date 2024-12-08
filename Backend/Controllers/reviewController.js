@@ -46,55 +46,34 @@ export const sortReviews = async (req, res) => {
     const { descending, ascending, dateAsc, dateDesc } = req.body;
 
     try {
-        let result;
-        
+        const includeConfig = {
+            model: UserAccount,
+            attributes: ['userId', 'firstName', 'lastName'],
+        };
+
+        let order = [];
+
         if (descending) {
-            result = await Review.findAll({
-                include: {
-                    model: UserAccount,
-                    attributes: ['userId', 'firstName', 'lastName'],
-                },
-                order: [['rating', 'DESC']], 
-            });
+            order = [['rating', 'DESC']];
         } else if (ascending) {
-            result = await Review.findAll({
-                include: {
-                    model: UserAccount,
-                    attributes: ['userId', 'firstName', 'lastName'],
-                },
-                order: [['rating', 'ASC']], 
-            });
-        } 
-        else if (dateAsc) {
-            result = await Review.findAll({
-                include: {
-                    model: UserAccount,
-                    attributes: ['userId', 'firstName', 'lastName'],
-                },
-                order: [['createdAt', 'ASC']], 
-            });
+            order = [['rating', 'ASC']];
+        } else if (dateAsc) {
+            order = [['createdAt', 'ASC']];
         } else if (dateDesc) {
-            result = await Review.findAll({
-                include: {
-                    model: UserAccount,
-                    attributes: ['userId', 'firstName', 'lastName'],
-                },
-                order: [['createdAt', 'DESC']], 
-            });
-        } 
-        else {
-            result = await Review.findAll({
-                include: {
-                    model: UserAccount,
-                    attributes: ['userId', 'firstName', 'lastName'],
-                },
-            });
+            order = [['createdAt', 'DESC']];
         }
-        return res.status(200).json(result); 
+
+        const result = await Review.findAll({
+            include: includeConfig,
+            order, 
+        });
+
+        return res.status(200).json(result);
     } catch (error) {
         console.log('Error in sorting reviews: ', error);
         return res.status(500).json({ message: 'Error occurred while sorting reviews' });
     }
 };
+
 
 
