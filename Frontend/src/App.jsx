@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import SubscriptionPage from './Pages/Subscription.jsx';
 import LandingPage from './LandingPage.jsx';
 import SignUp from './Pages/SignUp.jsx';
@@ -31,12 +32,27 @@ const ProtectedRoute = ({ children, requiredRole }) => {
 };
 
 const App = () => {
-  const token = localStorage.getItem('token'); 
+  const token = localStorage.getItem('token');
+
+  useEffect(() => {
+    const socket = io('http://localhost:3000');
+
+    socket.on('connect', () => {
+      console.log('Connected to Socket.IO server');
+    });
+
+    socket.on('message', (data) => {
+      console.log('Message from server:', data);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <Router>
       <Routes>
-        
         <Route
           path="/"
           element={token ? <Navigate to="/homepage" /> : <LandingPage />}
@@ -69,7 +85,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-    
         <Route
           path="/review"
           element={
@@ -94,9 +109,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
-
-          <Route
+        <Route
           path="/suspended"
           element={
             <ProtectedRoute requiredRole="Admin">
@@ -104,8 +117,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
-        {/* Redirect invalid URLs */}
         <Route
           path="*"
           element={token ? <Navigate to="/homepage" /> : <Navigate to="/signin" />}
