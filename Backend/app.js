@@ -24,6 +24,7 @@ import db from './database.js';
 import verifyCodeRoute from './Routes/verifyCodeRoute.js';
 import sendCodeRoute from './Routes/sendCodeRoute.js';
 import { insertPackagesIfNotExist } from './Services/packageInserter.js';
+import { insertAdminAccountIfNotExist }  from './Services/adminAccountInserter.js';
 import validateEmail from './Controllers/validateEmail.js';
 import  configureSockets  from './server.js'; 
 
@@ -69,6 +70,7 @@ async function initializeApp() {
     await createTableOnlinePaymentAccount();
     await createTablePackage(); 
     await insertPackagesIfNotExist();
+    await insertAdminAccountIfNotExist();
     await createTableRequestForm();
 
     console.log('Tables have been created or checked.');
