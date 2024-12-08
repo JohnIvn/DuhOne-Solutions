@@ -1,6 +1,6 @@
 // clientRoute.js
 import express from 'express';
-import {getAllSuspended ,getClients, updateClientStatus } from '../Controllers/clientController.js';
+import {getAllSuspended ,getClients, updateClientStatus } from '../Controllers/adminDashboardController.js';
 
 const router = express.Router();
 

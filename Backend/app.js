@@ -15,7 +15,7 @@ import reviewRouter from './Routes/reviewRoute.js';
 import subscriptionRouter from './Routes/subscriptionRoute.js';
 import dashboardRouter from './Routes/dashBoardRoute.js';
 import userProfileRoute from './Routes/userProfileRoute.js';
-import clientRouter from './Routes/clientsRoute.js';
+import adminDashboardRouter from './Routes/adminDashboardRoute.js'
 import packageRouter from './Routes/packageRoute.js';
 import gAuthService from './Services/gAuthService.js';
 import {createTableRequestForm, createTableUserProfile, createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableImageContainer, createTableBankAccount, createTableOnlinePaymentAccount, createTablePackage } from './Services/tableCreate.js';
@@ -46,7 +46,7 @@ app.use('/homepage', homePageRouter);
 app.use('/subscription', subscriptionRouter);
 app.use('/dashboard', dashboardRouter);
 app.use('/profile', userProfileRoute); 
-app.use('/clients', clientRouter);
+app.use('/admin-dashboard', adminDashboardRouter);
 app.use('/review', reviewRouter);
 app.use(changePasswordRoute); 
 app.use('/api/recaptcha', gAuthService);
