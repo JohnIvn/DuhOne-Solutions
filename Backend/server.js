@@ -1,41 +1,39 @@
-import { Server } from 'socket.io';
+import express from 'express';
 import http from 'http';
-import dotenv from 'dotenv';
-import { app, initializeApp } from './app.js';
+import { Server } from 'socket.io';
 
-dotenv.config();
+// Create an Express app
+const app = express();
 
+// Create an HTTP server using Express app
 const server = http.createServer(app);
 
-const io = new Server(server, {
-  cors: {
-    origin: '*',
-  },
-});
+// Attach Socket.IO to the server
+const io = new Server(server);
 
+// Serve static files (optional)
+app.use(express.static('public'));
+
+// Handle socket connection
 io.on('connection', (socket) => {
-  console.log(`User connected: ${socket.id}`);
+  console.log('A user connected');
 
+  // Listen for a message from the client
   socket.on('message', (data) => {
-    console.log(`Message received: ${data}`);
-    io.emit('message', data); 
+    console.log('Message from client:', data);
   });
 
+  // Send a message to the client
+  socket.emit('message', 'Welcome to the server!');
+
+  // Handle disconnection
   socket.on('disconnect', () => {
-    console.log(`User disconnected: ${socket.id}`);
+    console.log('A user disconnected');
   });
 });
 
-async function startServer() {
-  try {
-    await initializeApp(); 
-    server.listen(process.env.PORT, () => {
-      console.log(`Server is running on port: ${process.env.PORT}`);
-    });
-  } catch (error) {
-    console.error('Failed to start server:', error);
-    process.exit(1);
-  }
-}
-
-startServer();
+// Start the server
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});

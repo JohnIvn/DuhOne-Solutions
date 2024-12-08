@@ -58,12 +58,7 @@ export const updateClientStatus = async (req, res) => {
 
     let updateData = { status: normalizedStatus };
 
-
-    console.log(normalizedStatus);
-
-
     if (normalizedStatus === 'active') {
-      
       const subscribeAt = new Date();  
       const endAt = new Date();
       endAt.setDate(subscribeAt.getDate() + 30);  
@@ -85,7 +80,19 @@ export const updateClientStatus = async (req, res) => {
         endAt,
       };
     }
-     
+
+    if (normalizedStatus === 'deactive' || normalizedStatus === 'suspended') {
+      const subscribeAt = new Date();  
+      const endAt = new Date();
+      endAt.setDate(subscribeAt.getDate() + 30);  
+
+      updateData = {
+        ...updateData,
+        subscribeAt: null,
+        endAt: null
+      };
+    }
+
     const [updated] = await ClientModel.update(updateData, { where: { userId: id } });
 
     if (!updated) {

@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { 
   Container, Box, TextField, Button, Typography, Link, Divider, Grid, IconButton, InputAdornment 
 } from '@mui/material';
-import { Google as GoogleIcon, Facebook as FacebookIcon, Visibility, VisibilityOff } from '@mui/icons-material';
-import axios from 'axios';
+import { Google as GoogleIcon, Visibility, VisibilityOff, Person as PersonIcon } from '@mui/icons-material';import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../components/NavBar.jsx'
 import Footer from '../components/Footer.jsx';
@@ -60,122 +59,156 @@ const SignIn = () => {
 
   return (
     <>
-    <NavBar />
-    <Container
-      maxWidth="md"
-      sx={{
-        display: 'flex',
-        minHeight: '100vh',
-        minWidth: '100%',
-        marginTop: '4%',
-        backgroundImage: 'url("https://media.istockphoto.com/id/1146367630/vector/abstract-navy-background.jpg?s=612x612&w=0&k=20&c=4odz8sgWFQHHwQ09ouonbKdvotg79421iCgJ8-99RyE=")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
-      <Grid container spacing={0} sx={{ bgcolor: 'rgba(0, 0, 0, 0.7)', borderRadius: 2, padding: 4 }}>
-        <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', color: '#ffffff' }}>
-          <Typography variant="h4" gutterBottom>
-            Welcome Back!
+      <NavBar />
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          minHeight: '100vh',
+          background: "linear-gradient(to bottom right, #051b36, #000000)",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          px: 4,
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '600px',
+            textAlign: 'center',
+            marginRight: 10,
+          }}
+        >
+          <img
+            src="https://cdn.discordapp.com/attachments/1296104834432368797/1311562875893977168/LOGO_PARA_KAY_PJ.png?ex=6753db9d&is=67528a1d&hm=58800d4a5f1f2c1a8719aa89f6c15a794e57795861833988e8e9989cf8d253c3&"
+            alt="Logo"
+            style={{ width: '450px', height: '170px' , marginBottom: '16px', marginLeft: '10%' }}
+          />
+          <Typography variant="body1" sx={{ color: '#ffffff', fontWeight: 'bold' , ml: 12, mt: -5}}>
+            "It's not just the one, It's DuhOne"
           </Typography>
-          <Typography variant="body1" sx={{ mb: 4 }}>
+        </Box>
+
+        <Box
+          sx={{
+            width: '100%',
+            maxWidth: '600px',
+            p: 10,
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            boxShadow: '0px 8px 15px rgba(0, 0, 0, 0.2)',
+            backdropFilter: 'blur(10px)',
+            marginRight: "-30px",
+          }}
+        >
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+            <PersonIcon
+              sx={{
+                fontSize: 64,
+                color: '#ffffff',
+                backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                borderRadius: '50%',
+                p: 2,
+              }}
+            />
+          </Box>
+          <Typography variant="h4" align="center" sx={{ mb: 2, color: '#ffffff', fontWeight: 'bold' }}>
+            Welcome Back
+          </Typography>
+          <Typography variant="body2" align="center" sx={{ mb: 4, color: '#e0e0e0' }}>
             Please sign in to continue.
           </Typography>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Box sx={{ p: 4, borderRadius: '8px', width: '100%', maxWidth: 400, mx: 'auto', backgroundColor: 'rgba(28, 28, 28, 0.8)' }}>
-            <Typography variant="h5" gutterBottom sx={{ color: '#ffffff', textAlign: 'center' }}>
-              Sign In
+          {error && (
+            <Typography variant="body2" sx={{ color: '#ff4d4f', textAlign: 'center', mb: 2 }}>
+              {error}
             </Typography>
-            {error && (
-              <Typography variant="body2" sx={{ color: '#ff0000', textAlign: 'center', mb: 2 }}>
-                {error}
-              </Typography>
-            )}
-            <Box component="form" noValidate autoComplete="off" onSubmit={handleSignIn}>
-              <TextField
-                label="Email"
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                error={!!error}
-                helperText={error}
-                InputLabelProps={{ style: { color: '#ffffff' } }}
-                InputProps={{ style: { color: '#ffffff' } }}
-                sx={{ backgroundColor: '#2a2a2a', borderRadius: '5px' }}
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-              />
-              <TextField
-                label="Password"
-                type={showPassword ? 'text' : 'password'}
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                error={!!error}
-                helperText={error}
-                InputLabelProps={{ style: { color: '#ffffff' } }}
-                InputProps={{
-                  style: { color: '#ffffff' },
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{ backgroundColor: '#2a2a2a', borderRadius: '5px' }}
-                value={formData.password}
-                onChange={(e) => handleInputChange('password', e.target.value)}
-              />
-             <Button type="submit" variant="contained" fullWidth sx={{ mt: 2, mb: 2, backgroundColor: '#333', color: '#000000' }}>
-                Sign in
+          )}
+          <Box component="form" noValidate autoComplete="off" onSubmit={handleSignIn}>
+            <TextField
+              label="Email"
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              InputLabelProps={{ style: { color: '#bdbdbd' } }}
+              InputProps={{ style: { color: '#ffffff' } }}
+              sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: '8px' }}
+              value={formData.email}
+              onChange={(e) => handleInputChange('email', e.target.value)}
+            />
+            <TextField
+              label="Password"
+              type={showPassword ? 'text' : 'password'}
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              InputLabelProps={{ style: { color: '#bdbdbd' } }}
+              InputProps={{
+                style: { color: '#ffffff' },
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      sx={{ color: '#ffffff' }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: '8px' }}
+              value={formData.password}
+              onChange={(e) => handleInputChange('password', e.target.value)}
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{
+                mt: 3,
+                mb: 2,
+                py: 1.5,
+                background: 'linear-gradient(to right, #ff416c, #ff4b2b)',
+                color: '#ffffff',
+                borderRadius: '8px',
+                textTransform: 'none',
+                fontWeight: 'bold',
+                '&:hover': { background: 'linear-gradient(to right, #ff4b2b, #ff416c)' },
+              }}
+            >
+              Sign In
             </Button>
-              <Typography variant="body2" sx={{ color: '#ffffff', textAlign: 'center' }}>
-                Don't have an account? <Link href="/signup" variant="body2" sx={{ color: '#ffffff' }}>Sign up</Link>
-              </Typography>
-              <Divider sx={{ my: 2, color: '#ffffff', backgroundColor: 'rgba(0, 0, 0, 0.01)' }}>or</Divider>
-              <Button
-                variant="outlined"
-                startIcon={<GoogleIcon />}
-                fullWidth
-                sx={{
-                  mb: 1,
-                  color: '#ffffff',
-                  borderColor: '#ffffff',
-                  '&:hover': { backgroundColor: '#2a2a2a', borderColor: '#ffffff' },
-                }}
-              >
-                Sign in with Google
-              </Button>
-              <Button
-                variant="outlined"
-                startIcon={<FacebookIcon />}
-                fullWidth
-                sx={{
-                  color: '#ffffff',
-                  borderColor: '#ffffff',
-                  '&:hover': { backgroundColor: '#2a2a2a', borderColor: '#ffffff' },
-                }}
-              >
-                Sign in with Facebook
-              </Button>
-
-              <Typography variant="body2" sx={{ color: '#ffffff', textAlign: 'center', mt: 2 }}>
-                <Link href="/forgot-password" variant="body2" sx={{ color: '#ffffff' }}>
-                  Forgot Password?
-                </Link>
-              </Typography>
-            </Box>
+            <Typography variant="body2" align="center" sx={{ color: '#ffffff', mb: 2 }}>
+              Don't have an account?{' '}
+              <Link href="/signup" sx={{ color: '#ff4b2b' }}>
+                Sign up
+              </Link>
+            </Typography>
           </Box>
-        </Grid>
-      </Grid>
-    </Container>
-    <Footer/>
+          <Divider sx={{ my: 5, borderColor: 'rgba(255, 255, 255, 0.9)', color: "white"}}>or</Divider>
+          <Button
+            variant="outlined"
+            startIcon={<GoogleIcon />}
+            fullWidth
+            sx={{
+              color: '#ffffff',
+              borderColor: '#ffffff',
+              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+              borderRadius: '8px',
+            }}
+          >
+            Sign in with Google
+          </Button>
+          <Typography variant="body2" align="center" sx={{ mt: 3, color: '#e0e0e0' }}>
+            <Link href="/forgot-password" sx={{ color: '#e0e0e0' }}>
+              Forgot Password?
+            </Link>
+          </Typography>
+        </Box>
+      </Box>
+      <Footer />
     </>
   );
 }
