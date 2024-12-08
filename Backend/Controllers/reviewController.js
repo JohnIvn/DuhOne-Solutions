@@ -41,3 +41,40 @@ export const getReviews = async (req, res) => {
         return res.status(500).json({ message: 'An error occurred while fetching reviews.' });
     }
 };
+
+export const sortReviews = async (req, res) => {
+    const { descending, ascending } = req.body;
+
+    try {
+        let result;
+        if (descending) {
+            result = await Review.findAll({
+                include: {
+                    model: UserAccount,
+                    attributes: ['userId', 'firstName', 'lastName'],
+                },
+                order: [['rating', 'DESC']], 
+            });
+        } else if (ascending) {
+            result = await Review.findAll({
+                include: {
+                    model: UserAccount,
+                    attributes: ['userId', 'firstName', 'lastName'],
+                },
+                order: [['rating', 'ASC']], 
+            });
+        } else {
+            result = await Review.findAll({
+                include: {
+                    model: UserAccount,
+                    attributes: ['userId', 'firstName', 'lastName'],
+                },
+            });
+        }
+        return res.status(200).json(result); 
+    } catch (error) {
+        console.log('error in sorting reviews: ', error);
+        return res.status(500).json({ message: 'error in sorting while sorting reviews' });
+    }
+};
+
