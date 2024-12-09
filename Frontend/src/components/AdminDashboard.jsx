@@ -1,5 +1,5 @@
-import React from "react";
-import { Button, Box, Typography, createTheme, ThemeProvider } from "@mui/material";
+import React, { useState } from "react";
+import { Button, Box, Typography, createTheme, ThemeProvider, Menu, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const theme = createTheme({
@@ -25,9 +25,27 @@ const theme = createTheme({
 
 const AdminNavDashboard = () => {
   const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
 
+  // Function to handle navigation
   const handleNavigation = (page) => {
     navigate(`/${page}`);
+  };
+
+  // Dropdown menu open/close handlers
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  // Logout function
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    navigate('/signin');
   };
 
   return (
@@ -39,6 +57,7 @@ const AdminNavDashboard = () => {
           gap: "20px",
           marginBottom: "30px",
           mt: "30px",
+          alignItems: "center",
         }}
       >
         <Button
@@ -55,6 +74,24 @@ const AdminNavDashboard = () => {
         >
           Suspended
         </Button>
+        
+        {/* Dropdown Button for Logout */}
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleClick}
+        >
+          Account
+        </Button>
+        
+        {/* Menu Dropdown for Logout */}
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        </Menu>
       </Box>
     </ThemeProvider>
   );

@@ -35,7 +35,7 @@ const SignIn = async (req, res) => {
         message: 'Login successful.',
         token: token,
         role: user.role,  
-        redirectTo: user.role === 'Admin' ? '/clients' : '/homepage',  
+        redirectTo: user.role === 'Admin' ? '/Admin-Portal' : '/homepage',  
       });
   
     } catch (error) {

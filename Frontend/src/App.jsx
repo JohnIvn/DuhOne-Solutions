@@ -102,7 +102,7 @@ const App = () => {
           }
         />
         <Route
-          path="/clients"
+          path="/Admin-Portal"
           element={
             <ProtectedRoute requiredRole="Admin">
               <AdminDashboard />

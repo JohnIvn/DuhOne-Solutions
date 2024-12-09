@@ -47,7 +47,7 @@ app.use('/homepage', homePageRouter);
 app.use('/subscription', subscriptionRouter);
 app.use('/dashboard', dashboardRouter);
 app.use('/profile', userProfileRoute); 
-app.use('/admin-dashboard', adminDashboardRouter);
+app.use('/Admin-dashboard', adminDashboardRouter);
 app.use('/review', reviewRouter);
 app.use(changePasswordRoute); 
 app.use('/api/recaptcha', gAuthService);
