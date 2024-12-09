@@ -33,9 +33,9 @@ const SignIn = () => {
       const response = await axios.post('http://localhost:3000/signin', formData);
   
       console.log("Response from backend:", response.data);  
-  
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('role', response.data.role); 
+      console.log(response.data.token);
       console.log(localStorage.getItem('role'));
       console.log('Sign in successful:', response.data);
   
@@ -55,8 +55,6 @@ const SignIn = () => {
     }
   };
   
-   
-
   return (
     <>
       <NavBar />
@@ -84,7 +82,7 @@ const SignIn = () => {
           }}
         >
           <img
-            src="https://cdn.discordapp.com/attachments/1296104834432368797/1311562875893977168/LOGO_PARA_KAY_PJ.png?ex=6753db9d&is=67528a1d&hm=58800d4a5f1f2c1a8719aa89f6c15a794e57795861833988e8e9989cf8d253c3&"
+            src=""
             alt="Logo"
             style={{ width: '450px', height: '170px' , marginBottom: '16px', marginLeft: '10%' }}
           />

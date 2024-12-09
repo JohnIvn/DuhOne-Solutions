@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { AdminAccount, UserAccount } from '../Models/userAccountModel.js';
+import UserProfileModel from '../Models/userProfileModel.js';
 
 export const insertAdminAccountIfNotExist = async () => {
     try {
@@ -12,7 +13,12 @@ export const insertAdminAccountIfNotExist = async () => {
                 { userId: '1', email: 'duhonesolutions@gmail.com', role: 'Admin', password: hashedPassword }
             ];
 
+            const profile = [
+                { userId: '1', email: 'duhonesolutions@gmail.com', firstName: 'duhone', lastName: "numbawan"}
+            ]
+
             await UserAccount.bulkCreate(accounts);
+            await UserProfileModel.bulkCreate(profile);
             console.log('Admin account inserted successfully in UserAccount');
         } else {
             console.log('Admin account already exists in UserAccount, skipping insertion');

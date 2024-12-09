@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import NavBarDashboard from '../components/NavBarDashboard.jsx';
 import Footer from '../components/Footer.jsx';
 import '../CSS/Homepage.css';
-import mobilePhoneImage from '../assets/tech.png'; // Adjust the path as necessary
+import mobilePhoneImage from '../assets/tech.png'; 
 
 const HomePage = () => {
     const [data, setData] = useState(null);

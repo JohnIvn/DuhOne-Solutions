@@ -28,8 +28,12 @@ export const authenticateToken = async (req, res, next) => {
             lastName: profile.lastName,
             email: user.email,
         };
+
+
+
         next(); 
     } catch (error) {
+        console.log(token);
         console.error('Token or database error:', error.message);
         return res.status(403).json({ message: 'Forbidden: Token is invalid or expired' });
     }

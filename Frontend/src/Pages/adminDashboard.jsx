@@ -32,7 +32,7 @@ const AdminDashboard = () => {
   const fetchClients = useCallback(async (filters = {}) => {
     setLoading(true);
     try {
-      const response = await api.get("/clients", { params: filters });
+      const response = await api.get("/Admin-Portal", { params: filters });
       const updatedClients = response.data.map((client) => ({
         ...client,
         endAT: client.subscribeAt ? calculateEndDate(client.subscribeAt) : null,
@@ -50,7 +50,7 @@ const AdminDashboard = () => {
       const client = clients.find((client) => client.userId === clientId);
       if (client) {
         const newEndDate = calculateEndDate(client.subscribeAt);
-        await api.put(`/clients/${clientId}/status`, {
+        await api.put(`/Admin-Portal/${clientId}/status`, {
           status: newStatus,
           endAt: newEndDate,
         });

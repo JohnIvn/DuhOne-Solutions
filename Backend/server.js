@@ -15,13 +15,14 @@ import { Server } from "socket.io";
       console.log(`User registered with ID: ${userId}`);
     });
 
+
     socket.on("adminMessage", ({ userId, message }) => {
       console.log(`Admin sent message to User ${userId}: ${message}`);
       io.to(userId).emit("message", { message });
     });
 
-    socket.on("disconnect", () => {
-      console.log(`Socket disconnected: ${socket.id}`);
+    socket.on("disconnect", (reason) => {
+      console.log(`Socket disconnected: ${socket.id} due to ${reason}`);
     });
 
   });

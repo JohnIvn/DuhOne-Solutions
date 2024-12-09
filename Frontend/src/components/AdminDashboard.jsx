@@ -29,6 +29,7 @@ const AdminNavDashboard = () => {
 
   // Function to handle navigation
   const handleNavigation = (page) => {
+    console.log(`Navigating to: /${page}`);
     navigate(`/${page}`);
   };
 
@@ -41,7 +42,6 @@ const AdminNavDashboard = () => {
     setAnchorEl(null);
   };
 
-  // Logout function
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
@@ -63,7 +63,7 @@ const AdminNavDashboard = () => {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => handleNavigation("clients")}
+          onClick={() => handleNavigation("Admin-Portal")}
         >
           Clients
         </Button>

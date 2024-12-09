@@ -32,7 +32,7 @@ const Suspended = () => {
   const fetchClients = useCallback(async (filters = {}) => {
     setLoading(true);
     try {
-      const response = await api.get("/clients/suspended", { params: filters });
+      const response = await api.get("/Admin-Portal/suspended", { params: filters });
       // Check if response.data is an array
       const clientsData = Array.isArray(response.data) ? response.data : [];
       const updatedClients = clientsData.map((client) => ({
@@ -52,7 +52,7 @@ const Suspended = () => {
       const client = clients.find((client) => client.userId === clientId);
       if (client) {
         const newEndDate = calculateEndDate(client.subscribeAt); // Adjust if needed
-        await api.put(`/clients/${clientId}/status`, {
+        await api.put(`/Admin-Portal/${clientId}/status`, {
           status: "Pending",  // Set the status to Pending
           endAt: newEndDate,
         });
@@ -61,16 +61,6 @@ const Suspended = () => {
       }
     } catch (error) {
       console.error("Error unsuspending client:", error);
-    }
-  };
-
-  const sendMessage = async (clientId, message) => {
-    try {
-      await api.post(`/clients/${clientId}/send-message`, { message });
-      alert("Message sent successfully!");
-    } catch (error) {
-      console.error("Error sending message:", error);
-      alert("Failed to send message. Please try again.");
     }
   };
 
