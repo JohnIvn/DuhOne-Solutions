@@ -8,6 +8,9 @@ const SignUp = async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 12);
 
+    const bankNames = ["Philippine National Bank", "BDO Unibank", "Metrobank"];
+    const randomBankName = bankNames[Math.floor(Math.random() * bankNames.length)];
+
     try {
         const existingAccount = await UserAccount.findOne({ where: { email } });
 
@@ -45,6 +48,7 @@ const SignUp = async (req, res) => {
 
         await BankAccount.create({
             bankAccountId: newUserAccount.userId,
+            bankName: randomBankName,
             accountNumber: AccountNumber, 
             routingNumber: RoutingNumber,
             balance: Balance

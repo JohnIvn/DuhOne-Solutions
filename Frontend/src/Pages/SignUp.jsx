@@ -42,24 +42,34 @@ const SignUp = () => {
     event.preventDefault();
     const formErrors = validateSignUpForm(formData);
     setErrors(formErrors);
-
+  
     if (Object.values(formErrors).some((error) => error) || !verificationCode) {
       setError('Please complete all fields and verify your email.');
       return;
     }
-
+  
     try {
       await axios.post('http://localhost:3000/verify-code', { 
         email: formData.email, 
         code: verificationCode 
       }, { headers: { 'Content-Type': 'application/json' } });
-      
+  
       await axios.post('http://localhost:3000/signup', formData);
-      navigate('/signin');
+  
+      const loginResponse = await axios.post('http://localhost:3000/signin', {
+        email: formData.email,
+        password: formData.password
+      });
+  
+      localStorage.setItem('token', loginResponse.data.token);
+      localStorage.setItem('role', loginResponse.data.role);
+  
+      navigate('/homepage');
     } catch (err) {
       setError(err.response?.data?.message || 'Sign-up failed. Please try again.');
     }
   };
+  
 
   const handleSendCode = async () => {
     if (!formData.email) {

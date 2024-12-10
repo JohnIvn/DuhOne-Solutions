@@ -1,14 +1,12 @@
 import express from 'express';
 import authenticateToken from '../Middleware/authentication.js';
-import { subscriptionTransactionGetCredentials, subscriptionTransactionUpdateCredentials } from '../Controllers/transactionController.js';
-import { subscriptionController } from '../Controllers/subscriptionController.js';
-import { updatePayment } from '../Controllers/transactionController.js';
+import { subscriptionTransactionGetCredentials, updateSubscriptionAndPayment } from '../Controllers/transactionController.js';
+import { checkBalance } from '../Controllers/subscriptionController.js';
 
 const router = express.Router();
 
+router.post('/check-balance', authenticateToken, checkBalance);
 router.get('/transaction', authenticateToken, subscriptionTransactionGetCredentials);
-router.post('/transaction', authenticateToken, subscriptionTransactionUpdateCredentials);
-router.post('/', authenticateToken, subscriptionController);
-router.post('/updatePayment', authenticateToken, updatePayment);
+router.post('/transaction', authenticateToken, updateSubscriptionAndPayment);
 
 export default router;

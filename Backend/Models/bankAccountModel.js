@@ -1,4 +1,5 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
+import {UserAccount} from '../Models/userAccountModel.js';
 import db from '../database.js';
 import dotenv from 'dotenv';
 
@@ -10,8 +11,11 @@ export const BankAccount = BankAccountModel.init(
   {
     bankAccountId: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
+      references: {
+        model: UserAccount,
+        key: 'userId',
+      },
+      allowNull: false,
     },
     bankName: {
       type: DataTypes.STRING,
@@ -34,7 +38,7 @@ export const BankAccount = BankAccountModel.init(
     balance: {
       type: DataTypes.FLOAT,
       allowNull: true,
-    },    
+    },
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: Sequelize.NOW,
