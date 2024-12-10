@@ -24,15 +24,12 @@ export const subscriptionTransactionGetCredentials = async (req, res) => {
     }
 };
 
-
-
 export const updateSubscriptionAndPayment = async (req, res) => {
     try {
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = path.dirname(__filename);
         const { userId } = req.user;
-        
-        // Get the data from req.body
+
         const { 
             phoneNumber, 
             street, 
@@ -41,20 +38,35 @@ export const updateSubscriptionAndPayment = async (req, res) => {
             zipCode, 
             name, 
             paymentMethod, 
-            price,
-            plan // If plan is included in req.body
+            plan // Plan contains price and other details
         } = req.body;
 
-        console.log("Received data:", req.body); // To log all the incoming data
+        console.log("Received data:", req.body);
 
-        // Fetch and update user profile
+        // Fetch the user's account details
         const account = await UserProfileModel.findOne({ where: { userId } });
-
         if (!account) {
             return res.status(404).json({ error: "User profile not found" });
         }
 
-        // Update user profile with new information
+        // Fetch the user's bank account details
+        const bankAccount = await BankAccount.findOne({ where: { BankAccountId: userId } });
+        if (!bankAccount) {
+            return res.status(404).json({ error: "Bank account not found" });
+        }
+
+        // Check if the user has sufficient balance
+        if (bankAccount.balance < plan.price) {
+            return res.status(400).json({ error: "Insufficient balance to complete the transaction." });
+        }
+
+        console.log(plan.price);
+        console.log(bankAccount.balance);
+
+        // Deduct the plan price from the bank account balance
+        bankAccount.balance -= plan.price;
+
+        // Update user profile details
         await account.update({
             phoneNumber,
             street,
@@ -62,40 +74,30 @@ export const updateSubscriptionAndPayment = async (req, res) => {
             barangay,
             zipCode,
             name,
-            paymentMethod,
+            paymentMethod
         });
 
-        // Update payment method in bank account
-        await BankAccount.update(
-            {
-                bankName: paymentMethod,
-            },
-            {
-                where: { BankAccountId: userId },
-            }
-        );
+        // Update the bank account balance and payment method
+        await bankAccount.update({
+            balance: bankAccount.balance, // Save the updated balance
+            bankName: paymentMethod
+        });
 
-        // Generate receipt PDF
+        // Directory setup for receipts
         const receiptDir = path.join(__dirname, '../Receipts');
         if (!fs.existsSync(receiptDir)) {
             fs.mkdirSync(receiptDir);
         }
 
+        // Generate receipt
         const doc = new PDFDocument({ margin: 50 });
         const receiptFilePath = path.join(receiptDir, `invoice_${userId}.pdf`);
         doc.pipe(fs.createWriteStream(receiptFilePath));
 
-        // Fetch user profile again for detailed information
-        const userProfile = await UserProfileModel.findOne({ where: { userId } });
-        if (!userProfile) {
-            return res.status(404).json({ error: "User profile not found" });
-        }
+        const fullName = `${account.firstName || 'N/A'} ${account.lastName || 'N/A'}`;
+        const emailDisplay = account.email ? account.email : 'Email not provided';
 
-        const fullName = `${userProfile.firstName || 'N/A'} ${userProfile.lastName || 'N/A'}`;
-        const emailDisplay = userProfile.email ? userProfile.email : 'Email not provided';
-
-// Update PDF generation logic to include all the req.body data
-            doc
+        doc
             .fontSize(16)
             .font('Helvetica-Bold')
             .text("DuhOne Solutions", { align: 'center' })
@@ -104,63 +106,63 @@ export const updateSubscriptionAndPayment = async (req, res) => {
             .text("Payment Receipt", { align: 'center' })
             .moveDown();
 
-            doc
+        doc
             .fontSize(12)
             .font('Helvetica')
             .text(`Invoice Date: ${new Date().toLocaleDateString()}`, { align: 'right' })
             .moveDown(2);
 
-            doc
+        doc
             .fontSize(14)
             .font('Helvetica-Bold')
             .text("Billing Information", { align: 'left' })
             .moveDown();
 
-            doc
+        doc
             .fontSize(12)
             .font('Helvetica')
-            .text(`Name: ${req.body.firstName} ${req.body.lastName}`)
-            .text(`Email: ${req.body.email}`)
-            .text(`Phone: ${req.body.phoneNumber}`)
-            .text(`Street: ${req.body.street}`)
-            .text(`City: ${req.body.city}`)
-            .text(`Barangay: ${req.body.barangay}`)
-            .text(`Zip Code: ${req.body.zipCode}`)
+            .text(`Name: ${fullName}`)
+            .text(`Email: ${emailDisplay}`)
+            .text(`Phone: ${phoneNumber}`)
+            .text(`Street: ${street}`)
+            .text(`City: ${city}`)
+            .text(`Barangay: ${barangay}`)
+            .text(`Zip Code: ${zipCode}`)
             .moveDown(2);
 
-            doc
+        doc
             .fontSize(14)
             .font('Helvetica-Bold')
             .text("Payment Details", { align: 'left' })
             .moveDown();
 
-            doc
+        doc
             .fontSize(12)
             .font('Helvetica')
-            .text(`Payment Method: ${req.body.paymentMethod}`)
-            .text(`Package: ${req.body.plan.plan}`)
-            .text(`Price: ₱ ${req.body.plan.price}`)
-            .text(`Speed: ${req.body.plan.speed}`)
-            .text(`Description: ${req.body.plan.description}`)
+            .text(`Payment Method: ${paymentMethod}`)
+            .text(`Package: ${plan.plan}`)
+            .text(`Price: ₱ ${plan.price}`)
+            .text(`Speed: ${plan.speed}`)
+            .text(`Description: ${plan.description}`)
             .moveDown(2);
 
-            doc
+        doc
             .fontSize(10)
             .font('Helvetica')
             .text("If you have any questions, please contact support@duhonesolutions.com.", { align: 'center' })
             .moveDown();
 
-            doc.text("Thank you for your payment!", { align: 'center' });
+        doc.text("Thank you for your payment!", { align: 'center' });
 
-            doc.end();
-
+        doc.end();
 
         // Send receipt via email
-        await sendSubscriptionReceipt(userProfile.email, receiptFilePath, userId, name);
+        await sendSubscriptionReceipt(account.email, receiptFilePath, userId, name);
 
         return res.status(200).json({
             message: 'Subscription updated successfully. A receipt has been sent to your email.',
-            receiptUrl: `/Receipts/invoice_${userId}.pdf`
+            receiptUrl: `/Receipts/invoice_${userId}.pdf`,
+            remainingBalance: bankAccount.balance // Include remaining balance in the response
         });
     } catch (error) {
         console.error('Error updating subscription and processing payment:', error);
