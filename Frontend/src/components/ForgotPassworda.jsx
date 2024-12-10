@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Box, TextField, Button, Typography, Grid, InputAdornment, IconButton } from '@mui/material';
-import { Password, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,18 +11,35 @@ const ForgotPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isCooldown, setIsCooldown] = useState(false);
   const [countdown, setCountdown] = useState(0);
-  const [isCodeVerified, setIsCodeVerified] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [verificationCodeError, setVerificationCodeError] = useState('');
   const [error, setError] = useState('');
-  const [passwordError, setPasswordError] = useState(''); // To store password error message
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (newPassword.length > 0 && newPassword.length < 8) {
+    if (email && !/\S+@\S+\.\S+/.test(email)) {
+      setEmailError('Please enter a valid email address.');
+    } else {
+      setEmailError('');
+    }
+  }, [email]);
+
+  useEffect(() => {
+    if (newPassword && newPassword.length < 8) {
       setPasswordError('Password must be at least 8 characters long');
     } else {
       setPasswordError('');
     }
   }, [newPassword]);
+
+  useEffect(() => {
+    if (verificationCode && verificationCode.length < 6) {
+      setVerificationCodeError('Verification code must be at least 6 characters.');
+    } else {
+      setVerificationCodeError('');
+    }
+  }, [verificationCode]);
 
   const handleSendCode = async () => {
     if (!email) {
@@ -30,92 +47,75 @@ const ForgotPassword = () => {
       return;
     }
 
-    if (isCooldown) return; // Prevent sending if in cooldown
+    if (isCooldown) return;
 
     try {
+      const response = await axios.post('http://localhost:3000/validateEmail', { email });
+      if (response.data.exist) {
+        const sendCodeResponse = await axios.post('http://localhost:3000/send-code', { email });
+        if (sendCodeResponse.status === 200) {
+          setIsCooldown(true);
+          setCountdown(30);
 
-      
-      const existing = await axios.post('http://localhost:3000/forgot-password', {email, password: newPassword})
-      if(!existing.data.exists){
-        const response = await axios.post('http://localhost:3000/send-code', { email });
-        setIsCooldown(true);
-        setCountdown(30);
-  
-        const interval = setInterval(() => {
-          setCountdown((prev) => {
-            if (prev === 1) {
-              clearInterval(interval);  // Clear the interval once the countdown ends
-              setIsCooldown(false);     // Reset cooldown
-              return 0;
-            }
-            return prev - 1;
-          });
-        }, 1000);  // Update countdown every second
-      } 
-      alert('Verification code sent to your email!');
+          const interval = setInterval(() => {
+            setCountdown((prev) => {
+              if (prev === 1) {
+                clearInterval(interval);
+                setIsCooldown(false);
+                return 0;
+              }
+              return prev - 1;
+            });
+          }, 1000);
 
-   
+          alert('Verification email has been sent! Please check your email.');
+        } else {
+          alert('Failed to send verification code');
+        }
+      } else {
+        setEmailError('Email does not exist in our records');
+        alert('Email does not exist in our records');
+      }
     } catch (error) {
-      console.error('Error sending verification code:', error);
-      alert(error.response?.data?.message || 'Failed to send verification code');
-    }
-  };
-
-  const handleVerifyCode = async () => {
-    if (!verificationCode) {
-      alert('Please enter the verification code.');
-      return;
-    }
-
-    try {
-      const response = await axios.post('http://localhost:3000/verify-code', { 
-        email, 
-        code: verificationCode 
-      });
-      console.log('Verification successful:', response.data.message);
-      setIsCodeVerified(true);
-      alert('Email successfully verified!');
-    } catch (error) {
-      console.error('Error verifying code:', error);
-      alert(error.response?.data?.message || 'Verification failed. Please try again.');
+      console.error('Error validating email existence or sending code:', error);
+      alert(error.response?.data?.message || 'Failed to validate email or send verification code');
     }
   };
 
   const handleResetPassword = async (event) => {
     event.preventDefault();
 
-    if (!isCodeVerified) {
-      setError('Please verify your email before resetting your password.');
+    if (!verificationCode || verificationCodeError) {
+      alert('Please enter a valid verification code.');
       return;
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/forgot-password', { 
-        email, 
-        password: newPassword
-      });
-      console.log('Password reset successful:', response.data.message);
-      alert('Password successfully reset!');
-      navigate('/signin');
+      const emailResponse = await axios.post('http://localhost:3000/validateEmail', { email });
+      if (emailResponse.data.exist) {
+        const codeResponse = await axios.post('http://localhost:3000/verify-code', { email, code: verificationCode });
+        
+        if (codeResponse.status === 200) {
+          const resetResponse = await axios.post('http://localhost:3000/forgot-password', { email, password: newPassword });
+          alert('Password successfully reset!');
+          navigate('/signin');
+        } else {
+          alert('Invalid or expired verification code.');
+        }
+      } else {
+        alert('Email does not exist.');
+      }
     } catch (error) {
-      console.error('Error resetting password:', error);
-      setError(error.response?.data?.message || 'Failed to reset password. Please try again.');
+      console.error('Error during password reset:', error);
+      alert(error.response?.data?.message || 'Failed to reset password. Please try again.');
     }
   };
 
   return (
-    <Container maxWidth="md" sx={{ display: 'flex', minHeight: '100vh', marginTop: '4%' }}>
-      <Grid container spacing={2} sx={{ bgcolor: 'rgba(0, 0, 0, 0.7)', borderRadius: 2, padding: 4 }}>
-        <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', color: '#ffffff' }}>
-          <Typography variant="h4" gutterBottom>
-            Forgot Password
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 4 }}>
-            Enter your email to reset your password.
-          </Typography>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Box sx={{ p: 4, borderRadius: '8px', width: '100%', maxWidth: 400, mx: 'auto', backgroundColor: 'rgba(28, 28, 28, 0.8)' }}>
+    <Container maxWidth="md" sx={{ display: 'flex', minHeight: '100vh', justifyContent: 'center', alignItems: 'center' }}>
+      <Grid container spacing={2} sx={{ bgcolor: 'rgba(0, 0, 0, 0.7)', borderRadius: 2, padding: 4, maxWidth: 500 }}>
+        <Grid item xs={12}>
+          <Box sx={{ p: 4, borderRadius: '8px', width: '100%', backgroundColor: 'rgba(28, 28, 28, 0.8)' }}>
             <Typography variant="h5" gutterBottom sx={{ color: '#ffffff', textAlign: 'center' }}>
               Reset Password
             </Typography>
@@ -135,6 +135,8 @@ const ForgotPassword = () => {
                 sx={{ backgroundColor: '#2a2a2a', borderRadius: '5px' }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                error={!!emailError}
+                helperText={emailError}
               />
               <TextField
                 label="Verification Code"
@@ -146,32 +148,18 @@ const ForgotPassword = () => {
                 sx={{ backgroundColor: '#2a2a2a', borderRadius: '5px' }}
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value)}
+                error={!!verificationCodeError}
+                helperText={verificationCodeError}
               />
               <Button
                 variant="contained"
                 fullWidth
                 sx={{
                   mt: 1,
-                  backgroundColor: isCodeVerified ? '#28a745' : '#333',
-                  color: '#ffffff',
-                  '&:hover': { backgroundColor: isCodeVerified ? '#218838' : '#555' },
-                }}
-                onClick={handleVerifyCode}
-                disabled={isCodeVerified} // Disable button if code is verified
-              >
-                {isCodeVerified ? 'Verified' : 'Verify Code'}
-              </Button>
-
-              <Button
-                variant="contained"
-                fullWidth
-                sx={{
-                  mt: 2,
                   backgroundColor: '#007bff',
                   color: '#ffffff',
-                  '&:hover': { backgroundColor: '#0056b3' },
                 }}
-                onClick={handleSendCode}  // Send Code Button
+                onClick={handleSendCode}
                 disabled={isCooldown}
               >
                 {isCooldown ? `Resend in ${countdown}s` : 'Send Code'}
@@ -197,8 +185,8 @@ const ForgotPassword = () => {
                 sx={{ backgroundColor: '#2a2a2a', borderRadius: '5px' }}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                error={passwordError.length > 0}  // Set error state if password is invalid
-                helperText={passwordError}  // Display error message below the input
+                error={passwordError.length > 0}
+                helperText={passwordError}
               />
               <Button
                 type="submit"
@@ -208,9 +196,8 @@ const ForgotPassword = () => {
                   mt: 2,
                   backgroundColor: '#007bff',
                   color: '#ffffff',
-                  '&:hover': { backgroundColor: '#0056b3' },
                 }}
-                disabled={passwordError !== ''}
+                disabled={passwordError !== '' || emailError !== '' || verificationCodeError !== ''}
               >
                 Reset Password
               </Button>

@@ -1,5 +1,4 @@
 import { verificationCodes } from '../Services/verificationCodes.js'; 
-
 const verifyCode = (req, res) => {
     const { email, code } = req.body;
 
@@ -27,7 +26,6 @@ const verifyCode = (req, res) => {
         console.log('Verification code mismatch');
       }
     }
-
     res.status(400).json({ message: 'Invalid or expired verification code' });
 };
 

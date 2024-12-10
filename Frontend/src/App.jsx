@@ -23,7 +23,7 @@ const ProtectedRoute = ({ children, requiredRole }) => {
   if (!token) {
     return <Navigate to="/signin" />;
   }
-
+  
   if (requiredRole && role !== requiredRole) {
     return <Navigate to="/homepage" />;
   }
@@ -39,6 +39,10 @@ const App = () => {
 
     socket.on('connect', () => {
       console.log('Connected to Socket.IO server');
+    });
+
+    socket.on("disconnect", (reason) => {
+      console.log(reason);
     });
 
     socket.on('message', (data) => {

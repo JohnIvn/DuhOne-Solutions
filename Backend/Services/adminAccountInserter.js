@@ -13,6 +13,7 @@ export const insertAdminAccountIfNotExist = async () => {
                 { userId: '1', email: 'duhonesolutions@gmail.com', role: 'Admin', password: hashedPassword }
             ];
 
+            //updated so that in the token read 'firstName or lastName' wont be null. > minor changes
             const profile = [
                 { userId: '1', email: 'duhonesolutions@gmail.com', firstName: 'duhone', lastName: "numbawan"}
             ]
