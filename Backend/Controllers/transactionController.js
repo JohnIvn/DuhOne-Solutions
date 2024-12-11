@@ -36,9 +36,10 @@ export const updateSubscriptionAndPayment = async (req, res) => {
             city, 
             barangay, 
             zipCode, 
-            name, 
+            firstName, 
+            lastName, 
             paymentMethod, 
-            plan // Plan contains price and other details
+            plan 
         } = req.body;
 
         console.log("Received data:", req.body);
@@ -73,7 +74,8 @@ export const updateSubscriptionAndPayment = async (req, res) => {
             city,
             barangay,
             zipCode,
-            name,
+            firstName,
+            lastName,
             paymentMethod
         });
 
@@ -82,6 +84,35 @@ export const updateSubscriptionAndPayment = async (req, res) => {
             balance: bankAccount.balance, // Save the updated balance
             bankName: paymentMethod
         });
+
+        // Combine first and last names for the client
+        const fullName = `${firstName} ${lastName}`;
+
+        // Check if a client entry exists
+        let client = await ClientModel.findOne({ where: { userId } });
+
+        if (!client) {
+            // Create a new client entry
+            client = await ClientModel.create({
+                userId,
+                name: fullName, // Use combined first and last name
+                plan: plan.plan,
+                status: 'active',
+                paid: 'True',
+                subscribeAt: new Date(),
+                endAt: new Date(new Date().setMonth(new Date().getMonth() + 1)) // Set subscription end date to 1 month later
+            });
+        } else {
+            // Update existing client entry
+            await client.update({
+                name: fullName, // Use combined first and last name
+                plan: plan.plan,
+                status: 'active',
+                paid: 'True',
+                subscribeAt: new Date(),
+                endAt: new Date(new Date().setMonth(new Date().getMonth() + 1)) // Extend subscription end date
+            });
+        }
 
         // Directory setup for receipts
         const receiptDir = path.join(__dirname, '../Receipts');
@@ -94,7 +125,6 @@ export const updateSubscriptionAndPayment = async (req, res) => {
         const receiptFilePath = path.join(receiptDir, `invoice_${userId}.pdf`);
         doc.pipe(fs.createWriteStream(receiptFilePath));
 
-        const fullName = `${account.firstName || 'N/A'} ${account.lastName || 'N/A'}`;
         const emailDisplay = account.email ? account.email : 'Email not provided';
 
         doc
@@ -157,7 +187,7 @@ export const updateSubscriptionAndPayment = async (req, res) => {
         doc.end();
 
         // Send receipt via email
-        await sendSubscriptionReceipt(account.email, receiptFilePath, userId, name);
+        await sendSubscriptionReceipt(account.email, receiptFilePath, userId, fullName);
 
         return res.status(200).json({
             message: 'Subscription updated successfully. A receipt has been sent to your email.',
