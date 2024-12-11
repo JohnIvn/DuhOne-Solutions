@@ -8,7 +8,7 @@ const TransactionForm = () => {
     const navigate = useNavigate();
 
     const [userData, setUserData] = useState(null);
-    const [paymentMethod, setPaymentMethod] = useState('');
+    const [bankName, setBankName] = useState('');  // Renamed paymentMethod to bankName
     const [errorMessage, setErrorMessage] = useState('');
 
     // Get the plan's name from the selectedPlan passed in state
@@ -18,16 +18,25 @@ const TransactionForm = () => {
         const fetchUserData = async () => {
             try {
                 const response = await api.get('/subscription/transaction');
-                setUserData({ ...response.data, plan: state?.selectedPlan || response.data.plan });
-                setPaymentMethod(response.data.paymentMethod || '');
+                const data = response.data;
+    
+                // Log the entire response to see if bankName exists
+                console.log('API Response:', data);
+    
+                // Assuming that the bank name is available in response data, adjust as needed
+                const fetchedBankName = data.bankName || '';  // Adjust if the API response has a different structure
+    
+                setUserData({ ...data, plan: state?.selectedPlan || data.plan });
+                setBankName(fetchedBankName);  // Set the bank name
             } catch (error) {
                 setErrorMessage('Error fetching user data. Please try again later.');
                 console.error('Error in fetchUserData:', error);
             }
         };
-
+    
         fetchUserData();
-    }, [state?.selectedPlan]);
+    }, [state?.selectedPlan]);  // The useEffect depends on selectedPlan in the state
+    
 
     const handleInputChange = (field, value) => {
         setUserData((prevData) => ({
@@ -39,16 +48,17 @@ const TransactionForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!paymentMethod) {
-            alert('Please select a payment method.');
+        if (!bankName) {
+            alert('Please select a bank name.');
             return;
         }
 
         try {
             await api.post('/subscription/transaction', {
                 ...userData,
-                paymentMethod,
+                bankName, 
             });
+            console.log(bankName)
             alert('Subscription updated successfully!');
             navigate('/homepage');
         } catch (error) {
@@ -131,7 +141,7 @@ const TransactionForm = () => {
                 {/* Bank Name Display */}
                 <div className="form-group">
                     <label>Bank Name</label>
-                    <input type="text" value={paymentMethod} readOnly />
+                    <input type="text" value={bankName} readOnly />
                 </div>
                 <button type="submit" className="btn btn-success">
                     Update Subscription

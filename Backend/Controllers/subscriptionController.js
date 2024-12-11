@@ -51,19 +51,27 @@ export const checkUserSubscription = async (req, res) => {
     try {
         const { userId } = req.user; // Assuming userId is extracted from a middleware
 
-        // Check if the user has an active subscription
+        // Check if the user has a subscription and retrieve it
         const subscription = await ClientModel.findOne({
             where: {
                 userId,
-                status: 'active', // Adjust this to match the relevant status for active subscriptions
             },
         });
-
+        
         if (subscription) {
-            return res.status(200).json({
-                message: "User is already subscribed to a plan.",
-                subscription,
-            });
+            // If the user's plan is not "n/a", they are already subscribed
+            if (subscription.plan !== 'n/a') {
+                return res.status(200).json({
+                    message: "User is already subscribed to a plan.",
+                    subscription,
+                });
+            } else {
+                // If the user's plan is "n/a", proceed with the next steps
+                return res.status(200).json({
+                    message: "User has no active subscription (plan is n/a). Proceeding to next steps.",
+                    subscription,
+                });
+            }
         } else {
             return res.status(404).json({
                 message: "User has no active subscriptions.",

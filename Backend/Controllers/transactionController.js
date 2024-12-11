@@ -17,12 +17,30 @@ export const subscriptionTransactionGetCredentials = async (req, res) => {
             return res.status(404).json({ error: "User profile not found" });
         }
 
-        return res.json(account);
+        const bankAccount = await BankAccount.findOne({ where: { BankAccountId: userId } });
+        
+        let bankName = null;  
+
+        if (bankAccount) {
+            bankName = bankAccount.bankName;  
+        } else {
+            console.log("No bank account found for the user.");
+        }
+
+        console.log(bankName);  // Log the bankName to ensure it's correct
+
+        // Send the bankName along with the account data
+        return res.json({
+            ...account.toJSON(),  // Spread the account data (or convert to JSON if it's a Sequelize instance)
+            bankName: bankName,  // Include the bankName in the response
+        });
     } catch (error) {
         console.error("Error fetching user credentials:", error);
         return res.status(500).json({ error: "Internal server error" });
     }
 };
+
+
 
 export const updateSubscriptionAndPayment = async (req, res) => {
     try {
@@ -109,6 +127,8 @@ export const updateSubscriptionAndPayment = async (req, res) => {
                 plan: plan.plan,
                 status: 'active',
                 paid: 'True',
+                // subscribeAt: new Date(),
+                // endAt: new Date(new Date().getTime() + 3 * 60 * 1000) 
                 subscribeAt: new Date(),
                 endAt: new Date(new Date().setMonth(new Date().getMonth() + 1)) // Extend subscription end date
             });

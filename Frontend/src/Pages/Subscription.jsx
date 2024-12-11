@@ -76,9 +76,16 @@ const SubscriptionPage = () => {
     const checkUserSubscription = async () => {
         try {
             const response = await api.get('/subscription/check-subscription');
+
             if (response.status === 200 && response.data.subscription) {
-                setCurrentSubscription(response.data.subscription);
-                setModalOpen(true); // Open the modal
+                const subscription = response.data.subscription;
+
+                if (subscription.plan === 'n/a') {
+                    navigate('/subscription/transaction', { state: { selectedPlan } });
+                } else {
+                    setCurrentSubscription(subscription);
+                    setModalOpen(true); 
+                }
             } else {
                 navigate('/subscription/transaction', { state: { selectedPlan } });
             }
@@ -87,6 +94,7 @@ const SubscriptionPage = () => {
             showSnackbar('An error occurred while checking subscription.', 'error');
         }
     };
+    
 
     const closeModal = () => {
         setModalOpen(false);
