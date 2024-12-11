@@ -47,18 +47,21 @@ const TransactionForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         if (!bankName) {
             alert('Please select a bank name.');
             return;
         }
-
+    
         try {
-            await api.post('/subscription/transaction', {
-                ...userData,
-                bankName, 
-            });
-            console.log(bankName)
+            // Ensure the paymentMethod is set to the bankName
+            const updatedUserData = { 
+                ...userData, 
+                paymentMethod: bankName  // Assign bankName to paymentMethod
+            };
+    
+            await api.post('/subscription/transaction', updatedUserData);
+            console.log(bankName);
             alert('Subscription updated successfully!');
             navigate('/homepage');
         } catch (error) {
@@ -66,6 +69,7 @@ const TransactionForm = () => {
             console.error('Error in handleSubmit:', error);
         }
     };
+    
 
     if (!userData) {
         return <p>Loading...</p>;
