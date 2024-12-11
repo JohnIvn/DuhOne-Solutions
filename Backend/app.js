@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url'; 
 import helmet from 'helmet';
 import hpp from 'hpp';
+import cron from 'node-cron';
 
 import signUpRouter from './Routes/signUpRoute.js';
 import signInRouter from './Routes/signInRoute.js';
@@ -27,6 +28,7 @@ import { insertPackagesIfNotExist } from './Services/packageInserter.js';
 import { insertAdminAccountIfNotExist }  from './Services/adminAccountInserter.js';
 import validateEmail from './Controllers/validateEmail.js';
 import  configureSockets  from './server.js'; 
+import './Services/scheduler.js'
 
 dotenv.config();
 

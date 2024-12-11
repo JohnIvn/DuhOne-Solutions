@@ -1,8 +1,28 @@
 import schedule from 'node-schedule';
+import { ClientModel } from '../Models/clientModel.js';
 
-const job = schedule.scheduleJob('13 12 * * *', function () {
-    console.log('Hello, World!');
-});
+const fetchActiveUsers = () => {
+  schedule.scheduleJob('* * * * *', async () => {
+    console.log('Running scheduled task to fetch active users...');
 
-console.log('Job scheduled to print "Hello, World!" at 12:13 PM.');
+    try {
 
+      const activeUsers = await ClientModel.findAll({
+        attributes: ['userId', 'endAt'],
+        where: {
+          status: 'active',
+        },
+      });
+
+      if (activeUsers.length > 0) {
+        console.log('Active Users:', activeUsers.map(user => user.toJSON()));
+      } else {
+        console.log('No active users found.');
+      }
+    } catch (error) {
+      console.error('Error fetching active users:', error);
+    }
+  });
+};
+
+fetchActiveUsers();
