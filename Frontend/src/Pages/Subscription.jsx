@@ -6,28 +6,29 @@ import NavBarDashboard from '../components/NavBarDashboard.jsx';
 import Footer from '../components/Footer.jsx';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 const SubscriptionPage = () => {
-    const [plans, setPlans] = useState([]); // State to hold plans
+    const [plans, setPlans] = useState([]);
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
+    const [modalOpen, setModalOpen] = useState(false);
+    const [currentSubscription, setCurrentSubscription] = useState(null);
     const navigate = useNavigate();
 
-    // Fetch the plans from the backend API
     useEffect(() => {
         const fetchPlans = async () => {
             setIsLoading(true);
             try {
-                const response = await api.get('/api/package/plans'); // Fetch plans from backend
-                console.log('API response:', response.data); // Log the response for debugging
-
+                const response = await api.get('/api/package/plans');
                 if (response.status === 200) {
-                    setPlans(response.data); // Set the plans data
+                    setPlans(response.data);
                 } else {
                     showSnackbar('Failed to load plans.', 'error');
                 }
@@ -42,50 +43,55 @@ const SubscriptionPage = () => {
         fetchPlans();
     }, []);
 
-    // Handle plan selection
     const handlePlanSelection = (plan) => {
-        console.log('Selected plan:', plan); // Debugging log
-        setSelectedPlan(plan); // Set the entire plan object
+        setSelectedPlan(plan);
     };
 
-    // Show Snackbar
     const showSnackbar = (message, severity) => {
         setSnackbar({ open: true, message, severity });
     };
 
-    // Close Snackbar
     const handleCloseSnackbar = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
+        if (reason === 'clickaway') return;
         setSnackbar({ ...snackbar, open: false });
     };
 
-    // Check balance after plan submission
     const checkBalanceBeforeSubmit = async (planPrice) => {
         try {
             const response = await api.post('/subscription/check-balance', { price: planPrice });
-            console.log('Balance check response:', response.data);
-    
             if (response.status === 200 && response.data.balance >= planPrice) {
-                // If balance is sufficient, navigate to the transaction page
-                navigate('/subscription/transaction', { state: { selectedPlan } });
+                checkUserSubscription(); // Check for an existing subscription before proceeding
             } else {
-                // If balance is insufficient, show the error message
                 showSnackbar(response.data.message || 'Insufficient balance. Please top up your account.', 'error');
             }
         } catch (error) {
-            console.error('Error checking balance:', error);
             if (error.response) {
-                // If there's a response from the server, handle the error
-                showSnackbar(error.response.data.message || 'An error occurred while checking balance. Please try again later.', 'error');
+                showSnackbar(error.response.data.message || 'An error occurred while checking balance.', 'error');
             } else {
-                // Handle any other errors, such as network issues
                 showSnackbar('Network error. Please try again later.', 'error');
             }
         }
     };
-    
+
+    const checkUserSubscription = async () => {
+        try {
+            const response = await api.get('/subscription/check-subscription');
+            if (response.status === 200 && response.data.subscription) {
+                setCurrentSubscription(response.data.subscription);
+                setModalOpen(true); // Open the modal
+            } else {
+                navigate('/subscription/transaction', { state: { selectedPlan } });
+            }
+        } catch (error) {
+            console.error('Error checking subscription:', error);
+            showSnackbar('An error occurred while checking subscription.', 'error');
+        }
+    };
+
+    const closeModal = () => {
+        setModalOpen(false);
+    };
+
     return (
         <>
             <NavBarDashboard />
@@ -116,6 +122,7 @@ const SubscriptionPage = () => {
                 </div>
             </div>
             <Footer />
+
             {/* Snackbar for notifications */}
             <Snackbar
                 open={snackbar.open}
@@ -127,6 +134,39 @@ const SubscriptionPage = () => {
                     {snackbar.message}
                 </Alert>
             </Snackbar>
+
+            {/* Modal for existing subscription */}
+            <Modal
+                open={modalOpen}
+                onClose={closeModal}
+                aria-labelledby="subscription-modal-title"
+                aria-describedby="subscription-modal-description"
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 400,
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 4,
+                        borderRadius: '8px',
+                    }}
+                >
+                    <h2 id="subscription-modal-title">Existing Subscription</h2>
+                    <p id="subscription-modal-description">
+                        You are already subscribed to the <strong>{currentSubscription?.plan}</strong> plan.
+                        Please cancel your current subscription before selecting a new plan.
+                    </p>
+                    <div className="text-center mt-3">
+                        <button className="btn btn-secondary" onClick={closeModal}>
+                            Close
+                        </button>
+                    </div>
+                </Box>
+            </Modal>
         </>
     );
 };
