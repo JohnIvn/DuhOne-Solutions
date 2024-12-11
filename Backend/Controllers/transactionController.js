@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import PDFDocument from 'pdfkit';
 import fs from 'fs';
 import { sendSubscriptionReceipt } from '../Services/mailSender.js'; 
+import moment from 'moment-timezone';
 
 export const subscriptionTransactionGetCredentials = async (req, res) => {
     try {
@@ -121,17 +122,32 @@ export const updateSubscriptionAndPayment = async (req, res) => {
                 endAt: new Date(new Date().setMonth(new Date().getMonth() + 1)) // Set subscription end date to 1 month later
             });
         } else {
-            // Update existing client entry
+
+            const timezone = 'Asia/Kuala_Lumpur'; // Use Kuala Lumpur/Singapore timezone
+
+            // Get the current time in the specified timezone
+            const currentTime = moment.tz(timezone);
+            
+            // Directly assign the moment object to subscribeAt without converting it to a string
+            const subscribeAt = currentTime; // Subscribe time in the correct timezone
+            
+            // Add 3 minutes to subscribeAt to calculate endAt
+            const endAt = moment(subscribeAt).add(3, 'minutes'); // Keep the time zone intact
+            
+            console.log(subscribeAt.format()); // Check the correct time and timezone
+            console.log(endAt.format()); // Check the end time
+            
+            // Update the client data using the corrected moment objects
             await client.update({
-                name: fullName, // Use combined first and last name
+                name: fullName,
                 plan: plan.plan,
                 status: 'active',
                 paid: 'True',
-                // subscribeAt: new Date(),
-                // endAt: new Date(new Date().getTime() + 3 * 60 * 1000) 
-                subscribeAt: new Date(),
-                endAt: new Date(new Date().setMonth(new Date().getMonth() + 1)) // Extend subscription end date
+                subscribeAt: subscribeAt,
+                endAt: endAt,
             });
+            
+            
         }
 
         // Directory setup for receipts
