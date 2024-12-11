@@ -26,8 +26,6 @@ const TransactionForm = () => {
             }
         };
 
-        
-
         fetchUserData();
     }, [state?.selectedPlan]);
 
@@ -50,6 +48,7 @@ const TransactionForm = () => {
             await api.post('/subscription/transaction', {
                 ...userData,
                 paymentMethod,
+                bankName, // Include bank name in the submission
             });
             alert('Subscription updated successfully!');
             navigate('/homepage');
@@ -130,21 +129,10 @@ const TransactionForm = () => {
                     <label>Selected Plan</label>
                     <input type="text" value={planName} readOnly />
                 </div>
-                {/* Payment Method Selection */}
+                {/* Bank Name Display */}
                 <div className="form-group">
-                    <label>Payment Method</label>
-                    <select
-                        value={paymentMethod}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
-                        required
-                    >
-                        <option value="" disabled>
-                            Select a payment method
-                        </option>
-                        <option value="Philippine National Bank">Philippine National Bank</option>
-                        <option value="BDO Unibank, Inc.">BDO Unibank, Inc.</option>
-                        <option value="Metropolitan Bank and Trust Company (Metrobank)">Metropolitan Bank and Trust Company (Metrobank)</option>
-                    </select>
+                    <label>Bank Name</label>
+                    <input type="text" value={paymentMethod} readOnly />
                 </div>
                 <button type="submit" className="btn btn-success">
                     Update Subscription
