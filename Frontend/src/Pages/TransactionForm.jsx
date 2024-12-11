@@ -48,7 +48,6 @@ const TransactionForm = () => {
             await api.post('/subscription/transaction', {
                 ...userData,
                 paymentMethod,
-                bankName, // Include bank name in the submission
             });
             alert('Subscription updated successfully!');
             navigate('/homepage');
