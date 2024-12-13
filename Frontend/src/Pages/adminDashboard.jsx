@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Button, Dropdown, Spinner, Table, Container, Modal, Form } from "react-bootstrap";
-import { CheckCircle, Cancel, Block, Send, Search } from '@mui/icons-material';
-import api from "../Api.js";
+import { CheckCircle, Cancel, Block, Send, Search, Delete } from "@mui/icons-material";
+import api from "../Api.js"; 
 import "../CSS/AdminDashboard.css";
 import AdminNavDashboard from "../components/AdminDashboard.jsx";
-import Footer from '../components/Footer.jsx';
+import Footer from "../components/Footer.jsx";
+import { useSocket } from "../socketContext.jsx";
 
 const AdminDashboard = () => {
   const [clients, setClients] = useState([]);
@@ -22,6 +23,8 @@ const AdminDashboard = () => {
   const availablePlans = ["Basic", "Standard", "Premium", "Ultimate"];
   const availableStatuses = ["Active", "Pending", "Inactive"];
   const availablePaidStatuses = ["True", "False"];
+  const {socket} = useSocket();
+  console.log('socket instance:', socket);
 
   const calculateEndDate = (subscribeAt) => {
     const subscribeDate = new Date(subscribeAt);
@@ -36,6 +39,7 @@ const AdminDashboard = () => {
       const updatedClients = response.data.map((client) => ({
         ...client,
         endAT: client.subscribeAt ? calculateEndDate(client.subscribeAt) : null,
+        dataUsage: client.dataUsage || 0, // Initialize data usage if not present
       }));
       setClients(updatedClients);
     } catch (error) {
@@ -44,6 +48,22 @@ const AdminDashboard = () => {
       setLoading(false);
     }
   }, []);
+
+
+  const handleDelete = async (clientId) => {
+    if (window.confirm("Are you sure you want to delete this client?")) {
+      try {
+        await api.delete(`/Admin-Portal/${clientId}/delete`);
+        setClients((prevClients) =>
+          prevClients.filter((client) => client.userId !== clientId)
+        ); 
+      } catch (error) {
+        console.error("Error deleting client:", error);
+        alert("Failed to delete client. Please try again.");
+      }
+    }
+  };
+  
 
   const updateStatus = async (clientId, newStatus) => {
     try {
@@ -75,13 +95,25 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleSearch = () => {
-    if (searchTerm) {
-      fetchClients({ userId: searchTerm });
-    } else {
-      fetchClients({ plan: planFilter, status: statusFilter, paid: paidFilter });
+  useEffect(() => {
+    if (!socket) {
+      console.warn("Socket not initialized yet.");
+      return;
     }
-  };
+  
+    const interval = setInterval(async () => {
+      try {
+        socket.emit('update-data-usage'); // Emit event to update data usage
+        await api.put("/Admin-Portal/update-data-usage");
+        await fetchClients({ plan: planFilter, status: statusFilter, paid: paidFilter });
+      } catch (error) {
+        console.error("Error updating data usage:", error);
+      }
+    }, 15000);
+  
+    return () => clearInterval(interval); 
+  }, [socket, fetchClients, planFilter, statusFilter, paidFilter]);
+  
 
   useEffect(() => {
     if (!isInitialLoad) {
@@ -146,7 +178,6 @@ const AdminDashboard = () => {
               Reset Filters
             </Button>
           </div>
-
         </div>
 
         <div className="clients-section">
@@ -164,13 +195,14 @@ const AdminDashboard = () => {
                   <th>Paid</th>
                   <th>Subscribed</th>
                   <th>End Date</th>
+                  <th>Data Usage (GB)</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {clients.length === 0 ? (
                   <tr>
-                    <td colSpan="7" className="no-clients">No clients found matching your filters</td>
+                    <td colSpan="8" className="no-clients">No clients found matching your filters</td>
                   </tr>
                 ) : (
                   clients.map((client) => (
@@ -181,15 +213,39 @@ const AdminDashboard = () => {
                       <td className={`status-${client.paid}`}>{client.paid}</td>
                       <td>{client.subscribeAt ? new Date(client.subscribeAt).toLocaleDateString() : "N/A"}</td>
                       <td>{client.endAT ? new Date(client.endAT).toLocaleDateString() : "N/A"}</td>
+                      <td>{client.dataUsage}</td>
                       <td className="action-buttons">
-                        <Button variant="success" size="sm" onClick={() => updateStatus(client.userId, "Active")}>
+                        <Button
+                          variant="success"
+                          size="sm"
+                          onClick={() => updateStatus(client.userId, "Active")}
+                          title="Activate"
+                        >
                           <CheckCircle />
                         </Button>
-                        <Button variant="danger" size="sm" onClick={() => updateStatus(client.userId, "Deactive")}>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => updateStatus(client.userId, "Inactive")}
+                          title="Deactivate"
+                        >
                           <Cancel />
                         </Button>
-                        <Button variant="warning" size="sm" onClick={() => handleSuspend(client.userId)}>
+                        <Button
+                          variant="warning"
+                          size="sm"
+                          onClick={() => handleSuspend(client.userId)}
+                          title="Suspend"
+                        >
                           <Block />
+                        </Button>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => handleDelete(client.userId)}
+                          title="Delete"
+                        >
+                          <Delete />
                         </Button>
                       </td>
                     </tr>
@@ -205,7 +261,7 @@ const AdminDashboard = () => {
         <Modal.Header closeButton>
           <Modal.Title>Send Message</Modal.Title>
         </Modal.Header>
-        <Modal.Body>  
+        <Modal.Body>
           <Form.Group controlId="message">
             <Form.Label>Message</Form.Label>
             <Form.Control
@@ -217,8 +273,12 @@ const AdminDashboard = () => {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
-          <Button variant="primary" onClick={handleSendMessage}>Send</Button>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleSendMessage}>
+            Send
+          </Button>
         </Modal.Footer>
       </Modal>
 

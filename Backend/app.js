@@ -28,6 +28,7 @@ import { insertPackagesIfNotExist } from './Services/packageInserter.js';
 import { insertAdminAccountIfNotExist }  from './Services/adminAccountInserter.js';
 import validateEmail from './Controllers/validateEmail.js';
 import  configureSockets  from './server.js'; 
+import adminUserAccountsRouter from './Routes/adminDashboardUserRoute.js'
 import './Services/scheduler.js'
 
 dotenv.config();
@@ -56,6 +57,7 @@ app.use('/api/recaptcha', gAuthService);
 app.use('/send-code', sendCodeRoute);
 app.use('/verify-code', verifyCodeRoute);
 app.use('/api/package', packageRouter); 
+app.use('/Admin-Portal/Users', adminUserAccountsRouter)
 app.use('/validateEmail', validateEmail);
 
 async function initializeApp() {

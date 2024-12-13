@@ -95,7 +95,6 @@ const SubscriptionPage = () => {
         }
     };
     
-
     const closeModal = () => {
         setModalOpen(false);
     };

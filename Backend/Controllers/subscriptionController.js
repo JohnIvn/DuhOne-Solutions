@@ -72,11 +72,7 @@ export const checkUserSubscription = async (req, res) => {
                     subscription,
                 });
             }
-        } else {
-            return res.status(404).json({
-                message: "User has no active subscriptions.",
-            });
-        }
+        } 
     } catch (error) {
         console.error("Error in checkUserSubscription:", error);
         return res.status(500).json({

@@ -1,6 +1,8 @@
 import { ClientModel } from '../Models/clientModel.js'; 
 import UserProfileModel from '../Models/userProfileModel.js';
-import { Op } from 'sequelize';  // Import Op from Sequelize for operators
+import { Op } from 'sequelize';  
+import configureSockets from '../server.js';
+
 
 export const getClients = async (req, res) => {
   try {
@@ -11,25 +13,21 @@ export const getClients = async (req, res) => {
     const normalizedPaid = paid ? paid.trim().toLowerCase() : undefined;
 
     const filter = {};
-
-    // Add filters based on the query parameters
     if (normalizedPlan) filter.plan = normalizedPlan;
     if (normalizedPaid) filter.paid = normalizedPaid;
-
-    // If status is provided, exclude 'suspended' status
     if (normalizedStatus) {
       if (normalizedStatus === 'suspended') {
-        // Exclude suspended clients using Op.ne
-        filter.status = { [Op.ne]: 'Suspended' };  // Make sure the status is case-sensitive in DB
+        
+        filter.status = { [Op.ne]: 'Suspended' };  
       } else {
-        filter.status = normalizedStatus;  // Add other statuses if given
+        filter.status = normalizedStatus;  
       }
     } else {
-      // Exclude suspended status by default if no status is passed
+      
       filter.status = { [Op.ne]: 'Suspended' };
     }
 
-    // Fetch clients based on the filter
+    
     const clients = await ClientModel.findAll({ where: filter });
     res.json(clients);
   } catch (error) {
@@ -37,7 +35,6 @@ export const getClients = async (req, res) => {
     res.status(500).json({ message: 'Error fetching clients' });
   }
 };
-
 
 export const updateClientStatus = async (req, res) => { 
   try {
@@ -70,7 +67,7 @@ export const updateClientStatus = async (req, res) => {
           endAt
         },
         {
-          where: { userId: id } // Condition to match the row(s) to update
+          where: { userId: id } 
         }
       );
 
@@ -146,3 +143,68 @@ export const getAllSuspended = async (req, res) => {
     res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 };
+
+export const deleteSubscription = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await ClientModel.destroy({
+      where: { userId: id },
+    });
+
+    if (result === 0) {
+      return res.status(404).json({ message: "No subscription found for the given user ID" });
+    }
+
+    res.status(200).json({ message: "Subscription successfully deleted" });
+  } catch (error) {
+    console.error("Error in deleteSubscription controller:", error);
+    res.status(500).json({ message: "An error occurred while deleting the subscription" });
+  }
+};
+
+export const updateDataUsage = async (req, res) => {
+
+  try {
+    const users = await ClientModel.findAll({
+
+      attributes: ["userId", "dataUsage", "plan"],
+    });
+
+    console.log("users:", users);
+
+    const planIncrements = {
+      Ultimate: 5,
+      Premium: 4,
+      Standard: 3,
+      Basic: 2,
+    };
+
+    for (const user of users) {
+      const increment = planIncrements[user.plan] || 0;
+      const newDataUsage = user.dataUsage + increment;
+
+      await ClientModel.update(
+        { dataUsage: newDataUsage },
+        { where: { userId: user.userId, status: "active" } }
+      );
+    }
+
+    return res.status(200).json({
+      message: "All users' data usage updated successfully.",
+    });
+  } catch (error) {
+    console.error("Error updating data usage for all users:", error.message);
+    return res.status(500).json({
+      message: "Error in updating data usage.",
+    });
+  }
+};
+
+export const getAllUserAccounts = (req, res) => {
+  
+};
+
+
+
+

@@ -65,7 +65,14 @@ const AdminNavDashboard = () => {
           color="primary"
           onClick={() => handleNavigation("Admin-Portal")}
         >
-          Clients
+          Subscriptions
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => handleNavigation("Admin-Portal/Users")}
+        >
+          Accounts
         </Button>
         <Button
           variant="contained"

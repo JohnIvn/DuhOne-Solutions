@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { io } from 'socket.io-client';
+import { useSocket } from './socketContext.jsx';
 import SubscriptionPage from './Pages/Subscription.jsx';
 import LandingPage from './LandingPage.jsx';
 import SignUp from './Pages/SignUp.jsx';
@@ -15,6 +15,7 @@ import Review from './Pages/Review.jsx';
 import ForgotPassword from './components/ForgotPassworda.jsx';
 import TransactionForm from './Pages/TransactionForm.jsx';
 import Suspended from './Pages/suspended.jsx';
+import UserProfileDashboard from './Pages/adminDashboardUser.jsx';
 
 const ProtectedRoute = ({ children, requiredRole }) => {
   const token = localStorage.getItem('token');
@@ -32,27 +33,31 @@ const ProtectedRoute = ({ children, requiredRole }) => {
 };
 
 const App = () => {
+  const { socket } = useSocket();  
+
   const token = localStorage.getItem('token');
 
   useEffect(() => {
-    const socket = io('http://localhost:3000');
+    if (socket) {
+      socket.on('connect', () => {
+        console.log('Connected to Socket.IO server');
+      });
 
-    socket.on('connect', () => {
-      console.log('Connected to Socket.IO server');
-    });
+      socket.on("disconnect", (reason) => {
+        console.log(reason);
+      });
 
-    socket.on("disconnect", (reason) => {
-      console.log(reason);
-    });
+      socket.on('message', (data) => {
+        console.log('Message from server:', data);
+      });
 
-    socket.on('message', (data) => {
-      console.log('Message from server:', data);
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
+      return () => {
+        socket.off('connect');
+        socket.off('disconnect');
+        socket.off('message');
+      };
+    }
+  }, [socket]);
 
   return (
     <Router>
@@ -113,6 +118,16 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/Admin-Portal/Users"
+          element={
+            <ProtectedRoute requiredRole="Admin">
+              <UserProfileDashboard />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/suspended"
           element={
@@ -121,7 +136,10 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+        
         <Route
+        
+
           path="*"
           element={token ? <Navigate to="/homepage" /> : <Navigate to="/signin" />}
         />

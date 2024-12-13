@@ -21,11 +21,16 @@ export const ClientModel = Client.init(
     },
     status: {
       type: DataTypes.STRING,
-      defaultValue: 'pending',
+      defaultValue: 'inactive',
+    },
+    dataUsage: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
     },
     paid: {
       type: DataTypes.STRING,
-      defaultValue: "False"
+      defaultValue: "Paid",
+      allowNull: true
     },
     subscribeAt: {
       type: DataTypes.DATE,
