@@ -54,11 +54,13 @@ const PackageManager = () => {
                     )
                 );
                 setShowModal(false); // Close the modal after updating
+                window.location.reload(); // Force reload to fetch and display updated data
             }
         } catch (error) {
             setError('Error updating package: ' + error.message); // Display error message if update fails
         }
     };
+    
 
     const handleDeletePackage = async (id) => {
         try {
