@@ -32,6 +32,11 @@ export const Analytics = AnalyticsModel.init(
         type: DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0
+    },    
+    totalSignUps: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
     }
   },
   {

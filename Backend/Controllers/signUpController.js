@@ -83,6 +83,7 @@ const SignUp = async (req, res) => {
         const analyticsRecord = await AnalyticsModel.findOne();
         if (analyticsRecord) {
             await analyticsRecord.increment('totalUsers', { by: 1 });
+            await analyticsRecord.increment('totalSignUps', { by: 1 });
         } else {
             await AnalyticsModel.create({ totalUsers: 1 }); 
         }

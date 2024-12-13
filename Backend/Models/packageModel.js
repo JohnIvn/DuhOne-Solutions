@@ -5,9 +5,9 @@ class PackageModel extends Model {}
 
 PackageModel.init({
     Package_id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
     }, 
     plan: {
       type: DataTypes.STRING
