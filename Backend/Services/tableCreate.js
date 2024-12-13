@@ -8,6 +8,7 @@ import { OnlinePaymentAccount } from '../Models/onlinePaymentlAccountModel.js';
 import PackageModel from '../Models/packageModel.js';
 import RequestFormModel from '../Models/requestForm.js';
 import OffenseModel from '../Models/offenseModel.js';
+import AnalyticsModel from '../Models/analyticsModel.js';
 
 async function createTableUserAccounts() {
   try {
@@ -108,6 +109,15 @@ async function createTableOffense() {
   }
 }
 
+async function createTableAnalytics() {
+  try {
+    await AnalyticsModel.sync({ alter: true });
+    console.log('Analytics table is checked and updated if necessary');
+  } catch (error) {
+    console.error('Error checking/updating Analytics table', error);
+  }
+}
+
 export {
   createTableRequestForm,
   createTableUserAccounts, 
@@ -119,5 +129,6 @@ export {
   createTableBankAccount, 
   createTableOnlinePaymentAccount, 
   createTablePackage, 
-  createTableOffense 
+  createTableOffense,
+  createTableAnalytics
 }

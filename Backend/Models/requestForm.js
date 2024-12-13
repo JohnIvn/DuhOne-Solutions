@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, Model } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import UserProfileModel from "./userProfileModel.js";
 import db from "../database.js";
 

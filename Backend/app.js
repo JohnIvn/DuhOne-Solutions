@@ -28,7 +28,8 @@ import {
   createTableBankAccount, 
   createTableOnlinePaymentAccount, 
   createTablePackage, 
-  createTableOffense 
+  createTableOffense,
+  createTableAnalytics 
 } from './Services/tableCreate.js';
 import createDatabaseIfNotExists from './Services/databaseCreate.js';
 import db from './database.js';
@@ -88,6 +89,7 @@ async function initializeApp() {
     await createTableRequestForm();
     await createTableReview();
     await createTableOffense();
+    await createTableAnalytics();
 
     console.log('Tables have been created or checked.');
 

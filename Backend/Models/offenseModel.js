@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, Model } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import { UserAccount } from '../Models/userAccountModel.js';  
 import db from '../database.js';
 import dotenv from 'dotenv';

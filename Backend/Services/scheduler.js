@@ -7,6 +7,7 @@ import UserProfileModel from '../Models/userProfileModel.js';
 import { BankAccount } from '../Models/bankAccountModel.js';
 import PackageModel from '../Models/packageModel.js';
 import OffenseModel from '../Models/offenseModel.js';
+import AnalyticsModel from '../Models/analyticsModel.js';
 import { sendSubscriptionReceipt } from '../Services/mailSender.js'; 
 import { Op } from 'sequelize';
 import { fileURLToPath } from 'url';
@@ -87,7 +88,7 @@ const deductPriceFromBalance = async (client) => {
             );
 
             console.log(`Client ${client.userId} has exceeded 3 offenses. Subscription suspended.`);
-            return; 
+            return;
           }
 
           console.log(`Client ${client.userId} has insufficient balance, but the loan will be allowed.`);
@@ -105,6 +106,8 @@ const deductPriceFromBalance = async (client) => {
           { where: { bankAccountId: client.userId } }
         );
 
+        await updateTotalRevenue(price);
+
         await sendReceipt(client);
         console.log(`Client ${client.userId}'s balance updated. Deducted ₱${price}. New balance: ₱${newBalance}`);
       } else {
@@ -115,6 +118,26 @@ const deductPriceFromBalance = async (client) => {
     }
   } catch (error) {
     console.error(`Error deducting price from balance for client ${client.userId}:`, error);
+  }
+};
+
+const updateTotalRevenue = async (amount) => {
+  try {
+    const analytics = await AnalyticsModel.findOne();
+
+    if (analytics) {
+      const newTotalRevenue = analytics.totalRevenue + amount;
+      await AnalyticsModel.update(
+        { totalRevenue: newTotalRevenue },
+        { where: { id: analytics.id } }
+      );
+      console.log(`Total revenue updated. Added ₱${amount}. New total revenue: ₱${newTotalRevenue}`);
+    } else {
+      await AnalyticsModel.create({ totalRevenue: amount });
+      console.log(`Total revenue initialized with ₱${amount}`);
+    }
+  } catch (error) {
+    console.error('Error updating total revenue:', error);
   }
 };
 

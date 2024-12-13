@@ -3,7 +3,6 @@ import UserProfileModel from '../Models/userProfileModel.js';
 import { Op } from 'sequelize';  
 import configureSockets from '../server.js';
 
-
 export const getClients = async (req, res) => {
   try {
     const { plan, status, paid } = req.query;

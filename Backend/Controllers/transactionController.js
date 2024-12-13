@@ -1,7 +1,7 @@
 import UserProfileModel from "../Models/userProfileModel.js";
 import { BankAccount } from "../Models/bankAccountModel.js";
 import { ClientModel } from "../Models/clientModel.js";
-import schedule from 'node-schedule';
+import AnalyticsModel from "../Models/analyticsModel.js";
 import path from "path";
 import { fileURLToPath } from 'url';
 import PDFDocument from 'pdfkit';
@@ -40,8 +40,6 @@ export const subscriptionTransactionGetCredentials = async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
     }
 };
-
-
 
 export const updateSubscriptionAndPayment = async (req, res) => {
     try {
@@ -97,6 +95,13 @@ export const updateSubscriptionAndPayment = async (req, res) => {
             bankName: paymentMethod
         });
 
+        const analytics = await AnalyticsModel.findOne();
+        if (analytics) {
+            analytics.totalRevenue += plan.price;
+            await analytics.save();
+        } else {
+            await AnalyticsModel.create({ totalRevenue: plan.price });
+        }
 
         const fullName = `${firstName} ${lastName}`;
         let client = await ClientModel.findOne({ where: { userId } });

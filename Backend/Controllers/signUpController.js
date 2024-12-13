@@ -5,6 +5,7 @@ import UserImgModel from '../Models/imageModel.js';
 import { BankAccount } from '../Models/bankAccountModel.js';
 import { ClientModel } from '../Models/clientModel.js';
 import OffenseModel from '../Models/offenseModel.js';
+import AnalyticsModel from '../Models/analyticsModel.js';
 
 const SignUp = async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
@@ -78,6 +79,13 @@ const SignUp = async (req, res) => {
             subscribeAt: new Date(),
             endAt: new Date(new Date().getTime() + 3 * 60 * 1000) 
         });
+
+        const analyticsRecord = await AnalyticsModel.findOne();
+        if (analyticsRecord) {
+            await analyticsRecord.increment('totalUsers', { by: 1 });
+        } else {
+            await AnalyticsModel.create({ totalUsers: 1 }); 
+        }
 
         return res.status(201).json({ message: 'Account created successfully' });
     } catch (error) {

@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import { SignInModel } from '../Models/userAccountModel.js';
+import AnalyticsModel from '../Models/analyticsModel.js';
 
 dotenv.config();
 
@@ -26,6 +27,14 @@ const SignIn = async (req, res) => {
         process.env.JWT_SECRET,
         { expiresIn: '24h' }
       );
+
+      const analyticsRecord = await AnalyticsModel.findOne();
+      if (analyticsRecord) {
+          await analyticsRecord.increment('totalLogins', { by: 1 });
+      } else {
+          await AnalyticsModel.create({ totalLogins: 1 }); 
+      }
+
       return res.status(200).json({
         message: 'Login successful.',
         token: token,

@@ -1,12 +1,7 @@
-import { subscription } from '../Models/subscriptionModel.js';
-import UserProfileModel from '../Models/userProfileModel.js';
 import { BankAccount } from '../Models/bankAccountModel.js';
 import { ClientModel } from '../Models/clientModel.js';
-import PDFDocument from 'pdfkit';
-import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { sendSubscriptionReceipt } from '../Services/mailSender.js'; 
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
