@@ -155,7 +155,7 @@ const ReviewPage = () => {
                                                     color: '#999',
                                                 }}
                                             >
-                                                Created by: User {review.createdBy}
+                                                Created by: User {review.name}
                                             </p>
                                         </li>
                                     ))}

@@ -1,5 +1,6 @@
 import { UserAccount } from "../Models/userAccountModel.js";
 import UserProfileModel from "../Models/userProfileModel.js";
+import BankAccount from "../Models/bankAccountModel.js";
 import { Op } from "sequelize";
 
 export const getAllUsers = async (req, res) => {
@@ -44,25 +45,27 @@ export const deleteAccount = async (req, res) => {
     const { userIdToDelete } = req.params;
 
     try {
+        // Check if the account exists
         const userAccount = await UserAccount.findOne({
-            where: { userId: userIdToDelete}
+            where: { userId: userIdToDelete },
         });
 
         if (!userAccount) {
             return res.status(404).json({ message: "No account found with the provided userId" });
         }
 
-        
-        await userAccount.destroy();
-
-        
+        // Delete associated rows in the dependent tables
         await UserProfileModel.destroy({
-            where: { userId: userIdToDelete }
+            where: { userId: userIdToDelete },
         });
 
-        
-        return res.status(200).json({ message: `Successfully deleted userId: ${userIdToDelete}` });
+        await BankAccount.destroy({
+            where: { bankAccountId: userIdToDelete },
+        });
 
+        await userAccount.destroy();
+
+        return res.status(200).json({ message: `Successfully deleted userId: ${userIdToDelete}` });
     } catch (error) {
         console.error('Error in deleting account: ', error);
         return res.status(500).json({ message: "An error occurred while deleting the account" });

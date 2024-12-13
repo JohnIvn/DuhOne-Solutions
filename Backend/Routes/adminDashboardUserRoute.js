@@ -14,7 +14,7 @@ const router = express.Router();
 
 
 router.get('/', authenticateToken, getAllUsers);  
-router.delete('/${userIdToDelete}/delete', authenticateToken, deleteAccount);  
+router.delete('/:userIdToDelete/delete', authenticateToken, deleteAccount);  
 router.get('/get-user-profiles/:id', authenticateToken, getUserProfileModal);  
 router.post('/edit-user-profile-modal/:id', authenticateToken, editUserProfileModal);  
 router.get('/sort-by-userId', authenticateToken, sortByUserId);

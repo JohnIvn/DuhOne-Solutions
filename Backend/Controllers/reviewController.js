@@ -1,5 +1,6 @@
 import { Review } from '../Models/reviewModel.js';  
 import { UserAccount } from '../Models/userAccountModel.js'; 
+import UserProfileModel from '../Models/userProfileModel.js';
 
 export const createReview = async (req, res) => {
     const { content, rating } = req.body;
@@ -10,12 +11,25 @@ export const createReview = async (req, res) => {
     }
 
     try {
-        const newReview = await Review.create({
-            createdBy: req.user.userId, 
-            reviewContent: content,
-            rating,
+        
+        const userAccount = await UserProfileModel.findOne({
+            where: { userId: req.user.userId },
         });
 
+        if (!userAccount) {
+            return res.status(404).json({ message: 'User profile not found.' });
+        }
+
+        
+        const fullName = `${userAccount.firstName} ${userAccount.lastName}`;
+
+        
+        const newReview = await Review.create({
+            createdBy: req.user.userId, 
+            name: fullName, 
+            reviewContent: content, 
+            rating, 
+        });
         return res.status(201).json({
             message: 'Review submitted successfully!',
             review: newReview,
@@ -25,6 +39,7 @@ export const createReview = async (req, res) => {
         return res.status(500).json({ message: 'An error occurred while saving the review.' });
     }
 };
+
 
 export const getReviews = async (req, res) => {
     try {

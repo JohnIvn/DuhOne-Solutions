@@ -109,7 +109,7 @@ const AdminDashboard = () => {
       } catch (error) {
         console.error("Error updating data usage:", error);
       }
-    }, 15000);
+    }, 600000);
   
     return () => clearInterval(interval); 
   }, [socket, fetchClients, planFilter, statusFilter, paidFilter]);
