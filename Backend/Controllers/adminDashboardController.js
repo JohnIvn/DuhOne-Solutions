@@ -147,20 +147,33 @@ export const deleteSubscription = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const result = await ClientModel.destroy({
-      where: { userId: id },
-    });
+    const client = await ClientModel.findOne({ where: { userId: id } });
 
-    if (result === 0) {
-      return res.status(404).json({ message: "No subscription found for the given user ID" });
+    if (!client) {
+      return res.status(404).json({ message: "Client not found" });
     }
 
-    res.status(200).json({ message: "Subscription successfully deleted" });
+    const updateData = {
+      plan: 'n/a',         
+      paid: 'false',       
+      status: 'deactive', 
+      subscribeAt: null,  
+      endAt: null,        
+    };
+
+    const [updated] = await ClientModel.update(updateData, { where: { userId: id } });
+
+    if (!updated) {
+      return res.status(404).json({ message: "No changes made to the subscription" });
+    }
+
+    res.status(200).json({ message: "Subscription successfully updated to deactive" });
   } catch (error) {
     console.error("Error in deleteSubscription controller:", error);
-    res.status(500).json({ message: "An error occurred while deleting the subscription" });
+    res.status(500).json({ message: "An error occurred while updating the subscription" });
   }
 };
+
 
 export const updateDataUsage = async (req, res) => {
 

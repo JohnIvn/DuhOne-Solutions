@@ -76,8 +76,8 @@ const SignUp = async (req, res) => {
             plan: 'N/A',  
             status: 'pending',
             paid: 'False',
-            subscribeAt: new Date(),
-            endAt: new Date(new Date().getTime() + 3 * 60 * 1000) 
+            subscribeAt: 'N/A',
+            endAt: 'N/A'
         });
 
         const analyticsRecord = await AnalyticsModel.findOne();
