@@ -39,6 +39,10 @@ const subscription = subscriptionModel.init(
       type: DataTypes.STRING,
       defaultValue: 'pending',
     },
+    dataUsage: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
     subscribeAt: {
       type: DataTypes.DATE,
       defaultValue: null,
