@@ -51,3 +51,5 @@ export const BankAccount = BankAccountModel.init(
     timestamps: true,
   }
 );
+
+export default BankAccount;

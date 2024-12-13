@@ -1,6 +1,9 @@
 // clientModel.js
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import db from '../database.js';
+import UserProfileModel from './userProfileModel.js';
+import BankAccount from './bankAccountModel.js';
+import PackageModel from './packageModel.js';
 
 class Client extends Model {}
 
@@ -48,3 +51,12 @@ export const ClientModel = Client.init(
     },
   }
 );
+
+ClientModel.hasOne(UserProfileModel, { foreignKey: 'userId' });
+UserProfileModel.belongsTo(ClientModel, { foreignKey: 'userId' });
+
+ClientModel.hasOne(BankAccount, { foreignKey: 'bankAccountId'});
+BankAccount.belongsTo(ClientModel, { foreignKey: 'bankAccountId' });
+
+ClientModel.belongsTo(PackageModel, { foreignKey: 'plan', targetKey: 'plan' });
+PackageModel.hasMany(ClientModel, { foreignKey: 'plan', sourceKey: 'plan' });
