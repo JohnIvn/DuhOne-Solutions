@@ -29,7 +29,7 @@ async function createTableRequestForm() {
 
 async function createTableUserProfile(){
   try{
-    await UserProfileModel.sync({alert: false});
+    await UserProfileModel.sync({alter: false});
     console.log('User Profile table is checked and updated if necessary');
   }catch(error){
     console.error('Error checking/Updating UserProfile tabke ', error);
