@@ -2,10 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import MessageIcon from '@mui/icons-material/Message';
 
 const NavBarDashboard = () => {
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showChatBox, setShowChatBox] = useState(false);
+  const [messages, setMessages] = useState([]); // Store messages
+  const [currentMessage, setCurrentMessage] = useState(''); // Current input
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -15,6 +19,21 @@ const NavBarDashboard = () => {
 
   const toggleNotifications = () => {
     setShowNotifications((prev) => !prev);
+  };
+
+  const toggleChatBox = () => {
+    setShowChatBox((prev) => !prev);
+  };
+
+  const handleMessageChange = (e) => {
+    setCurrentMessage(e.target.value);
+  };
+
+  const handleSendMessage = () => {
+    if (currentMessage.trim() !== '') {
+      setMessages((prev) => [...prev, currentMessage]);
+      setCurrentMessage(''); // Clear input field
+    }
   };
 
   return (
@@ -42,7 +61,7 @@ const NavBarDashboard = () => {
                 onMouseOver={(e) => (e.target.style.color = 'black')}
                 onMouseOut={(e) => (e.target.style.color = 'white')}
               >
-                Overview
+                Homepage
               </a>
             </li>
             <li>
@@ -82,6 +101,12 @@ const NavBarDashboard = () => {
 
           {/* Profile and Notification Icons */}
           <div className="d-flex align-items-center text-end">
+            {/* Message Icon */}
+            <MessageIcon
+              style={{ fontSize: 32, color: 'white', marginRight: '16px', cursor: 'pointer' }}
+              onClick={toggleChatBox}
+            />
+
             {/* Notification Bell */}
             <div style={{ position: 'relative' }}>
               <NotificationsActiveIcon
@@ -175,6 +200,64 @@ const NavBarDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Chatbox Modal */}
+      {showChatBox && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '0',
+            right: '20px',
+            width: '300px',
+            backgroundColor: '#fff',
+            border: '1px solid #ddd',
+            borderRadius: '8px 8px 0 0',
+            boxShadow: '0 -2px 6px rgba(0, 0, 0, 0.1)',
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: '#051b36',
+              color: 'white',
+              padding: '10px',
+              borderRadius: '8px 8px 0 0',
+              cursor: 'pointer',
+            }}
+            onClick={toggleChatBox}
+          >
+            <strong>Admin</strong>
+          </div>
+          <div style={{ padding: '10px', height: '200px', overflowY: 'auto' }}>
+            {messages.map((msg, index) => (
+              <p key={index} style={{ color: '#333', margin: '5px 0' }}>
+                {msg}
+              </p>
+            ))}
+          </div>
+          <div style={{ display: 'flex', borderTop: '1px solid #ddd', padding: '5px' }}>
+            <input
+              type="text"
+              value={currentMessage}
+              onChange={handleMessageChange}
+              placeholder="Type a message..."
+              style={{ flex: 1, border: 'none', outline: 'none', padding: '10px' }}
+            />
+            <button
+              onClick={handleSendMessage}
+              style={{
+                backgroundColor: '#051b36',
+                color: 'white',
+                border: 'none',
+                padding: '10px 15px',
+                cursor: 'pointer',
+              }}
+            >
+              Send
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
