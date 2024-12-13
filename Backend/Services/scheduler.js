@@ -11,9 +11,16 @@ import { Op } from 'sequelize';
 import { fileURLToPath } from 'url';
 import schedule from 'node-schedule';
 
+const scheduledJobs = new Map(); 
+
 const scheduleClientEndTasks = (client) => {
   const endAt = new Date(client.endAt);
   const currentTime = new Date();
+
+  if (scheduledJobs.has(client.userId)) {
+    console.log(`Job already scheduled for client ${client.userId}`);
+    return; 
+  }
 
   if (endAt > currentTime) {
     schedule.scheduleJob(new Date(endAt), async () => {
@@ -26,7 +33,7 @@ const scheduleClientEndTasks = (client) => {
         await ClientModel.update(
           {
             endAt: newEndAt,
-            subscribeAt: previousEndAt, 
+            subscribeAt: previousEndAt,
           },
           { where: { userId: client.userId } }
         );
@@ -36,10 +43,10 @@ const scheduleClientEndTasks = (client) => {
       }
 
       await deductPriceFromBalance(client);
-
-      // Send the receipt after updating the client details
-      await sendReceipt(client);
+      scheduledJobs.delete(client.userId);
     });
+
+    scheduledJobs.set(client.userId, true);
 
     console.log(`Job scheduled for client ${client.userId} at ${endAt}`);
   } else {
@@ -69,6 +76,7 @@ const deductPriceFromBalance = async (client) => {
           { where: { bankAccountId: client.userId } }
         );
 
+        await sendReceipt(client);
         console.log(`Client ${client.userId}'s balance updated. Deducted $${price}. New balance: $${newBalance}`);
       } else {
         console.error(`Bank account not found for client ${client.userId}`);
