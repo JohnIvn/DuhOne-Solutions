@@ -2,10 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import PDFDocument from 'pdfkit';
 import nodemailer from 'nodemailer';
+import Sequelize from 'sequelize';
 import { ClientModel } from '../Models/clientModel.js';
 import UserProfileModel from '../Models/userProfileModel.js';
 import { BankAccount } from '../Models/bankAccountModel.js';
 import PackageModel from '../Models/packageModel.js';
+import OffenseModel from '../Models/offenseModel.js';
 import { sendSubscriptionReceipt } from '../Services/mailSender.js'; 
 import { Op } from 'sequelize';
 import { fileURLToPath } from 'url';
@@ -69,7 +71,35 @@ const deductPriceFromBalance = async (client) => {
 
       if (bankAccount) {
         const currentBalance = bankAccount.balance;
-        const newBalance = currentBalance - price;
+        let newBalance = currentBalance - price;
+
+        if (newBalance < 0) {
+          const offenseRecord = await OffenseModel.findOne({
+            where: { userId: client.userId },
+          });
+
+          if (offenseRecord && offenseRecord.offenseCount >= 3) {
+            await ClientModel.update(
+              {
+                paid: 'false',
+                status: 'suspended',
+              },
+              { where: { userId: client.userId } }
+            );
+
+            console.log(`Client ${client.userId} has exceeded 3 offenses. Subscription suspended.`);
+            return; 
+          }
+
+          console.log(`Client ${client.userId} has insufficient balance, but the loan will be allowed.`);
+
+          await OffenseModel.update(
+            { offenseCount: Sequelize.literal('offenseCount + 1') },
+            { where: { userId: client.userId } }
+          );
+
+          console.log(`Offense count has been updated for client ${client.userId}`);
+        }
 
         await BankAccount.update(
           { balance: newBalance },
@@ -77,7 +107,7 @@ const deductPriceFromBalance = async (client) => {
         );
 
         await sendReceipt(client);
-        console.log(`Client ${client.userId}'s balance updated. Deducted $${price}. New balance: $${newBalance}`);
+        console.log(`Client ${client.userId}'s balance updated. Deducted ₱${price}. New balance: ₱${newBalance}`);
       } else {
         console.error(`Bank account not found for client ${client.userId}`);
       }

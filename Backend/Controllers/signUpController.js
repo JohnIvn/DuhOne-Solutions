@@ -4,10 +4,11 @@ import UserProfileModel from '../Models/userProfileModel.js';
 import UserImgModel from '../Models/imageModel.js';
 import { BankAccount } from '../Models/bankAccountModel.js';
 import { ClientModel } from '../Models/clientModel.js';
+import OffenseModel from '../Models/offenseModel.js';
 
 const SignUp = async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
-    console.log('Request body:', req.body); // Debugging line to check if firstName and lastName are correctly passed
+    console.log('Request body:', req.body); 
 
     if (!firstName || !lastName || !email || !password) {
         return res.status(400).json({ message: 'Missing required fields' });
@@ -47,6 +48,11 @@ const SignUp = async (req, res) => {
             email: newUserAccount.email
         });
 
+        await OffenseModel.create({
+            userId: newUserAccount.userId,
+            offenseCount: '0'
+        })
+
         const AccountNumber = `ACC${Math.floor(1000000000 + Math.random() * 9000000000)}`;
         const RoutingNumber = `RTN${Math.floor(100000 + Math.random() * 900000)}`;
         const Balance = parseFloat((5000 + Math.random() * 10000).toFixed(2));
@@ -59,10 +65,9 @@ const SignUp = async (req, res) => {
             balance: Balance
         });
 
-        // Ensure firstName and lastName are not null before concatenation
-        const fullName = `${firstName || 'Unknown'} ${lastName || 'User'}`; // Fallback values for null or undefined
+        const fullName = `${firstName || 'Unknown'} ${lastName || 'User'}`; 
 
-        console.log('Full Name:', fullName); // Debugging line to check fullName before creating ClientModel
+        console.log('Full Name:', fullName); 
 
         await ClientModel.create({
             userId: newUserAccount.userId,
@@ -71,7 +76,7 @@ const SignUp = async (req, res) => {
             status: 'pending',
             paid: 'False',
             subscribeAt: new Date(),
-            endAt: new Date(new Date().getTime() + 3 * 60 * 1000) // 3 minutes
+            endAt: new Date(new Date().getTime() + 3 * 60 * 1000) 
         });
 
         return res.status(201).json({ message: 'Account created successfully' });
