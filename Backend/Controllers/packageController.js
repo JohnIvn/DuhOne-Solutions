@@ -50,33 +50,38 @@ export const createPackage = async (req, res) => {
 
 export const updatePackage = async (req, res) => {
     console.log('Incoming request body:', req.body);
+    console.log('Package ID from URL:', req.params.id);
 
     try {
         const { id } = req.params;
         const { plan, price, speed, description } = req.body;
 
-        // Fetch the package by ID
+        if (price && isNaN(price)) {
+            return res.status(400).json({ message: "Price must be a valid number" });
+        }
+
         const packageToUpdate = await PackageModel.findByPk(id);
 
         if (!packageToUpdate) {
             return res.status(404).json({ message: "Package not found" });
         }
 
-        // Update fields only if provided
         if (plan) packageToUpdate.plan = plan;
-        if (price) packageToUpdate.price = price;
+        if (price) packageToUpdate.price = parseFloat(price);  
         if (speed) packageToUpdate.speed = speed;
         if (description) packageToUpdate.description = description;
 
-        // Save the updated package to the database
         await packageToUpdate.save();
 
-        res.status(200).json(packageToUpdate);
+        console.log('Updated package:', packageToUpdate);
+
+        res.status(200).json({ message: "Package updated successfully", package: packageToUpdate });
     } catch (error) {
         console.error('Error updating package:', error);
         res.status(500).json({ message: 'Failed to update package' });
     }
 };
+
 
 
 export const deletePackage = async (req, res) => {
