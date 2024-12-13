@@ -7,7 +7,7 @@ const PackageManager = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
     const [newPlan, setNewPlan] = useState({ plan: '', price: '', speed: '', description: '' });
-    const [editPlan, setEditPlan] = useState({ package_id: '', plan: '', price: '', speed: '', description: '' });
+    const [editPlan, setEditPlan] = useState({ Package_id: '', plan: '', price: '', speed: '', description: '' });
     
     useEffect(() => {
         const fetchPlans = async () => {
@@ -41,26 +41,23 @@ const PackageManager = () => {
     };
 
     const handleUpdatePackage = async () => {
-        console.log("Updating package with ID:", editPlan.Package_id); // Make sure you're logging the correct id
+        console.log("Editing package with ID:", editPlan.Package_id); // Log the correct ID
+
         try {
-            // Send the update request using the correct Package_id from editPlan
             const response = await api.put(`/api/package/${editPlan.Package_id}`, editPlan);
             if (response.status === 200) {
-                // Update the plans list by replacing the updated package
                 setPlans(prevPlans => 
                     prevPlans.map(plan => 
                         plan.Package_id === editPlan.Package_id ? response.data : plan // Replace the correct plan with updated one
                     )
                 );
-                setEditPlan({ package_id: '', plan: '', price: '', speed: '', description: '' }); // Clear form
-                // Close the modal after updating
-                $('#editModal').modal('hide');
+                setEditPlan({ Package_id: '', plan: '', price: '', speed: '', description: '' }); // Clear form
+                $('#editModal').modal('hide'); // Close the modal after updating
             }
         } catch (error) {
             setError('Error updating package: ' + error.message); // Display error message if update fails
         }
     };
-    
     
     const handleDeletePackage = async (id) => {
         try {
@@ -86,7 +83,7 @@ const PackageManager = () => {
             <h1 className="text-center">Choose Your Plan</h1>
             <div className="row">
                 {plans.map((plan) => (
-                    <div key={plan.Package_id || plan.id} className="col-md-3 plan-box">
+                    <div key={plan.Package_id} className="col-md-3 plan-box">
                         <h3>{plan.plan}</h3>
                         <p>Speed: {plan.speed}</p>
                         <p>Price: {plan.price}</p>
