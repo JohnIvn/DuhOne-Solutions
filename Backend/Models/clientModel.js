@@ -1,4 +1,3 @@
-// clientModel.js
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import db from '../database.js';
 import UserProfileModel from './userProfileModel.js';

@@ -1,7 +1,4 @@
-import fs from 'fs';
-import path from 'path';
 import UserImgModel from '../Models/imageModel.js';
-import fsPromises from 'fs/promises';
 
 const uploadUserImage = async (req, res) => {
   const { userId } = req.user; 

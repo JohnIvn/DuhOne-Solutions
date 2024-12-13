@@ -1,5 +1,5 @@
 import transporter from '../Services/mailSender.js';
-import { verificationCodes } from '../Services/verificationCodes.js'; // Import verificationCodes
+import { verificationCodes } from '../Services/verificationCodes.js'; 
 
 const COOLDOWN_PERIOD = 30 * 1000; 
 

@@ -28,12 +28,12 @@ export const subscriptionTransactionGetCredentials = async (req, res) => {
             console.log("No bank account found for the user.");
         }
 
-        console.log(bankName);  // Log the bankName to ensure it's correct
+        console.log(bankName);  
 
-        // Send the bankName along with the account data
+        
         return res.json({
-            ...account.toJSON(),  // Spread the account data (or convert to JSON if it's a Sequelize instance)
-            bankName: bankName,  // Include the bankName in the response
+            ...account.toJSON(),  
+            bankName: bankName,  
         });
     } catch (error) {
         console.error("Error fetching user credentials:", error);
@@ -63,30 +63,24 @@ export const updateSubscriptionAndPayment = async (req, res) => {
 
         console.log("Received data:", req.body);
 
-        // Fetch the user's account details
         const account = await UserProfileModel.findOne({ where: { userId } });
         if (!account) {
             return res.status(404).json({ error: "User profile not found" });
         }
 
-        // Fetch the user's bank account details
         const bankAccount = await BankAccount.findOne({ where: { BankAccountId: userId } });
         if (!bankAccount) {
             return res.status(404).json({ error: "Bank account not found" });
         }
 
-        // Check if the user has sufficient balance
         if (bankAccount.balance < plan.price) {
             return res.status(400).json({ error: "Insufficient balance to complete the transaction." });
         }
 
         console.log(plan.price);
         console.log(bankAccount.balance);
-
-        // Deduct the plan price from the bank account balance
         bankAccount.balance -= plan.price;
 
-        // Update user profile details
         await account.update({
             phoneNumber,
             street,
@@ -98,46 +92,36 @@ export const updateSubscriptionAndPayment = async (req, res) => {
             paymentMethod
         });
 
-        // Update the bank account balance and payment method
         await bankAccount.update({
-            balance: bankAccount.balance, // Save the updated balance
+            balance: bankAccount.balance, 
             bankName: paymentMethod
         });
 
-        // Combine first and last names for the client
-        const fullName = `${firstName} ${lastName}`;
 
-        // Check if a client entry exists
+        const fullName = `${firstName} ${lastName}`;
         let client = await ClientModel.findOne({ where: { userId } });
 
         if (!client) {
-            // Create a new client entry
             client = await ClientModel.create({
                 userId,
-                name: fullName, // Use combined first and last name
+                name: fullName, 
                 plan: plan.plan,
                 status: 'active',
                 paid: 'True',
                 subscribeAt: new Date(),
-                endAt: new Date(new Date().setMonth(new Date().getMonth() + 1)) // Set subscription end date to 1 month later
+                endAt: new Date(new Date().setMonth(new Date().getMonth() + 1))
             });
         } else {
 
-            const timezone = 'Asia/Kuala_Lumpur'; // Use Kuala Lumpur/Singapore timezone
+            const timezone = 'Asia/Kuala_Lumpur'; 
+            const currentTime = moment.tz(timezone);           
+            const subscribeAt = currentTime; 
 
-            // Get the current time in the specified timezone
-            const currentTime = moment.tz(timezone);
+            const endAt = moment(subscribeAt).add(3, 'minutes'); 
             
-            // Directly assign the moment object to subscribeAt without converting it to a string
-            const subscribeAt = currentTime; // Subscribe time in the correct timezone
+            console.log(subscribeAt.format()); 
+            console.log(endAt.format()); 
             
-            // Add 3 minutes to subscribeAt to calculate endAt
-            const endAt = moment(subscribeAt).add(3, 'minutes'); // Keep the time zone intact
-            
-            console.log(subscribeAt.format()); // Check the correct time and timezone
-            console.log(endAt.format()); // Check the end time
-            
-            // Update the client data using the corrected moment objects
             await client.update({
                 name: fullName,
                 plan: plan.plan,
@@ -146,17 +130,13 @@ export const updateSubscriptionAndPayment = async (req, res) => {
                 subscribeAt: subscribeAt,
                 endAt: endAt,
             });
-            
-            
         }
 
-        // Directory setup for receipts
         const receiptDir = path.join(__dirname, '../Receipts');
         if (!fs.existsSync(receiptDir)) {
             fs.mkdirSync(receiptDir);
         }
 
-        // Generate receipt
         const doc = new PDFDocument({ margin: 50 });
         const receiptFilePath = path.join(receiptDir, `invoice_${userId}.pdf`);
         doc.pipe(fs.createWriteStream(receiptFilePath));
@@ -222,13 +202,12 @@ export const updateSubscriptionAndPayment = async (req, res) => {
 
         doc.end();
 
-        // Send receipt via email
         await sendSubscriptionReceipt(account.email, receiptFilePath, userId, fullName);
 
         return res.status(200).json({
             message: 'Subscription updated successfully. A receipt has been sent to your email.',
             receiptUrl: `/Receipts/invoice_${userId}.pdf`,
-            remainingBalance: bankAccount.balance // Include remaining balance in the response
+            remainingBalance: bankAccount.balance 
         });
     } catch (error) {
         console.error('Error updating subscription and processing payment:', error);

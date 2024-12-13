@@ -1,4 +1,3 @@
-import { AdminAccount } from '../Models/userAccountModel.js';
 import { UserAccount } from '../Models/userAccountModel.js';
 import bcryptjs from 'bcryptjs'
 

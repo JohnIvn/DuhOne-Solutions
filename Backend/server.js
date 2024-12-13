@@ -17,28 +17,24 @@ const configureSockets = (server) => {
   io.on("connection", (socket) => {
     console.log(`Socket connected: ${socket.id}`);
 
-    // Handle user registration
     socket.on("register", (userId) => {
       console.log(`User registered: ${userId}`);
-      handleUserRegistration(socket, userId); // Pass socket and userId to the handler
+      handleUserRegistration(socket, userId); 
     });
 
-    // Handle admin message
     socket.on("adminMessage", ({ userId, message }) => {
       console.log(`Admin message to User ${userId}: ${message}`);
-      handleAdminMessage(socket, userId, message); // Pass necessary info
+      handleAdminMessage(socket, userId, message); 
     });
 
-    // Handle reconnection
     socket.on("reconnect", (attemptNumber) => {
       console.log(`Reconnected: Attempt ${attemptNumber}`);
-      handleReconnection(socket, attemptNumber); // Handle reconnection logic
+      handleReconnection(socket, attemptNumber);
     });
 
-    // Handle disconnect
     socket.on("disconnect", (reason) => {
       console.log(`Socket disconnected: ${socket.id}, Reason: ${reason}`);
-      handleSocketDisconnect(socket, reason); // Pass socket and reason
+      handleSocketDisconnect(socket, reason);
     });
   });
 };

@@ -33,7 +33,7 @@ const fileFilter = (req, file, cb) => {
   
   if (allowedMimes.includes(file.mimetype)) {
     console.log('File type is valid');
-    cb(null, true); // Accept the file
+    cb(null, true); 
   } else {
     console.error('Invalid file type');
     cb(new Error('Invalid file type'), false);

@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import PDFDocument from 'pdfkit';
-import nodemailer from 'nodemailer';
 import Sequelize from 'sequelize';
 import { ClientModel } from '../Models/clientModel.js';
 import UserProfileModel from '../Models/userProfileModel.js';

@@ -45,7 +45,6 @@ export const deleteAccount = async (req, res) => {
     const { userIdToDelete } = req.params;
 
     try {
-        // Check if the account exists
         const userAccount = await UserAccount.findOne({
             where: { userId: userIdToDelete },
         });
@@ -54,7 +53,6 @@ export const deleteAccount = async (req, res) => {
             return res.status(404).json({ message: "No account found with the provided userId" });
         }
 
-        // Delete associated rows in the dependent tables
         await UserProfileModel.destroy({
             where: { userId: userIdToDelete },
         });
