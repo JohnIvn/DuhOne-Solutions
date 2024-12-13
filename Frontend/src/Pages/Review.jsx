@@ -97,40 +97,43 @@ const ReviewPage = () => {
         ? reviews.filter((review) => review.rating === filterRating)
         : reviews;
 
+    // Responsive styles
+    const containerStyle = {
+        marginTop: '-15px',
+        padding: '50px',
+        fontFamily: 'Arial, sans-serif',
+        backgroundColor: '#f5f5f5',
+        color: '#333',
+    };
+
+    const contentStyle = {
+        display: 'flex',
+        gap: '20px',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        backgroundColor: '#fff',
+        padding: '30px',
+        borderRadius: '10px',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        flexWrap: 'wrap', // Allow wrapping on smaller screens
+    };
+
+    const sectionStyle = {
+        flex: 1,
+        padding: '20px',
+        border: '1px solid #ddd',
+        borderRadius: '8px',
+        backgroundColor: '#fafafa',
+        minWidth: '300px', // Minimum width for better responsiveness
+    };
+
     return (
         <>
             <NavBarDashboard />
-            <div
-                style={{
-                    marginTop: '-15px',
-                    padding: '50px',
-                    fontFamily: 'Arial, sans-serif',
-                    backgroundColor: '#f5f5f5',
-                    color: '#333',
-                }}
-            >
-                <div
-                    style={{
-                        display: 'flex',
-                        gap: '20px',
-                        maxWidth: '1200px',
-                        margin: '0 auto',
-                        backgroundColor: '#fff',
-                        padding: '30px',
-                        borderRadius: '10px',
-                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                    }}
-                >
+            <div style={containerStyle}>
+                <div style={contentStyle}>
                     {/* Submit Your Review Section */}
-                    <div
-                        style={{
-                            flex: 1,
-                            padding: '20px',
-                            border: '1px solid #ddd',
-                            borderRadius: '8px',
-                            backgroundColor: '#fafafa',
-                        }}
-                    >
+                    <div style={sectionStyle}>
                         <h3 style={{ color: '#444', marginBottom: '15px', fontWeight: '600' }}>
                             Submit Your Review
                         </h3>
@@ -180,6 +183,7 @@ const ReviewPage = () => {
                                     display: 'flex',
                                     gap: '20px',
                                     justifyContent: 'center',
+                                    flexWrap: 'wrap', // Allow wrapping on smaller screens
                                 }}
                             >
                                 {['Basic', 'Standard', 'Premium', 'Ultimate'].map((plan) => (
@@ -241,15 +245,7 @@ const ReviewPage = () => {
                     </div>
 
                     {/* Recent Reviews Section */}
-                    <div
-                        style={{
-                            flex: 2,
-                            padding: '20px',
-                            border: '1px solid #ddd',
-                            borderRadius: '8px',
-                            backgroundColor: '#fafafa',
-                        }}
-                    >
+                    <div style={sectionStyle}>
                         <h3 style={{ color: '#555', marginBottom: '15px', fontWeight: '600' }}>
                             Recent Reviews
                         </h3>

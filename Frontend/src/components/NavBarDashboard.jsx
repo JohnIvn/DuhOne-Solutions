@@ -38,12 +38,12 @@ const NavBarDashboard = () => {
 
   return (
     <header className="p-3 mb-3 border-bottom" style={{ backgroundColor: '#051b36' }}>
-      <div className="container">
-        <div className="d-flex flex-wrap align-items-center justify-content-between">
+      <div className="container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div className="d-flex flex-wrap align-items-center justify-content-between" style={{ width: '100%' }}>
           {/* Logo */}
-          <a href="/" className="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
+          <a href="/" className="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none" style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
             <img
-              src="https://cdn.discordapp.com/attachments/1296104834432368797/1313482932974784572/image-removebg-preview_41.png?ex=6752460e&is=6750f48e&hm=61cf9c15c780a5977faf93a682b1a2ea21cb63564d11a4c8cb305930f49e3e69&"
+              src="https://cdn.discordapp.com/attachments/1296104834432368797/1313482932974784572/image-removebg-preview_41.png?ex=675cd20e&is=675b808e&hm=b94a0be44e4daa1f7fc72b1290c00558eabbbd2fd125cb77201ee5c32abcf041&"
               alt="Logo"
               width={200}
               height={50}
@@ -52,12 +52,12 @@ const NavBarDashboard = () => {
           </a>
 
           {/* Centered Nav Links */}
-          <ul className="nav col-12 col-lg-auto mb-2 justify-content-center mb-md-0">
+          <ul className="nav col-12 col-lg-auto mb-2 justify-content-center mb-md-0" style={{ display: 'flex', justifyContent: 'center', padding: '0', listStyleType: 'none', marginBottom: '20px' }}>
             <li>
               <a
                 href="/homepage"
                 className="nav-link px-2"
-                style={{ color: 'white', textDecoration: 'none' }}
+                style={{ color: 'white', textDecoration: 'none', margin: '5px' }}
                 onMouseOver={(e) => (e.target.style.color = 'black')}
                 onMouseOut={(e) => (e.target.style.color = 'white')}
               >
@@ -68,7 +68,7 @@ const NavBarDashboard = () => {
               <a
                 href="/subscription"
                 className="nav-link px-2"
-                style={{ color: 'white', textDecoration: 'none' }}
+                style={{ color: 'white', textDecoration: 'none', margin: '5px' }}
                 onMouseOver={(e) => (e.target.style.color = 'black')}
                 onMouseOut={(e) => (e.target.style.color = 'white')}
               >
@@ -79,7 +79,7 @@ const NavBarDashboard = () => {
               <a
                 href="/profile"
                 className="nav-link px-2"
-                style={{ color: 'white', textDecoration: 'none' }}
+                style={{ color: 'white', textDecoration: 'none', margin: '5px' }}
                 onMouseOver={(e) => (e.target.style.color = 'black')}
                 onMouseOut={(e) => (e.target.style.color = 'white')}
               >
@@ -90,7 +90,7 @@ const NavBarDashboard = () => {
               <a
                 href="/review"
                 className="nav-link px-2"
-                style={{ color: 'white', textDecoration: 'none' }}
+                style={{ color: 'white', textDecoration: 'none', margin: '5px' }}
                 onMouseOver={(e) => (e.target.style.color = 'black')}
                 onMouseOut={(e) => (e.target.style.color = 'white')}
               >
@@ -100,7 +100,7 @@ const NavBarDashboard = () => {
           </ul>
 
           {/* Profile and Notification Icons */}
-          <div className="d-flex align-items-center text-end">
+          <div className="d-flex align-items-center text-end" style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
             {/* Message Icon */}
             <MessageIcon
               style={{ fontSize: 32, color: 'white', marginRight: '16px', cursor: 'pointer' }}

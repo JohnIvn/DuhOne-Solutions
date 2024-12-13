@@ -54,6 +54,7 @@ const SignIn = () => {
       <Box
         sx={{
           display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' }, // Stack on small screens, row on medium and up
           justifyContent: 'space-between',
           alignItems: 'center',
           minHeight: '100vh',
@@ -69,17 +70,28 @@ const SignIn = () => {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            width: '600px',
             textAlign: 'center',
-            marginRight: 10,
+            mb: { xs: 4, md: 0 }, // Add margin on smaller screens
           }}
         >
           <img
-            src="https://cdn.discordapp.com/attachments/1296104834432368797/1311562875893977168/LOGO_PARA_KAY_PJ.png?ex=6753db9d&is=67528a1d&hm=58800d4a5f1f2c1a8719aa89f6c15a794e57795861833988e8e9989cf8d253c3&"
+            src="https://cdn.discordapp.com/attachments/1296104834432368797/1311562875893977168/LOGO_PARA_KAY_PJ.png?ex=675d161d&is=675bc49d&hm=adbb543948b87f44ff78d72870ec0601a48bf859d1feba3583cbd384b24d3ac5&"
             alt="Logo"
-            style={{ width: '500px', height: '200px' , marginBottom: '16px', marginLeft: '70%' }}
+            style={{
+              width: '100%',
+              maxWidth: '300px', // Restrict size for smaller screens
+              height: 'auto',
+              marginBottom: '16px',
+            }}
           />
-          <Typography variant="body1" sx={{ color: '#ffffff', fontWeight: 'bold' , ml: 50}}>
+          <Typography
+            variant="body1"
+            sx={{
+              color: '#ffffff',
+              fontWeight: 'bold',
+              px: 2, // Add padding for better alignment
+            }}
+          >
             "It's not just the one, It's DuhOne"
           </Typography>
         </Box>
@@ -88,7 +100,7 @@ const SignIn = () => {
           sx={{
             width: '100%',
             maxWidth: '600px',
-            p: 10,
+            p: { xs: 3, sm: 5, md: 10 }, // Adjust padding based on screen size
             borderRadius: '16px',
             backgroundColor: 'rgba(255, 255, 255, 0.1)',
             boxShadow: '0px 8px 15px rgba(0, 0, 0, 0.2)',
@@ -178,7 +190,7 @@ const SignIn = () => {
               </Link>
             </Typography>
           </Box>
-          <Divider sx={{ my: 5, borderColor: 'rgba(255, 255, 255, 0.9)', color: "white"}}>or</Divider>
+          <Divider sx={{ my: 5, borderColor: 'rgba(255, 255, 255, 0.9)' }}>or</Divider>
           <Button
             variant="outlined"
             startIcon={<GoogleIcon />}

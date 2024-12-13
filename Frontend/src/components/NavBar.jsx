@@ -15,16 +15,16 @@ const NavBar = () => {
 
                 {/* Toggler Button */}
                 <button
-                    className="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarNavDropdown"
-                    aria-controls="navbarNavDropdown"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                >
-                    <span className="navbar-toggler-icon"></span>
-                </button>
+    className="navbar-toggler"
+    type="button"
+    data-bs-toggle="collapse"
+    data-bs-target="#navbarNavDropdown"
+    aria-controls="navbarNavDropdown"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+>
+    <span className="navbar-toggler-icon"></span>
+</button>
 
                 {/* Navbar Links */}
                 <div className="collapse navbar-collapse" id="navbarNavDropdown">

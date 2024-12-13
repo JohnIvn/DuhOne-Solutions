@@ -1,7 +1,7 @@
 /* Navbar Styling */
 .custom-navbar {
     background-color: rgb(9, 26, 51);
-    border-bottom: 10px solid white;
+    border-bottom: 5px solid white;
     padding: 1rem 2rem;
 }
 
@@ -79,4 +79,18 @@
     .navbar-signin-container {
         justify-content: center;
     }
+}
+
+.navbar-toggler {
+    border-color: white; /* Makes the button border white */
+}
+
+.navbar-toggler-icon {
+    border-radius: 3px; /* Optional: adds some styling to the toggler bars */
+}
+
+/* Toggler Hover Effect */
+.navbar-toggler:hover .navbar-toggler-icon {
+    background-color: lightgray; /* Changes color to light gray on hover */
+    transition: background-color 0.3s ease; /* Smooth transition */
 }
