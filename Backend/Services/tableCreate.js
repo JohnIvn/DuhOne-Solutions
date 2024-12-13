@@ -8,6 +8,7 @@ import { BankAccount } from '../Models/bankAccountModel.js';
 import { OnlinePaymentAccount } from '../Models/onlinePaymentlAccountModel.js';
 import PackageModel from '../Models/packageModel.js';
 import RequestFormModel from '../Models/requestForm.js';
+import OffenseModel from '../Models/offenseModel.js';
 
 async function createTableUserAccounts() {
   try {
@@ -99,4 +100,25 @@ async function createTablePackage() {
   }
 }
 
-export {createTableRequestForm ,createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableUserProfile, createTableImageContainer, createTableBankAccount, createTableOnlinePaymentAccount, createTablePackage }
+async function createTableOffense() {
+  try {
+    await OffenseModel.sync({ alter: false });
+    console.log('Offense table is checked and updated if necessary');
+  } catch (error) {
+    console.error('Error checking/updating Offense table', error);
+  }
+}
+
+export {
+  createTableRequestForm,
+  createTableUserAccounts, 
+  createTableAdminAccounts, 
+  createTableSubscriptions, 
+  createTableReview, 
+  createTableUserProfile, 
+  createTableImageContainer, 
+  createTableBankAccount, 
+  createTableOnlinePaymentAccount, 
+  createTablePackage, 
+  createTableOffense 
+}

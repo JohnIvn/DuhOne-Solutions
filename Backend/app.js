@@ -19,7 +19,19 @@ import userProfileRoute from './Routes/userProfileRoute.js';
 import adminDashboardRouter from './Routes/adminDashboardRoute.js'
 import packageRouter from './Routes/packageRoute.js';
 import gAuthService from './Services/gAuthService.js';
-import {createTableRequestForm, createTableUserProfile, createTableUserAccounts, createTableAdminAccounts, createTableSubscriptions, createTableReview, createTableImageContainer, createTableBankAccount, createTableOnlinePaymentAccount, createTablePackage } from './Services/tableCreate.js';
+import {
+  createTableRequestForm, 
+  createTableUserProfile, 
+  createTableUserAccounts, 
+  createTableAdminAccounts, 
+  createTableSubscriptions, 
+  createTableReview, 
+  createTableImageContainer, 
+  createTableBankAccount, 
+  createTableOnlinePaymentAccount, 
+  createTablePackage, 
+  createTableOffense 
+} from './Services/tableCreate.js';
 import createDatabaseIfNotExists from './Services/databaseCreate.js';
 import db from './database.js';
 import verifyCodeRoute from './Routes/verifyCodeRoute.js';
@@ -77,6 +89,7 @@ async function initializeApp() {
     await insertAdminAccountIfNotExist();
     await createTableRequestForm();
     await createTableReview();
+    await createTableOffense();
 
     console.log('Tables have been created or checked.');
 

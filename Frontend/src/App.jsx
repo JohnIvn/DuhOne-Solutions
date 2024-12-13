@@ -16,6 +16,7 @@ import ForgotPassword from './components/ForgotPassworda.jsx';
 import TransactionForm from './Pages/TransactionForm.jsx';
 import Suspended from './Pages/suspended.jsx';
 import UserProfileDashboard from './Pages/adminDashboardUser.jsx';
+import AnalyticsPage from './Pages/AnalyticsPage.jsx';
 
 const ProtectedRoute = ({ children, requiredRole }) => {
   const token = localStorage.getItem('token');
@@ -115,6 +116,15 @@ const App = () => {
           element={
             <ProtectedRoute requiredRole="Admin">
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/Analytics"
+          element={
+            <ProtectedRoute requiredRole="Admin">
+              <AnalyticsPage />
             </ProtectedRoute>
           }
         />
