@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import api from '../Api.js'; 
+import { Modal, Button } from 'react-bootstrap';
+import api from '../Api.js';
 import '../CSS/SubscriptionPage.css';
 
 const PackageManager = () => {
@@ -8,7 +9,10 @@ const PackageManager = () => {
     const [error, setError] = useState('');
     const [newPlan, setNewPlan] = useState({ plan: '', price: '', speed: '', description: '' });
     const [editPlan, setEditPlan] = useState({ Package_id: '', plan: '', price: '', speed: '', description: '' });
-    
+
+    // Modal state
+    const [showModal, setShowModal] = useState(false);
+
     useEffect(() => {
         const fetchPlans = async () => {
             try {
@@ -41,24 +45,21 @@ const PackageManager = () => {
     };
 
     const handleUpdatePackage = async () => {
-        console.log("Editing package with ID:", editPlan.Package_id); // Log the correct ID
-
         try {
             const response = await api.put(`/api/package/${editPlan.Package_id}`, editPlan);
             if (response.status === 200) {
-                setPlans(prevPlans => 
-                    prevPlans.map(plan => 
+                setPlans(prevPlans =>
+                    prevPlans.map(plan =>
                         plan.Package_id === editPlan.Package_id ? response.data : plan // Replace the correct plan with updated one
                     )
                 );
-                setEditPlan({ Package_id: '', plan: '', price: '', speed: '', description: '' }); // Clear form
-                $('#editModal').modal('hide'); // Close the modal after updating
+                setShowModal(false); // Close the modal after updating
             }
         } catch (error) {
             setError('Error updating package: ' + error.message); // Display error message if update fails
         }
     };
-    
+
     const handleDeletePackage = async (id) => {
         try {
             const response = await api.delete(`/api/package/${id}`);
@@ -88,8 +89,8 @@ const PackageManager = () => {
                         <p>Speed: {plan.speed}</p>
                         <p>Price: {plan.price}</p>
                         <p>{plan.description}</p>
-                        <button onClick={() => setEditPlan({ ...plan })} data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>
-                        <button onClick={() => handleDeletePackage(plan.Package_id)}>Delete</button>
+                        <Button onClick={() => { setEditPlan({ ...plan }); setShowModal(true); }}>Edit</Button>
+                        <Button onClick={() => handleDeletePackage(plan.Package_id)}>Delete</Button>
                     </div>
                 ))}
             </div>
@@ -127,49 +128,44 @@ const PackageManager = () => {
             </div>
 
             {/* Modal for Editing Package */}
-            <div className="modal fade" id="editModal" tabIndex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="editModalLabel">Edit Package</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            <input 
-                                type="text" 
-                                className="form-control" 
-                                placeholder="Plan Name" 
-                                value={editPlan.plan} 
-                                onChange={(e) => setEditPlan({ ...editPlan, plan: e.target.value })} 
-                            />
-                            <input 
-                                type="text" 
-                                className="form-control" 
-                                placeholder="Price" 
-                                value={editPlan.price} 
-                                onChange={(e) => setEditPlan({ ...editPlan, price: e.target.value })} 
-                            />
-                            <input 
-                                type="text" 
-                                className="form-control" 
-                                placeholder="Speed" 
-                                value={editPlan.speed} 
-                                onChange={(e) => setEditPlan({ ...editPlan, speed: e.target.value })} 
-                            />
-                            <textarea 
-                                className="form-control" 
-                                placeholder="Description" 
-                                value={editPlan.description} 
-                                onChange={(e) => setEditPlan({ ...editPlan, description: e.target.value })} 
-                            />
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" onClick={handleUpdatePackage} className="btn btn-primary">Update Package</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Edit Package</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <input 
+                        type="text" 
+                        className="form-control" 
+                        placeholder="Plan Name" 
+                        value={editPlan.plan} 
+                        onChange={(e) => setEditPlan({ ...editPlan, plan: e.target.value })} 
+                    />
+                    <input 
+                        type="text" 
+                        className="form-control" 
+                        placeholder="Price" 
+                        value={editPlan.price} 
+                        onChange={(e) => setEditPlan({ ...editPlan, price: e.target.value })} 
+                    />
+                    <input 
+                        type="text" 
+                        className="form-control" 
+                        placeholder="Speed" 
+                        value={editPlan.speed} 
+                        onChange={(e) => setEditPlan({ ...editPlan, speed: e.target.value })} 
+                    />
+                    <textarea 
+                        className="form-control" 
+                        placeholder="Description" 
+                        value={editPlan.description} 
+                        onChange={(e) => setEditPlan({ ...editPlan, description: e.target.value })} 
+                    />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>Close</Button>
+                    <Button variant="primary" onClick={handleUpdatePackage}>Update Package</Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };
