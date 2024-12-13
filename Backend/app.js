@@ -67,7 +67,7 @@ async function initializeApp() {
     await createTableUserAccounts();
     await createTableAdminAccounts();
     await createTableSubscriptions();
-    await createTableReview();
+
     await createTableUserProfile();
     await createTableImageContainer();
     await createTableBankAccount();
@@ -76,6 +76,7 @@ async function initializeApp() {
     await insertPackagesIfNotExist();
     await insertAdminAccountIfNotExist();
     await createTableRequestForm();
+    await createTableReview();
 
     console.log('Tables have been created or checked.');
 
