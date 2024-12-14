@@ -41,6 +41,9 @@ import { insertAdminAccountIfNotExist }  from './Services/adminAccountInserter.j
 import validateEmail from './Controllers/validateEmail.js';
 import  configureSockets  from './server.js'; 
 import adminUserAccountsRouter from './Routes/adminDashboardUserRoute.js'
+import getAllAnalytics  from './Routes/analyticsRoute.js';
+import getPlanDistribution from './Controllers/analyticsDistribution.js';
+import { getSubscriptionStatusDistribution } from './Controllers/analyticsDistributionToo.js';
 import './Services/scheduler.js'
 
 dotenv.config();
@@ -72,6 +75,10 @@ app.use('/api/package', packageRouter);
 app.use('/Admin-Portal/Users', adminUserAccountsRouter)
 app.use('/validateEmail', validateEmail);
 app.use('/suspended', suspend);
+app.use('/analytics', getAllAnalytics);
+app.use('/analytics-graph', getPlanDistribution);
+app.use('/subscription-status-distribution', getSubscriptionStatusDistribution)
+
 async function initializeApp() {
   try {
     await createDatabaseIfNotExists();

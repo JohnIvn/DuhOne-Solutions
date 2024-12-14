@@ -1,18 +1,19 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Button, Dropdown, Spinner, Table, Container, Modal, Form } from "react-bootstrap";
+import { Button, Dropdown, Spinner, Table, Container } from "react-bootstrap";
 import { CheckCircle, Cancel, Block } from '@mui/icons-material';
-import { Pie, Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
+import { Pie, Bar, Line } from 'react-chartjs-2'; // Add the Line chart import
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import api from "../Api.js";
 import "../CSS/AdminDashboard.css";
 import AdminNavDashboard from "../components/AdminDashboard.jsx";
 import Footer from '../components/Footer.jsx';
 
 // Registering the necessary chart components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
+ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, ArcElement);
 
 const AnalyticsPage = () => {
   const [clients, setClients] = useState([]);
+  const [analytics, setAnalytics] = useState(null);  // New state for analytics data
   const [statusFilter, setStatusFilter] = useState("");
   const [planFilter, setPlanFilter] = useState("");
   const [paidFilter, setPaidFilter] = useState("");
@@ -29,6 +30,19 @@ const AnalyticsPage = () => {
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  const fetchAnalytics = async () => {
+    try {
+      const response = await api.get("/analytics"); // Fetch analytics data from the backend
+      setAnalytics(response.data);
+    } catch (error) {
+      console.error("Error fetching analytics:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAnalytics();  // Fetch analytics when the component loads
   }, []);
 
   useEffect(() => {
@@ -79,6 +93,20 @@ const AnalyticsPage = () => {
     }],
   };
 
+  // Line chart data (Client Sign-ups Over Time)
+  const lineData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],  // Months or any other x-axis data
+    datasets: [
+      {
+        label: 'Client Sign-ups',
+        data: [12, 19, 3, 5, 2, 3], // Sample data (replace it with real data)
+        fill: false,
+        borderColor: '#007bff',
+        tension: 0.1,
+      },
+    ],
+  };
+
   return (
     <>
       <AdminNavDashboard />
@@ -86,126 +114,45 @@ const AnalyticsPage = () => {
         <h1 className="dashboard-title">Analytics Page</h1>
 
         {/* Filters Section */}
-        <div className="filters-container d-flex justify-content-between align-items-center">
-          <div className="filter-group d-flex">
-            {/* Filter dropdowns */}
-            <Dropdown onSelect={(e) => setPlanFilter(e)} className="filter-dropdown me-2">
-              <Dropdown.Toggle>{planFilter || "Select Plan"}</Dropdown.Toggle>
-              <Dropdown.Menu>
-                {["Basic", "Standard", "Premium", "Ultimate"].map((plan) => (
-                  <Dropdown.Item key={plan} eventKey={plan}>
-                    {plan}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
-
-            <Dropdown onSelect={(e) => setStatusFilter(e)} className="filter-dropdown me-2">
-              <Dropdown.Toggle>{statusFilter || "Select Status"}</Dropdown.Toggle>
-              <Dropdown.Menu>
-                {["Active", "Pending", "Inactive"].map((status) => (
-                  <Dropdown.Item key={status} eventKey={status}>
-                    {status}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
-
-            <Dropdown onSelect={(e) => setPaidFilter(e)} className="filter-dropdown me-2">
-              <Dropdown.Toggle>{paidFilter || "Select Paid Status"}</Dropdown.Toggle>
-              <Dropdown.Menu>
-                {["True", "False"].map((status) => (
-                  <Dropdown.Item key={status} eventKey={status}>
-                    {status}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
-
-            <Button
-              onClick={() => {
-                setPlanFilter("");
-                setStatusFilter("");
-                setPaidFilter("");
-                fetchClients({});
-              }}
-              variant="secondary"
-              className="reset-button"
-            >
-              Reset Filters
-            </Button>
-          </div>
-        </div>
 
         {/* Analytics Section */}
         <div className="analytics-section mt-4">
           <h3>Analytics</h3>
-          <div className="charts d-flex justify-content-between">
-            {/* Pie chart */}
-            <div className="pie-chart">
-              <h5>Client Status Distribution</h5>
-              <Pie data={pieData} />
-            </div>
+          {analytics ? (
+            <div>
+              <div className="statistics">
+                <div>Total Revenue: {analytics.totalRevenue}</div>
+                <div>Total Users: {analytics.totalUsers}</div>
+                <div>Total Admins: {analytics.totalAdmin}</div>
+                <div>Total Data Transferred: {analytics.totalDataTransfered} GB</div>
+                <div>Total Logins: {analytics.totalLogins}</div>
+                <div>Total Signups: {analytics.totalSignUps}</div>
+              </div>
+              <div className="charts d-flex justify-content-between">
+                {/* Pie chart for Client Status Distribution */}
+                <div className="pie-chart">
+                  <h5>Client Status Distribution</h5>
+                  <Pie data={pieData} />
+                </div>
 
-            {/* Bar chart */}
-            <div className="bar-chart">
-              <h5>Clients by Plan</h5>
-              <Bar data={barData} />
-            </div>
-          </div>
-        </div>
+                {/* Bar chart for Clients by Plan */}
+                <div className="bar-chart">
+                  <h5>Clients by Plan</h5>
+                  <Bar data={barData} />
+                </div>
 
-        {/* Clients Table Section */}
-        <div className="clients-section mt-4">
-          {loading ? (
-            <div className="loading-spinner">
-              <Spinner animation="border" variant="primary" />
+                {/* Line chart for Client Sign-ups Over Time */}
+                <div className="line-chart">
+                  <h5>Client Sign-ups Over Time</h5>
+                  <Line data={lineData} />
+                </div>
+              </div>
             </div>
           ) : (
-            <Table bordered hover variant="dark" className="clients-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Plan</th>
-                  <th>Status</th>
-                  <th>Paid</th>
-                  <th>Subscribed</th>
-                  <th>End Date</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {clients.length === 0 ? (
-                  <tr>
-                    <td colSpan="7" className="no-clients">No clients found matching your filters</td>
-                  </tr>
-                ) : (
-                  clients.map((client) => (
-                    <tr key={client.userId}>
-                      <td>{client.name}</td>
-                      <td>{client.plan}</td>
-                      <td>{client.status}</td>
-                      <td>{client.paid}</td>
-                      <td>{client.subscribeAt ? new Date(client.subscribeAt).toLocaleDateString() : "N/A"}</td>
-                      <td>{client.endAT ? new Date(client.endAT).toLocaleDateString() : "N/A"}</td>
-                      <td>
-                        <Button variant="success" size="sm" onClick={() => updateStatus(client.userId, "Active")}>
-                          <CheckCircle />
-                        </Button>
-                        <Button variant="danger" size="sm" onClick={() => updateStatus(client.userId, "Deactive")}>
-                          <Cancel />
-                        </Button>
-                        <Button variant="warning" size="sm" onClick={() => handleSuspend(client.userId)}>
-                          <Block />
-                        </Button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </Table>
+            <div>Loading analytics...</div>
           )}
         </div>
+
       </Container>
 
       <Footer />
