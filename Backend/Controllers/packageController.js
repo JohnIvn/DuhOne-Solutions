@@ -1,4 +1,5 @@
 import PackageModel from "../Models/packageModel.js";
+import { subscription } from "../Models/subscriptionModel.js";
 
 export const getPackageById = async (req, res) => {
     try {
@@ -84,21 +85,27 @@ export const updatePackage = async (req, res) => {
 
 
 
+
 export const deletePackage = async (req, res) => {
     try {
         const { id } = req.params;
-        
+
         const packageToDelete = await PackageModel.findByPk(id);
 
         if (!packageToDelete) {
             return res.status(404).json({ message: "Package not found" });
         }
 
+        await subscription.update(
+            { plan: "n/a" },
+            { where: { plan: packageToDelete.plan } }
+        );
+
         await packageToDelete.destroy();
 
-        res.status(200).json({ message: 'Package deleted successfully' });
+        res.status(200).json({ message: "Package deleted successfully" });
     } catch (error) {
-        console.error('Error deleting package:', error);
-        res.status(500).json({ message: 'Failed to delete package' });
+        console.error("Error deleting package:", error);
+        res.status(500).json({ message: "Failed to delete package" });
     }
 };

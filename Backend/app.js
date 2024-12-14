@@ -84,13 +84,13 @@ async function initializeApp() {
     await createTableImageContainer();
     await createTableBankAccount();
     await createTableOnlinePaymentAccount();
-    await createTablePackage(); 
+    await createTablePackage();
+    await createTableAnalytics(); 
     await insertPackagesIfNotExist();
     await insertAdminAccountIfNotExist();
     await createTableRequestForm();
     await createTableReview();
     await createTableOffense();
-    await createTableAnalytics();
 
     console.log('Tables have been created or checked.');
 
