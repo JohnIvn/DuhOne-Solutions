@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import api from '../Api.js';
 import '../CSS/SubscriptionPage.css';
+import AdminNavDashboard from '../components/AdminDashboard.jsx';
 
 const PackageManager = () => {
     const [plans, setPlans] = useState([]);
@@ -82,6 +83,8 @@ const PackageManager = () => {
     }
 
     return (
+        <>
+        <AdminNavDashboard />
         <div className="subscription-container">
             <h1 className="text-center">Choose Your Plan</h1>
             <div className="row">
@@ -169,6 +172,7 @@ const PackageManager = () => {
                 </Modal.Footer>
             </Modal>
         </div>
+        </>
     );
 };
 
