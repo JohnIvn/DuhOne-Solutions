@@ -17,6 +17,7 @@ import TransactionForm from './Pages/TransactionForm.jsx';
 import Suspended from './Pages/suspended.jsx';
 import UserProfileDashboard from './Pages/adminDashboardUser.jsx';
 import AnalyticsPage from './Pages/AnalyticsPage.jsx';
+import PackageManager from './Pages/PackageForm.jsx';
 
 const ProtectedRoute = ({ children, requiredRole }) => {
   const token = localStorage.getItem('token');
@@ -121,7 +122,7 @@ const App = () => {
         />
 
         <Route
-          path="/Analytics"
+          path="/Admin-Portal/Analytics"
           element={
             <ProtectedRoute requiredRole="Admin">
               <AnalyticsPage />
@@ -134,6 +135,15 @@ const App = () => {
           element={
             <ProtectedRoute requiredRole="Admin">
               <UserProfileDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/Admin-Portal/Package-Manager"
+          element={
+            <ProtectedRoute requiredRole="Admin">
+              <PackageManager />
             </ProtectedRoute>
           }
         />

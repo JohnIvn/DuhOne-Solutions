@@ -1,5 +1,6 @@
 import { ClientModel } from '../Models/clientModel.js'; 
 import UserProfileModel from '../Models/userProfileModel.js';
+import AnalyticsModel from '../Models/analyticsModel.js';
 import { Op } from 'sequelize';  
 import configureSockets from '../server.js';
 
@@ -160,10 +161,8 @@ export const deleteSubscription = async (req, res) => {
 
 
 export const updateDataUsage = async (req, res) => {
-
   try {
     const users = await ClientModel.findAll({
-
       attributes: ["userId", "dataUsage", "plan"],
     });
 
@@ -176,18 +175,27 @@ export const updateDataUsage = async (req, res) => {
       Basic: 2,
     };
 
+    let totalIncrementedData = 0; 
+
     for (const user of users) {
-      const increment = planIncrements[user.plan] || 0;
+      const increment = planIncrements[user.plan] || 0;  
       const newDataUsage = user.dataUsage + increment;
 
       await ClientModel.update(
         { dataUsage: newDataUsage },
         { where: { userId: user.userId, status: "active" } }
       );
+
+      totalIncrementedData += increment;
     }
 
+    await AnalyticsModel.increment(
+      { totalDataTransfered: totalIncrementedData },
+      { where: {} }  
+    );
+
     return res.status(200).json({
-      message: "All users' data usage updated successfully.",
+      message: "All users' data usage updated successfully, and total data transferred updated.",
     });
   } catch (error) {
     console.error("Error updating data usage for all users:", error.message);
