@@ -33,6 +33,10 @@ UserProfileModel.init({
     type: DataTypes.STRING,
     allowNull: false,
   },
+  status:{
+    type: DataTypes.STRING,
+    defaultValue: "Pending"
+  },
   phoneNumber: {
     type: DataTypes.INTEGER,
     allowNull: true,

@@ -125,23 +125,7 @@ export const searchByID = async (req, res) => {
   }
 };
 
-export const getAllSuspended = async (req, res) => {
-  try {
 
-    const suspendedClients = await ClientModel.findAll({
-      where: { status: 'Suspended' },  
-    });
-
-    if (suspendedClients.length === 0) {
-      return res.json({ message: 'No suspended clients found.' });
-    }
-
-    res.status(200).json(suspendedClients);
-  } catch (error) {
-    console.error('Error fetching suspended clients:', error);
-    res.status(500).json({ message: 'Server error. Please try again later.' });
-  }
-};
 
 export const deleteSubscription = async (req, res) => {
   const { id } = req.params;

@@ -17,6 +17,8 @@ const UserProfileDashboard = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState(null);
   const [showCreateAccountModal, setShowCreateAccountModal] = useState(false);
+  const [shouldRefresh, setShouldRefresh] = useState(false);
+
   const [userProfileData, setUserProfileData] = useState({
     firstName: "",
     lastName: "",
@@ -51,6 +53,14 @@ const UserProfileDashboard = () => {
     zipCode: "",
   });
 
+  const fetchUserProfiles = async () => {
+    try {
+      const response = await api.get("/Admin-Portal/Users");
+      setUserProfiles(response.data);
+    } catch (error) {
+      console.error("Error fetching user profiles:", error);
+    }
+  };
   useEffect(() => {
     const fetchUserProfiles = async () => {
       try {
@@ -60,25 +70,10 @@ const UserProfileDashboard = () => {
         console.error("Error fetching user profiles:", error);
       }
     };
-
+  
     fetchUserProfiles();
-
-    if (socket) {
-      socket.on("profileUpdated", (updatedProfile) => {
-        setUserProfiles((prevProfiles) =>
-          prevProfiles.map((profile) =>
-            profile.userId === updatedProfile.userId ? updatedProfile : profile
-          )
-        );
-      });
-    }
-
-    return () => {
-      if (socket) {
-        socket.off("profileUpdated");
-      }
-    };
-  }, [socket]);
+  }, [shouldRefresh]); // Re-fetch when `shouldRefresh` changes
+  
 
   const fetchUserProfileData = async (id) => {
     try {
@@ -123,7 +118,6 @@ const UserProfileDashboard = () => {
       newBorderColors.zipCode = "red";
       formIsValid = false;
     }
-    
 
     setErrors(newErrors);
     setBorderColors(newBorderColors);
@@ -237,6 +231,28 @@ const UserProfileDashboard = () => {
     }
   };
 
+  const handleSuspend = async (userId) => {
+    try {
+      const response = await api.put(`/Admin-Portal/Users/suspend/${userId}`);
+      alert(response.data.message);
+  
+      // Update the user's profile in the state immediately after suspension
+      setUserProfiles((prevProfiles) =>
+        prevProfiles.map((profile) =>
+          profile.userId === userId ? { ...profile, status: "Suspended" } : profile
+        )
+      );
+  
+      // Trigger the refresh by setting the state
+      setShouldRefresh((prev) => !prev); // Toggle state to trigger the useEffect
+    } catch (error) {
+      console.error("Error suspending user:", error);
+      alert("Failed to suspend the user. Please try again.");
+    }
+  };
+  
+  
+
   return (
     <>
       <AdminNavDashboard />
@@ -325,16 +341,9 @@ const UserProfileDashboard = () => {
               <Delete />
             </Button>
 
-            <Button onClick={()=> {
-              
-            }}>
-              < Block/>
-            </Button>
-            <Button onClick={()=> {
-
-            }}>
-              <Email />
-            </Button>
+            <Button onClick={() => handleSuspend(profile.userId)} variant="warning" title="Suspend">
+    <Block /> {/* Suspend Icon */}
+  </Button>
           </td>
         </tr>
       ))
@@ -472,7 +481,7 @@ const UserProfileDashboard = () => {
 
       </Container>
 
-      <Footer />
+      <Footer />  
     </>
   );
 };

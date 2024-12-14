@@ -7,7 +7,8 @@ import {
   editUserProfileModal,
   sortByUserId,
   sortByDate,
-  searchByEmailorUserid
+  searchByEmailorUserid,
+  setSuspend,
 } from '../Controllers/adminUsersDashboard.js';
 
 const router = express.Router();
@@ -20,6 +21,7 @@ router.post('/edit-user-profile-modal/:id', authenticateToken, editUserProfileMo
 router.get('/sort-by-userId', authenticateToken, sortByUserId);
 router.get('/sort-by-date', authenticateToken, sortByDate);
 router.get('/search-by-email-or-userId', authenticateToken, searchByEmailorUserid);
+router.put('/suspend/:id', authenticateToken, setSuspend);
 
 
 

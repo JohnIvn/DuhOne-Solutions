@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ExitToApp } from '@mui/icons-material';
+import {  Close} from '@mui/icons-material';
 import {
   Modal,
   Box,
@@ -120,7 +120,7 @@ const CreateAccountModal = ({ show, onClose }) => {
         }}
       >
 <Button variant="secondary" onClick={onClose}>
-          <ExitToApp/>
+          <Close/>
         </Button>
         {error && (
           <Typography color="error" gutterBottom>

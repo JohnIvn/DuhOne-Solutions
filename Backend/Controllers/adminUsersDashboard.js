@@ -2,37 +2,55 @@ import { UserAccount } from "../Models/userAccountModel.js";
 import UserProfileModel from "../Models/userProfileModel.js";
 import BankAccount from "../Models/bankAccountModel.js";
 import { Op } from "sequelize";
+import { ClientModel } from "../Models/clientModel.js";
+
+
 
 export const getAllUsers = async (req, res) => {
     try {
+        
         const usersAccount = await UserAccount.findAll({
             where: {
                 userId: {
-                    [Op.ne]: 1, 
+                    [Op.ne]: 1,  
                 },
             },
             attributes: ["userId", "email", "createdAt"],
- 
         });
 
+        
         const userProfiles = await UserProfileModel.findAll({
             where: {
                 userId: {
-                    [Op.ne]: 1, 
-                }
+                    [Op.ne]: 1,  
+                },
+                status: {  
+                    [Op.ne]: "Suspended",
+                },
             },
-            attributes: ["userId", "firstName", "lastName"], 
+            attributes: ["userId", "firstName", "lastName", "status"],
         });
 
-        const users = usersAccount.map((account) => {
-            const profile = userProfiles.find((profile) => profile.userId === account.userId);
-            return {
-                userId: account.userId,
-                fullName: profile ? `${profile.firstName} ${profile.lastName}` : "N/A",
-                email: account.email,
-                createdAt: account.createdAt,
-            };
-        });
+        
+        const users = usersAccount
+            .map((account) => {
+                
+                const profile = userProfiles.find((profile) => profile.userId === account.userId);
+                
+                
+                if (!profile || profile.status === "Suspended") {
+                    return null;
+                }
+                
+                
+                return {
+                    userId: account.userId,
+                    fullName: `${profile.firstName} ${profile.lastName}`,
+                    email: account.email,
+                    createdAt: account.createdAt,
+                };
+            })
+            .filter((user) => user !== null);  
 
         return res.status(200).json(users);
     } catch (error) {
@@ -40,6 +58,7 @@ export const getAllUsers = async (req, res) => {
         return res.status(500).json({ message: "Error fetching users." });
     }
 };
+
 
 export const deleteAccount = async (req, res) => {
     const { userIdToDelete } = req.params;
@@ -351,4 +370,32 @@ export const createAccount = async (req, res) => {
     }
 };
 
+export const setSuspend = async (req, res) => {
+    const { id } = req.params;
+    try {
+      
+      const subscription = await ClientModel.findOne({
+        where: { userId: id },
+      });
+  
+      if (subscription) {
+        await subscription.update({ status: "Suspended" });
+      }
+      const account = await UserProfileModel.findOne({
+        where: { userId: id },
+      });
+  
+      if (!account) {
+        return res.status(404).json({ message: "No account found." });
+      }      
+      await account.update({ status: "Suspended" });
+  
+      return res.status(200).json({ message: "The client is now suspended." });
+    } catch (error) {
+      console.error("Error in trying to set suspension:", error);
+      return res.status(500).json({ message: "Server error. Please try again later." });
+    }
+  };
+  
+  
 

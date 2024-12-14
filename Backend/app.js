@@ -16,6 +16,7 @@ import dashboardRouter from './Routes/dashBoardRoute.js';
 import userProfileRoute from './Routes/userProfileRoute.js';
 import adminDashboardRouter from './Routes/adminDashboardRoute.js'
 import packageRouter from './Routes/packageRoute.js';
+import suspend from './Routes/suspendedRoute.js'
 import gAuthService from './Services/gAuthService.js';
 import {
   createTableRequestForm, 
@@ -70,7 +71,7 @@ app.use('/verify-code', verifyCodeRoute);
 app.use('/api/package', packageRouter); 
 app.use('/Admin-Portal/Users', adminUserAccountsRouter)
 app.use('/validateEmail', validateEmail);
-
+app.use('/suspended', suspend);
 async function initializeApp() {
   try {
     await createDatabaseIfNotExists();

@@ -20,8 +20,6 @@ const subscription = subscriptionModel.init(
         model: UserAccount, 
         key: 'userId', 
       },
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
     },
     name: {
       type: DataTypes.STRING,
