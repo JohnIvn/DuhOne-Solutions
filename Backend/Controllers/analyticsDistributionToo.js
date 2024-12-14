@@ -31,4 +31,4 @@ const getStatusDistribution = async (req, res) => {
   }
 };
 
-export { getStatusDistribution };
+export default getStatusDistribution ;
