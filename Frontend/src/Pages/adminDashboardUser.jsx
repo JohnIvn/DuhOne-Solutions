@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Button, Table, Container, Modal, Form, DropdownButton, Dropdown } from "react-bootstrap";
-import { Edit, Delete } from "@mui/icons-material";
+import { Edit, Delete, Email, Block, Add, PeopleOutlineRounded} from "@mui/icons-material";
 import AdminNavDashboard from "../components/AdminDashboard.jsx";
 import Footer from "../components/Footer.jsx";
 import api from "../Api.js";
 import { useSocket } from '../socketContext.jsx';
 import "../CSS/UserProfileDashboard.css";
+import CreateAccountModal from "../components/createAccountModal.jsx";
 
 const UserProfileDashboard = () => {
   const { socket } = useSocket();
@@ -15,6 +16,7 @@ const UserProfileDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState(null);
+  const [showCreateAccountModal, setShowCreateAccountModal] = useState(false);
   const [userProfileData, setUserProfileData] = useState({
     firstName: "",
     lastName: "",
@@ -277,6 +279,15 @@ const UserProfileDashboard = () => {
                 DESC
               </Dropdown.Item>
             </DropdownButton>
+            <Button
+  variant="warning"
+  size="sm"
+  onClick={() => setShowCreateAccountModal(true)} // Open the modal
+  title="Create Account"
+>
+  <Add />
+  <PeopleOutlineRounded />
+</Button>
           </div>
         </div>
 
@@ -313,6 +324,17 @@ const UserProfileDashboard = () => {
             <Button onClick={() => handleConfirmDelete(profile.userId)}>
               <Delete />
             </Button>
+
+            <Button onClick={()=> {
+              
+            }}>
+              < Block/>
+            </Button>
+            <Button onClick={()=> {
+
+            }}>
+              <Email />
+            </Button>
           </td>
         </tr>
       ))
@@ -321,6 +343,8 @@ const UserProfileDashboard = () => {
 </Table>
 
         </div>
+
+        
 
         {/* Modal for Editing */}
         <Modal show={showModal} onHide={() => setShowModal(false)}>
@@ -423,7 +447,7 @@ const UserProfileDashboard = () => {
           </Modal.Footer>
         </Modal>
 
-        {/* Delete Confirmation Modal */}
+        {/*  */}
         <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
           <Modal.Header closeButton>
             <Modal.Title>Delete User Profile</Modal.Title>
@@ -440,6 +464,12 @@ const UserProfileDashboard = () => {
             </Button>
           </Modal.Footer>
         </Modal>
+
+        <CreateAccountModal
+  show={showCreateAccountModal}
+  onClose={() => setShowCreateAccountModal(false)} // Close the modal
+/>
+
       </Container>
 
       <Footer />

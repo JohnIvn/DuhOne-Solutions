@@ -16,7 +16,7 @@ const db = new Sequelize(
   }
 );
 
-const setupDatabase = async () => {
+const setupDatabase = async () => { 
   try {
     console.log('Database connection successful!');
   } catch (error) {

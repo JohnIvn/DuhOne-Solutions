@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Button, Dropdown, Spinner, Table, Container, Modal, Form } from "react-bootstrap";
-import { CheckCircle, Cancel, Block, Send, Search, Delete } from "@mui/icons-material";
+import { CheckCircle, Cancel, Block, Send, Search, Delete, Edit, Add, PlusOne, AddAlarm, AccountBalance, Man, People, PeopleOutlineRounded } from "@mui/icons-material";
 import api from "../Api.js"; 
 import "../CSS/AdminDashboard.css";
 import AdminNavDashboard from "../components/AdminDashboard.jsx";
@@ -19,11 +19,15 @@ const AdminDashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalClientId, setModalClientId] = useState(null);
   const [customMessage, setCustomMessage] = useState("");
+  
+  // Delete confirmation modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [clientToDelete, setClientToDelete] = useState(null);
 
   const availablePlans = ["Basic", "Standard", "Premium", "Ultimate"];
   const availableStatuses = ["Active", "Pending", "Inactive"];
   const availablePaidStatuses = ["True", "False"];
-  const {socket} = useSocket();
+  const { socket } = useSocket();
   console.log('socket instance:', socket);
 
   const calculateEndDate = (subscribeAt) => {
@@ -39,7 +43,7 @@ const AdminDashboard = () => {
       const updatedClients = response.data.map((client) => ({
         ...client,
         endAT: client.subscribeAt ? calculateEndDate(client.subscribeAt) : null,
-        dataUsage: client.dataUsage || 0, // Initialize data usage if not present
+        dataUsage: client.dataUsage || 0, 
       }));
       setClients(updatedClients);
     } catch (error) {
@@ -49,21 +53,21 @@ const AdminDashboard = () => {
     }
   }, []);
 
-
-  const handleDelete = async (clientId) => {
-    if (window.confirm("Are you sure you want to delete this client?")) {
+  const handleDelete = async () => {
+    if (clientToDelete) {
       try {
-        await api.delete(`/Admin-Portal/${clientId}/delete`);
+        await api.delete(`/Admin-Portal/${clientToDelete}/delete`);
         setClients((prevClients) =>
-          prevClients.filter((client) => client.userId !== clientId)
+          prevClients.filter((client) => client.userId !== clientToDelete)
         ); 
+        setShowDeleteModal(false); // Close delete confirmation modal
+        setClientToDelete(null); // Clear the client to delete
       } catch (error) {
         console.error("Error deleting client:", error);
         alert("Failed to delete client. Please try again.");
       }
     }
   };
-  
 
   const updateStatus = async (clientId, newStatus) => {
     try {
@@ -81,10 +85,6 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleSuspend = (clientId) => {
-    updateStatus(clientId, "Suspended");
-  };
-
   const handleSendMessage = () => {
     if (modalClientId && customMessage) {
       sendMessage(modalClientId, customMessage);
@@ -100,7 +100,7 @@ const AdminDashboard = () => {
       console.warn("Socket not initialized yet.");
       return;
     }
-  
+
     const interval = setInterval(async () => {
       try {
         socket.emit('update-data-usage'); // Emit event to update data usage
@@ -109,11 +109,10 @@ const AdminDashboard = () => {
       } catch (error) {
         console.error("Error updating data usage:", error);
       }
-    }, 600000);
-  
+    }, 300000);
+
     return () => clearInterval(interval); 
   }, [socket, fetchClients, planFilter, statusFilter, paidFilter]);
-  
 
   useEffect(() => {
     if (!isInitialLoad) {
@@ -165,6 +164,16 @@ const AdminDashboard = () => {
             </Dropdown>
 
             <Button
+                          variant="warning"
+                          size="sm"
+                          onClick={() =>{}}
+                          title="Suspend"
+                        >
+                          <Add />
+                          <PeopleOutlineRounded />
+                        </Button>
+
+            <Button
               onClick={() => {
                 setPlanFilter("");
                 setStatusFilter("");
@@ -189,6 +198,7 @@ const AdminDashboard = () => {
             <Table bordered hover variant="dark" className="clients-table">
               <thead>
                 <tr>
+                <th>Id</th>
                   <th>Name</th>
                   <th>Plan</th>
                   <th>Status</th>
@@ -207,6 +217,7 @@ const AdminDashboard = () => {
                 ) : (
                   clients.map((client) => (
                     <tr key={client.userId} className="client-row">
+                      <td>{client.userId}</td>
                       <td>{client.name}</td>
                       <td>{client.plan}</td>
                       <td className={`status-${client.status}`}>{client.status}</td>
@@ -232,17 +243,12 @@ const AdminDashboard = () => {
                           <Cancel />
                         </Button>
                         <Button
-                          variant="warning"
-                          size="sm"
-                          onClick={() => handleSuspend(client.userId)}
-                          title="Suspend"
-                        >
-                          <Block />
-                        </Button>
-                        <Button
                           variant="danger"
                           size="sm"
-                          onClick={() => handleDelete(client.userId)}
+                          onClick={() => {
+                            setClientToDelete(client.userId); 
+                            setShowDeleteModal(true);
+                          }}
                           title="Delete"
                         >
                           <Delete />
@@ -256,6 +262,24 @@ const AdminDashboard = () => {
           )}
         </div>
       </Container>
+
+      {/* Delete Confirmation Modal */}
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Are you sure you want to delete this user's subscription??</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
