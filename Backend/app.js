@@ -43,7 +43,7 @@ import  configureSockets  from './server.js';
 import adminUserAccountsRouter from './Routes/adminDashboardUserRoute.js'
 import getAllAnalytics  from './Routes/analyticsRoute.js';
 import getPlanDistribution from './Controllers/analyticsDistribution.js';
-import { getSubscriptionStatusDistribution } from './Controllers/analyticsDistributionToo.js';
+import { getStatusDistribution } from './Controllers/analyticsDistributionToo.js';
 import './Services/scheduler.js'
 
 dotenv.config();
@@ -77,7 +77,7 @@ app.use('/validateEmail', validateEmail);
 app.use('/suspended', suspend);
 app.use('/analytics', getAllAnalytics);
 app.use('/analytics-graph', getPlanDistribution);
-app.use('/subscription-status-distribution', getSubscriptionStatusDistribution)
+app.use('/client-distribution', getStatusDistribution);
 
 async function initializeApp() {
   try {

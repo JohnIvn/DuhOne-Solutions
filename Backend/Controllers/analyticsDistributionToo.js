@@ -1,48 +1,34 @@
 import { subscription } from '../Models/subscriptionModel.js';
 
-
-export const getSubscriptionStatusDistribution = async (req, res) => {
+const getStatusDistribution = async (req, res) => {
   try {
-    
-    const statusCounts = await subscription.findAll({
+    // Group by status and count occurrences
+    const statusDistribution = await subscription.findAll({
       attributes: [
-        'status', 
-        [sequelize.fn('COUNT', sequelize.col('status')), 'count'], 
+        'status',
+        [sequelize.fn('COUNT', sequelize.col('status')), 'count'],
       ],
-      group: ['status'], 
-      raw: true, 
+      group: ['status'],
     });
 
-    
-    const statusDistribution = {
-      active: 0,
-      suspended: 0,
-      pending: 0,
-      inactive: 0,
-    };
+    // Format response
+    const distribution = statusDistribution.map((entry) => ({
+      status: entry.status,
+      count: entry.dataValues.count,
+    }));
 
-    statusCounts.forEach((item) => {
-      switch (item.status) {
-        case 'active':
-          statusDistribution.active = parseInt(item.count);
-          break;
-        case 'suspended':
-          statusDistribution.suspended = parseInt(item.count);
-          break;
-        case 'pending':
-          statusDistribution.pending = parseInt(item.count);
-          break;
-        case 'inactive':
-          statusDistribution.inactive = parseInt(item.count);
-          break;
-        default:
-          break;
-      }
+    // Send response
+    res.status(200).json({
+      message: 'Status distribution retrieved successfully.',
+      data: distribution,
     });
-
-    res.json(statusDistribution);
   } catch (error) {
-    console.error('Error fetching subscription status distribution:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Error retrieving status distribution:', error);
+    res.status(500).json({
+      message: 'An error occurred while retrieving status distribution.',
+      error: error.message,
+    });
   }
 };
+
+export { getStatusDistribution };
