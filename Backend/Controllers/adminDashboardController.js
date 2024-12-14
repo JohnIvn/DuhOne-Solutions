@@ -140,8 +140,9 @@ export const deleteSubscription = async (req, res) => {
 
     const updateData = {
       plan: 'n/a',         
-      paid: 'false',       
-      status: 'deactive', 
+      paid: 'false',
+      dataUsage: 0,       
+      status: 'deactived', 
       subscribeAt: null,  
       endAt: null,        
     };
@@ -205,8 +206,33 @@ export const updateDataUsage = async (req, res) => {
   }
 };
 
-export const getAllUserAccounts = (req, res) => {
-  
+export const createSubscription = async (req, res) =>{
+  const{email,plan} = req.body;
+
+  try{
+
+    const account = await UserProfileModel.findOne({
+      where: {email: email}
+    });
+
+    if(!account){
+      return res.status(200).json({message: "no account found"});
+    }
+    let fullName = '${account.firstName} ${account.lastName}'
+    await ClientModel.create({
+      userId: account.userId,
+      name: fullName,
+      plan,
+      paid: "True",
+      status: "Pending",
+      subscribeAt,
+      endAt
+    });
+
+    return res.status(200).json({message: "succesful"});
+  }catch(error){
+    console.log(error);
+  }
 };
 
 

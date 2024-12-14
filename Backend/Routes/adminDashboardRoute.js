@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get('/', authenticateToken, getClients);  
 router.put('/:id/status', authenticateToken, updateClientStatus);
-router.delete('/:id/delete', authenticateToken, deleteSubscription);
+router.post('/:id/delete', authenticateToken, deleteSubscription);
 router.put('/update-data-usage', authenticateToken, updateDataUsage);
 
 export default router;

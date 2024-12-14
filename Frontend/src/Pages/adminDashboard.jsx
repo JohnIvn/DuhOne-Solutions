@@ -56,7 +56,7 @@ const AdminDashboard = () => {
   const handleDelete = async () => {
     if (clientToDelete) {
       try {
-        await api.delete(`/Admin-Portal/${clientToDelete}/delete`);
+        await api.post(`/Admin-Portal/${clientToDelete}/delete`);
         setClients((prevClients) =>
           prevClients.filter((client) => client.userId !== clientToDelete)
         ); 
@@ -109,7 +109,7 @@ const AdminDashboard = () => {
       } catch (error) {
         console.error("Error updating data usage:", error);
       }
-    }, 300000);
+    }, 3000);
 
     return () => clearInterval(interval); 
   }, [socket, fetchClients, planFilter, statusFilter, paidFilter]);
@@ -162,16 +162,6 @@ const AdminDashboard = () => {
                 ))}
               </Dropdown.Menu>
             </Dropdown>
-
-            <Button
-                          variant="warning"
-                          size="sm"
-                          onClick={() =>{}}
-                          title="Suspend"
-                        >
-                          <Add />
-                          <PeopleOutlineRounded />
-                        </Button>
 
             <Button
               onClick={() => {

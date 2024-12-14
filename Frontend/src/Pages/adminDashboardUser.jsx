@@ -269,13 +269,6 @@ const UserProfileDashboard = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input me-2"
             />
-            <Button
-              onClick={() => setSearchTerm("")}
-              variant="secondary"
-              className="reset-button"
-            >
-              Reset Filters
-            </Button>
           </div>
 
           <div className="sort-buttons d-flex">

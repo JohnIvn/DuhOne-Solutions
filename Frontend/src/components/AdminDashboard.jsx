@@ -81,6 +81,22 @@ const AdminNavDashboard = () => {
         >
           Suspended
         </Button>
+
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => handleNavigation("Admin-Portal/package-manager")}
+        >
+          Package Manager
+        </Button>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => handleNavigation("Admin-Portal/analytics")}
+        >
+          Analytics
+        </Button>
+     
         
         {/* Dropdown Button for Logout */}
         <Button

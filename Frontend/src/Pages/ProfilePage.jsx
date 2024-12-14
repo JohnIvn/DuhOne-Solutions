@@ -3,7 +3,6 @@ import "../CSS/ProfilePage.css";
 import NavBarDashboard from "../components/NavBarDashboard.jsx";
 import Footer from "../components/Footer.jsx";
 import api from "../Api.js";
-import '../CSS/ProfilePage.css'
 
 const ProfilePage = () => {
   const [showPlanning, setShowPlanning] = useState(false);
@@ -17,6 +16,38 @@ const ProfilePage = () => {
     firstName: "",
     lastName: "",
     email: "",
+    phoneNumber: "",
+    street: "",
+    city: "",
+    barangay: "",
+    zipCode: "",
+  });
+
+  const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    street: "",
+    city: "",
+    barangay: "",
+    zipCode: "",
+  });
+
+  const [borderColors, setBorderColors] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    street: "",
+    city: "",
+    barangay: "",
+    zipCode: "",
+  });
+
+  const [initialUserProfileData, setInitialUserProfileData] = useState({
+    firstName: "",
+    lastName: "",
     phoneNumber: "",
     street: "",
     city: "",
@@ -38,13 +69,12 @@ const ProfilePage = () => {
 
     const fetchProfileImage = async () => {
       try {
-        const response = await api.get('/profile/get-Image');
+        const response = await api.get("/profile/get-Image");
         const { path } = response.data;
         setProfileImage(`http://localhost:3000${path}`);
-        console.log("profile image: ", profileImage);
       } catch (error) {
-        console.error('Error fetching profile image:', error.message);
-        alert('Failed to load profile image. Please try again later.');
+        console.error("Error fetching profile image:", error.message);
+        alert("Failed to load profile image. Please try again later.");
       }
     };
 
@@ -56,25 +86,85 @@ const ProfilePage = () => {
     const { name, value } = e.target;
 
     if (name === "phoneNumber" || name === "zipCode") {
-      // Allow only numbers
-      const numericValue = value.replace(/\D/g, ""); // Remove non-numeric characters
+      const numericValue = value.replace(/\D/g, "");
       setFormData({ ...formData, [name]: numericValue });
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
 
+  const validateForm = () => {
+    let formIsValid = true;
+    const newErrors = {};
+    const newBorderColors = {};
+
+    if (formData.firstName.length < 3 || formData.firstName.length > 30) {
+      newErrors.firstName = "First name must be between 3 and 30 characters.";
+      newBorderColors.firstName = "red";
+      formIsValid = false;
+    }
+
+    if (formData.lastName.length < 3 || formData.lastName.length > 30) {
+      newErrors.lastName = "Last name must be between 3 and 30 characters.";
+      newBorderColors.lastName = "red";
+      formIsValid = false;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address.";
+      newBorderColors.email = "red";
+      formIsValid = false;
+    }
+
+    if (!/^\d{11}$/.test(formData.phoneNumber)) {
+      newErrors.phoneNumber = "Phone number must be exactly 11 digits.";
+      newBorderColors.phoneNumber = "red";
+      formIsValid = false;
+    }    
+
+    if (formData.street.length < 3) {
+      newErrors.street = "Street must be at least 3 characters long.";
+      newBorderColors.street = "red";
+      formIsValid = false;
+    }
+
+    if (formData.city.length < 3) {
+      newErrors.city = "City must be at least 3 characters long.";
+      newBorderColors.city = "red";
+      formIsValid = false;
+    }
+
+    if (!/^\d{1,3}$/.test(formData.barangay)) {
+      newErrors.barangay = "Barangay must be numeric and a maximum of 3 characters long.";
+      newBorderColors.barangay = "red";
+      formIsValid = false;
+    }
+
+    if (!/^\d{4}$/.test(formData.zipCode)) {
+      newErrors.zipCode = "Zip code must be exactly 4 digits and numeric.";
+      newBorderColors.zipCode = "red";
+      formIsValid = false;
+    }
+
+    setErrors(newErrors);
+    setBorderColors(newBorderColors);
+
+    return formIsValid;
+  };
+
   const handleUpdate = async () => {
-    setIsUpdating(true);
-    try {
-      const response = await api.post("/profile", formData);
-      setMyAccount(response.data);
-      alert("Profile updated successfully!");
-    } catch (error) {
-      console.error("Error updating user profile:", error.message);
-      alert("Failed to update profile. Please try again.");
-    } finally {
-      setIsUpdating(false);
+    if (validateForm()) {
+      setIsUpdating(true);
+      try {
+        const response = await api.post("/profile", formData);
+        setMyAccount(response.data);
+        alert("Profile updated successfully!");
+      } catch (error) {
+        console.error("Error updating user profile:", error.message);
+        alert("Failed to update profile. Please try again.");
+      } finally {
+        setIsUpdating(false);
+      }
     }
   };
 
@@ -82,28 +172,26 @@ const ProfilePage = () => {
     const file = e.target.files[0];
 
     if (!file) {
-      alert('Please select an image to upload.');
+      alert("Please select an image to upload.");
       return;
     }
 
     const uploadData = new FormData();
-    uploadData.append('image', file);
+    uploadData.append("image", file);
 
     setUploadingImage(true);
 
     try {
-      const response = await api.post('/profile/image-upload', uploadData, {
+      const response = await api.post("/profile/image-upload", uploadData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
-
-      console.log('Image uploaded successfully:', response.data);
-      alert('Image uploaded successfully!');
-
+      console.log("Image uploaded successfully:", response.data);
+      alert("Image uploaded successfully!");
     } catch (error) {
-      console.error('Error uploading image:', error.message);
-      alert('Failed to upload image. Please try again.');
+      console.error("Error uploading image:", error.message);
+      alert("Failed to upload image. Please try again.");
     } finally {
       setUploadingImage(false);
     }
@@ -122,9 +210,9 @@ const ProfilePage = () => {
                   <div className="user-profile">
                     <div className="user-avatar">
                       <img
-                        src={profileImage || 'https://i.pinimg.com/736x/d2/98/4e/d2984ec4b65a8568eab3dc2b640fc58e.jpg'}
-                        alt={myAccount?.firstName ? `${myAccount.firstName}'s avatar` : 'User Avatar'}
-                        onError={(e) => e.target.src = 'https://i.pinimg.com/736x/d2/98/4e/d2984ec4b65a8568eab3dc2b640fc58e.jpg'}  // Fallback image on error
+                        src={profileImage || "https://i.pinimg.com/736x/d2/98/4e/d2984ec4b65a8568eab3dc2b640fc58e.jpg"}
+                        alt={myAccount?.firstName ? `${myAccount.firstName}'s avatar` : "User Avatar"}
+                        onError={(e) => (e.target.src = "https://i.pinimg.com/736x/d2/98/4e/d2984ec4b65a8568eab3dc2b640fc58e.jpg")}
                       />
                       <input
                         type="file"
@@ -177,179 +265,140 @@ const ProfilePage = () => {
             <div className="card h-100">
               <div className="card-body">
                 {showPlanning ? (
-                  <div className="blue-text-box">
-                    You haven't subscribed to any plan yet!
-                  </div>
+                  <div className="blue-text-box">You haven't subscribed to any plan yet!</div>
                 ) : showAccount ? (
                   <div className="account-info">
                     <h6 className="text-primary">My Account Information</h6>
-                    <p>
-                      <strong>First Name:</strong> {myAccount?.firstName}
-                    </p>
-                    <p>
-                      <strong>Last Name:</strong> {myAccount?.lastName}
-                    </p>
-                    <p>
-                      <strong>Email:</strong> {myAccount?.email}
-                    </p>
-                    <p>
-                      <strong>Phone Number:</strong> {myAccount?.phoneNumber}
-                    </p>
-                    <p>
-                      <strong>Street:</strong> {myAccount?.street}
-                    </p>
-                    <p>
-                      <strong>City:</strong> {myAccount?.city}
-                    </p>
-                    <p>
-                      <strong>Barangay:</strong> {myAccount?.barangay}
-                    </p>
-                    <p>
-                      <strong>Zip Code:</strong> {myAccount?.zipCode}
-                    </p>
+                    <p><strong>First Name:</strong> {myAccount?.firstName}</p>
+                    <p><strong>Last Name:</strong> {myAccount?.lastName}</p>
+                    <p><strong>Email:</strong> {myAccount?.email}</p>
+                    <p><strong>Phone Number:</strong> {myAccount?.phoneNumber}</p>
+                    <p><strong>Street:</strong> {myAccount?.street}</p>
+                    <p><strong>City:</strong> {myAccount?.city}</p>
+                    <p><strong>Barangay:</strong> {myAccount?.barangay}</p>
+                    <p><strong>Zip Code:</strong> {myAccount?.zipCode}</p>
                   </div>
                 ) : (
-                  <>
-                    {/* Personal Details Section */}
-                    <div className="row gutters">
-                      <div className="col-xl-12">
-                        <h6 className="mb-2 text-primary">Personal Details</h6>
+                  <div className="user-profile-edit">
+                    <h6 className="text-primary">Edit Profile</h6>
+
+                    <div className="form-row">
+                      <div className="form-group col-md-6">
+                        <label htmlFor="firstName">First Name</label>
+                        <input
+                          type="text"
+                          className={`form-control ${borderColors.firstName}`}
+                          id="firstName"
+                          name="firstName"
+                          value={formData.firstName}
+                          onChange={handleInputChange}
+                        />
+                        <small className="form-text text-danger">{errors.firstName}</small>
                       </div>
-                      <div className="col-xl-6">
-                        <div className="form-group">
-                          <label htmlFor="fullName">First Name</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="fullName"
-                            name="firstName"
-                            value={formData.firstName}
-                            onChange={handleInputChange}
-                            placeholder="Enter first name"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-xl-6">
-                        <div className="form-group">
-                          <label htmlFor="eMail">Last Name</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="eMail"
-                            name="lastName"
-                            value={formData.lastName}
-                            onChange={handleInputChange}
-                            placeholder="Enter last name"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-xl-6">
-                        <div className="form-group">
-                          <label htmlFor="email">Email</label>
-                          <input
-                            type="email"
-                            className="form-control"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            placeholder="user@example.com"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-xl-6">
-                        <div className="form-group">
-                          <label htmlFor="phoneNumber">Phone Number</label>
-                          <input
-                            type="tel"
-                            className="form-control"
-                            id="phoneNumber"
-                            name="phoneNumber"
-                            value={formData.phoneNumber}
-                            onChange={handleInputChange}
-                            placeholder="+63"
-                          />
-                        </div>
+                      <div className="form-group col-md-6">
+                        <label htmlFor="lastName">Last Name</label>
+                        <input
+                          type="text"
+                          className={`form-control ${borderColors.lastName}`}
+                          id="lastName"
+                          name="lastName"
+                          value={formData.lastName}
+                          onChange={handleInputChange}
+                        />
+                        <small className="form-text text-danger">{errors.lastName}</small>
                       </div>
                     </div>
 
-                    {/* Address Section */}
-                    <div className="row gutters">
-                      <div className="col-xl-12">
-                        <h6 className="mt-3 mb-2 text-primary">Address</h6>
+                    <div className="form-row">
+                      <div className="form-group col-md-6">
+                        <label htmlFor="email">Email</label>
+                        <input
+                          type="email"
+                          className={`form-control ${borderColors.email}`}
+                          id="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                        />
+                        <small className="form-text text-danger">{errors.email}</small>
                       </div>
-                      <div className="col-xl-6">
-                        <div className="form-group">
-                          <label htmlFor="Street">Street</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="Street"
-                            name="street"
-                            value={formData.street}
-                            onChange={handleInputChange}
-                            placeholder="Enter Street"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-xl-6">
-                        <div className="form-group">
-                          <label htmlFor="ciTy">City</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="ciTy"
-                            name="city"
-                            value={formData.city}
-                            onChange={handleInputChange}
-                            placeholder="Enter City"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-xl-6">
-                        <div className="form-group">
-                          <label htmlFor="bZip">Barangay</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="bZip"
-                            name="barangay"
-                            value={formData.barangay}
-                            onChange={handleInputChange}
-                            placeholder="Enter Barangay"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-xl-6">
-                        <div className="form-group">
-                          <label htmlFor="zIp">Zip Code</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="zIp"
-                            name="zipCode"
-                            value={formData.zipCode}
-                            onChange={handleInputChange}
-                            placeholder="Enter Zip Code"
-                          />
-                        </div>
+                      <div className="form-group col-md-6">
+                        <label htmlFor="phoneNumber">Phone Number</label>
+                        <input
+                          type="text"
+                          className={`form-control ${borderColors.phoneNumber}`}
+                          id="phoneNumber"
+                          name="phoneNumber"
+                          value={formData.phoneNumber}
+                          onChange={handleInputChange}
+                        />
+                        <small className="form-text text-danger">{errors.phoneNumber}</small>
                       </div>
                     </div>
 
-                    {/* Save Changes Button */}
-                    <div className="row gutters">
-                      <div className="col-xl-12 text-right">
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={handleUpdate}
-                          disabled={isUpdating}
-                        >
-                          Save Changes
-                        </button>
+                    <div className="form-row">
+                      <div className="form-group col-md-6">
+                        <label htmlFor="street">Street</label>
+                        <input
+                          type="text"
+                          className={`form-control ${borderColors.street}`}
+                          id="street"
+                          name="street"
+                          value={formData.street}
+                          onChange={handleInputChange}
+                        />
+                        <small className="form-text text-danger">{errors.street}</small>
+                      </div>
+                      <div className="form-group col-md-6">
+                        <label htmlFor="city">City</label>
+                        <input
+                          type="text"
+                          className={`form-control ${borderColors.city}`}
+                          id="city"
+                          name="city"
+                          value={formData.city}
+                          onChange={handleInputChange}
+                        />
+                        <small className="form-text text-danger">{errors.city}</small>
                       </div>
                     </div>
-                  </>
+
+                    <div className="form-row">
+                      <div className="form-group col-md-6">
+                        <label htmlFor="barangay">Barangay</label>
+                        <input
+                          type="text"
+                          className={`form-control ${borderColors.barangay}`}
+                          id="barangay"
+                          name="barangay"
+                          value={formData.barangay}
+                          onChange={handleInputChange}
+                        />
+                        <small className="form-text text-danger">{errors.barangay}</small>
+                      </div>
+                      <div className="form-group col-md-6">
+                        <label htmlFor="zipCode">Zip Code</label>
+                        <input
+                          type="text"
+                          className={`form-control ${borderColors.zipCode}`}
+                          id="zipCode"
+                          name="zipCode"
+                          value={formData.zipCode}
+                          onChange={handleInputChange}
+                        />
+                        <small className="form-text text-danger">{errors.zipCode}</small>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={handleUpdate}
+                      disabled={isUpdating}
+                    >
+                      {isUpdating ? "Updating..." : "Update Profile"}
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
