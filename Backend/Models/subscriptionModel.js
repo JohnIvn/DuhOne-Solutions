@@ -1,24 +1,24 @@
 import { DataTypes, Model } from "sequelize";
-import db from '../database.js';
-import { UserAccount } from './userAccountModel.js'; 
+import db from "../database.js";
+import { UserAccount } from "./userAccountModel.js";
 
 class subscriptionModel extends Model {}
 
 const subscription = subscriptionModel.init(
   {
     transactionId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        autoIncrement: true, 
-        primaryKey: true,    
-      },
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       unique: true,
       references: {
-        model: UserAccount, 
-        key: 'userId', 
+        model: UserAccount,
+        key: "userId",
       },
     },
     name: {
@@ -30,16 +30,16 @@ const subscription = subscriptionModel.init(
     },
     paid: {
       type: DataTypes.STRING,
-      defaultValue: 'No',
+      defaultValue: "No",
       allowNull: false,
     },
     status: {
       type: DataTypes.STRING,
-      defaultValue: 'pending',
+      defaultValue: "pending",
     },
     dataUsage: {
       type: DataTypes.INTEGER,
-      defaultValue: 0
+      defaultValue: 0,
     },
     subscribeAt: {
       type: DataTypes.DATE,
@@ -58,6 +58,6 @@ const subscription = subscriptionModel.init(
   }
 );
 
-subscription.belongsTo(UserAccount, { foreignKey: 'userId' });
+subscription.belongsTo(UserAccount, { foreignKey: "userId" });
 
 export { subscription };

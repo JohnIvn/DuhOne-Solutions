@@ -4,37 +4,40 @@ import db from "../database.js";
 
 class RequestFormModel extends Model {}
 
-RequestFormModel.init({
+RequestFormModel.init(
+  {
     id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    userId: { 
-        type: DataTypes.INTEGER,
-        unique: true,
-        allowNull: false,
-        references: {
-          model: UserProfileModel,
-          key: 'userId',
-        },
-        onDelete: 'CASCADE', 
-        onUpdate: 'CASCADE',
+    userId: {
+      type: DataTypes.INTEGER,
+      unique: true,
+      allowNull: false,
+      references: {
+        model: UserProfileModel,
+        key: "userId",
       },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    },
     plan: {
-        type: DataTypes.STRING
+      type: DataTypes.STRING,
     },
     paymentMethod: {
-        type: DataTypes.STRING
+      type: DataTypes.STRING,
     },
     requestStatus: {
-        type: DataTypes.STRING
-    }
-}, {
+      type: DataTypes.STRING,
+    },
+  },
+  {
     sequelize: db,
     modelName: "Request Form Model",
     tableName: "requestTable",
-    timestamps: true
-});
+    timestamps: true,
+  }
+);
 
 export default RequestFormModel;

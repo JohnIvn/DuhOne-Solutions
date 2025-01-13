@@ -1,7 +1,7 @@
-import { Sequelize, DataTypes, Model } from 'sequelize';
-import {UserAccount} from '../Models/userAccountModel.js';
-import db from '../database.js';
-import dotenv from 'dotenv';
+import { Sequelize, DataTypes, Model } from "sequelize";
+import { UserAccount } from "../Models/userAccountModel.js";
+import db from "../database.js";
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -13,7 +13,7 @@ export const BankAccount = BankAccountModel.init(
       type: DataTypes.INTEGER,
       references: {
         model: UserAccount,
-        key: 'userId',
+        key: "userId",
       },
       allowNull: false,
     },
@@ -46,8 +46,8 @@ export const BankAccount = BankAccountModel.init(
   },
   {
     sequelize: db,
-    modelName: 'BankAccount',
-    tableName: 'bank_accounts',
+    modelName: "BankAccount",
+    tableName: "bank_accounts",
     timestamps: true,
   }
 );

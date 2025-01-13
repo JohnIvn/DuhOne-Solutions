@@ -1,94 +1,95 @@
-import { Review } from '../Models/reviewModel.js';  
-import { UserAccount } from '../Models/userAccountModel.js'; 
-import UserProfileModel from '../Models/userProfileModel.js';
+import { Review } from "../Models/reviewModel.js";
+import { UserAccount } from "../Models/userAccountModel.js";
+import UserProfileModel from "../Models/userProfileModel.js";
 
 export const createReview = async (req, res) => {
-    const { content, rating } = req.body;
-    console.log('User:', req.user); 
+  const { content, rating } = req.body;
+  console.log("User:", req.user);
 
-    if (!content || !rating) {
-        return res.status(400).json({ message: 'Review content and rating are required.' });
+  if (!content || !rating) {
+    return res
+      .status(400)
+      .json({ message: "Review content and rating are required." });
+  }
+
+  try {
+    const userAccount = await UserProfileModel.findOne({
+      where: { userId: req.user.userId },
+    });
+
+    if (!userAccount) {
+      return res.status(404).json({ message: "User profile not found." });
     }
 
-    try {
-        
-        const userAccount = await UserProfileModel.findOne({
-            where: { userId: req.user.userId },
-        });
+    const fullName = `${userAccount.firstName} ${userAccount.lastName}`;
 
-        if (!userAccount) {
-            return res.status(404).json({ message: 'User profile not found.' });
-        }
-
-        
-        const fullName = `${userAccount.firstName} ${userAccount.lastName}`;
-
-        
-        const newReview = await Review.create({
-            createdBy: req.user.userId, 
-            name: fullName, 
-            reviewContent: content, 
-            rating, 
-        });
-        return res.status(201).json({
-            message: 'Review submitted successfully!',
-            review: newReview,
-        });
-    } catch (err) {
-        console.error('Error saving review:', err);
-        return res.status(500).json({ message: 'An error occurred while saving the review.' });
-    }
+    const newReview = await Review.create({
+      createdBy: req.user.userId,
+      name: fullName,
+      reviewContent: content,
+      rating,
+    });
+    return res.status(201).json({
+      message: "Review submitted successfully!",
+      review: newReview,
+    });
+  } catch (err) {
+    console.error("Error saving review:", err);
+    return res
+      .status(500)
+      .json({ message: "An error occurred while saving the review." });
+  }
 };
 
-
 export const getReviews = async (req, res) => {
-    try {
-        const reviews = await Review.findAll({
-            include: {
-                model: UserAccount,
-                attributes: ['userId'],  
-            },
-        });
-        
-        return res.status(200).json({ reviews });
-    } catch (err) {
-        console.error('Error fetching reviews:', err);
-        return res.status(500).json({ message: 'An error occurred while fetching reviews.' });
-    }
+  try {
+    const reviews = await Review.findAll({
+      include: {
+        model: UserAccount,
+        attributes: ["userId"],
+      },
+    });
+
+    return res.status(200).json({ reviews });
+  } catch (err) {
+    console.error("Error fetching reviews:", err);
+    return res
+      .status(500)
+      .json({ message: "An error occurred while fetching reviews." });
+  }
 };
 
 export const sortReviews = async (req, res) => {
-    const { descending, ascending, dateAsc, dateDesc } = req.body;
+  const { descending, ascending, dateAsc, dateDesc } = req.body;
 
-    try {
-        const includeConfig = {
-            model: UserAccount,
-            attributes: ['userId', 'firstName', 'lastName'],
-        };
+  try {
+    const includeConfig = {
+      model: UserAccount,
+      attributes: ["userId", "firstName", "lastName"],
+    };
 
-        let order = [];
+    let order = [];
 
-        if (descending) {
-            order = [['rating', 'DESC']];
-        } else if (ascending) {
-            order = [['rating', 'ASC']];
-        } else if (dateAsc) {
-            order = [['createdAt', 'ASC']];
-        } else if (dateDesc) {
-            order = [['createdAt', 'DESC']];
-        }
-
-        const result = await Review.findAll({
-            include: includeConfig,
-            order, 
-        });
-
-        return res.status(200).json(result);
-    } catch (error) {
-        console.log('Error in sorting reviews: ', error);
-        return res.status(500).json({ message: 'Error occurred while sorting reviews' });
+    if (descending) {
+      order = [["rating", "DESC"]];
+    } else if (ascending) {
+      order = [["rating", "ASC"]];
+    } else if (dateAsc) {
+      order = [["createdAt", "ASC"]];
+    } else if (dateDesc) {
+      order = [["createdAt", "DESC"]];
     }
+
+    const result = await Review.findAll({
+      include: includeConfig,
+      order,
+    });
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.log("Error in sorting reviews: ", error);
+    return res
+      .status(500)
+      .json({ message: "Error occurred while sorting reviews" });
+  }
 };
-
-
-

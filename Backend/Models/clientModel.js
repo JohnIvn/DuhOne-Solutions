@@ -1,8 +1,8 @@
-import { DataTypes, Model } from 'sequelize';
-import db from '../database.js';
-import UserProfileModel from './userProfileModel.js';
-import BankAccount from './bankAccountModel.js';
-import PackageModel from './packageModel.js';
+import { DataTypes, Model } from "sequelize";
+import db from "../database.js";
+import UserProfileModel from "./userProfileModel.js";
+import BankAccount from "./bankAccountModel.js";
+import PackageModel from "./packageModel.js";
 
 class Client extends Model {}
 
@@ -12,7 +12,7 @@ export const ClientModel = Client.init(
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
-      unique: true
+      unique: true,
     },
     name: {
       type: DataTypes.STRING,
@@ -23,16 +23,16 @@ export const ClientModel = Client.init(
     },
     status: {
       type: DataTypes.STRING,
-      defaultValue: 'inactive',
+      defaultValue: "inactive",
     },
     dataUsage: {
       type: DataTypes.INTEGER,
-      defaultValue: 0
+      defaultValue: 0,
     },
     paid: {
       type: DataTypes.STRING,
       defaultValue: "Paid",
-      allowNull: true
+      allowNull: true,
     },
     subscribeAt: {
       type: DataTypes.DATE,
@@ -45,22 +45,22 @@ export const ClientModel = Client.init(
   },
   {
     sequelize: db,
-    modelName: 'Client',
-    tableName: 'clients_subscription', 
+    modelName: "Client",
+    tableName: "clients_subscription",
     timestamps: false,
     hooks: {
       beforeCreate: (client) => {
-        client.plan = client.plan.trim().toLowerCase();  
+        client.plan = client.plan.trim().toLowerCase();
       },
     },
   }
 );
 
-ClientModel.hasOne(UserProfileModel, { foreignKey: 'userId' });
-UserProfileModel.belongsTo(ClientModel, { foreignKey: 'userId' });
+ClientModel.hasOne(UserProfileModel, { foreignKey: "userId" });
+UserProfileModel.belongsTo(ClientModel, { foreignKey: "userId" });
 
-ClientModel.hasOne(BankAccount, { foreignKey: 'bankAccountId'});
-BankAccount.belongsTo(ClientModel, { foreignKey: 'bankAccountId' });
+ClientModel.hasOne(BankAccount, { foreignKey: "bankAccountId" });
+BankAccount.belongsTo(ClientModel, { foreignKey: "bankAccountId" });
 
-ClientModel.belongsTo(PackageModel, { foreignKey: 'plan', targetKey: 'plan' });
-PackageModel.hasMany(ClientModel, { foreignKey: 'plan', sourceKey: 'plan' });
+ClientModel.belongsTo(PackageModel, { foreignKey: "plan", targetKey: "plan" });
+PackageModel.hasMany(ClientModel, { foreignKey: "plan", sourceKey: "plan" });

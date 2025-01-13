@@ -1,7 +1,7 @@
-import { DataTypes, Model } from 'sequelize';
-import db from '../database.js';
-import { UserAccount } from '../Models/userAccountModel.js';
-import UserProfileModel from './userProfileModel.js';
+import { DataTypes, Model } from "sequelize";
+import db from "../database.js";
+import { UserAccount } from "../Models/userAccountModel.js";
+import UserProfileModel from "./userProfileModel.js";
 
 class ReviewModel extends Model {}
 
@@ -13,18 +13,18 @@ const Review = ReviewModel.init(
       autoIncrement: true,
     },
     createdBy: {
-      type: DataTypes.INTEGER, 
+      type: DataTypes.INTEGER,
       references: {
         model: UserProfileModel,
-        key: 'userId',
+        key: "userId",
       },
       allowNull: false,
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
     name: {
-      type: DataTypes.STRING, 
-      allowNull: false, 
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     reviewContent: {
       type: DataTypes.TEXT,
@@ -41,25 +41,24 @@ const Review = ReviewModel.init(
   },
   {
     sequelize: db,
-    modelName: 'Review',
-    tableName: 'reviews',
-    timestamps: true, 
+    modelName: "Review",
+    tableName: "reviews",
+    timestamps: true,
   }
 );
 
-
 UserAccount.hasMany(Review, {
   foreignKey: {
-    name: 'createdBy',
+    name: "createdBy",
     allowNull: false,
   },
-  onDelete: 'CASCADE',
-  onUpdate: 'CASCADE',
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 
 Review.belongsTo(UserAccount, {
   foreignKey: {
-    name: 'createdBy',
+    name: "createdBy",
     allowNull: false,
   },
 });

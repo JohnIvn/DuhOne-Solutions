@@ -1,6 +1,6 @@
-import db from '../database.js';
-import { Sequelize, DataTypes, Model } from 'sequelize';
-import dotenv from 'dotenv';
+import db from "../database.js";
+import { Sequelize, DataTypes, Model } from "sequelize";
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -34,8 +34,8 @@ const UserAccount = UserAccountModel.init(
   },
   {
     sequelize: db,
-    modelName: 'UserAccount',
-    tableName: 'useraccounts',
+    modelName: "UserAccount",
+    tableName: "useraccounts",
     timestamps: false,
   }
 );
@@ -47,7 +47,7 @@ SignInModel.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      primaryKey: true
+      primaryKey: true,
     },
     password: {
       type: DataTypes.STRING,
@@ -55,14 +55,14 @@ SignInModel.init(
     },
     role: {
       type: DataTypes.STRING,
-      defaultValue: 'User',
-    }
+      defaultValue: "User",
+    },
   },
   {
-    sequelize: db,  
-    modelName: 'SignInModel',
-    tableName: 'useraccounts',  
-    timestamps: false,  
+    sequelize: db,
+    modelName: "SignInModel",
+    tableName: "useraccounts",
+    timestamps: false,
   }
 );
 
@@ -74,12 +74,12 @@ const AdminAccount = AdminAccountModel.init(
       type: DataTypes.INTEGER,
       primaryKey: true,
       references: {
-        model: UserAccount,  
-        key: 'userId',       
+        model: UserAccount,
+        key: "userId",
       },
       allowNull: false,
-      onDelete: 'CASCADE',  
-      onUpdate: 'CASCADE',  
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
     email: {
       type: DataTypes.STRING,
@@ -87,7 +87,7 @@ const AdminAccount = AdminAccountModel.init(
       allowNull: false,
     },
     password: {
-      type: DataTypes.STRING, 
+      type: DataTypes.STRING,
       allowNull: false,
     },
     createdAt: {
@@ -97,23 +97,23 @@ const AdminAccount = AdminAccountModel.init(
   },
   {
     sequelize: db,
-    modelName: 'AdminAccount',
-    tableName: 'adminaccounts',
-    timestamps: false, 
+    modelName: "AdminAccount",
+    tableName: "adminaccounts",
+    timestamps: false,
   }
 );
 
 UserAccount.hasOne(AdminAccount, {
   foreignKey: {
-    name: 'userId',
+    name: "userId",
     allowNull: false,
   },
-  onDelete: 'CASCADE',
-  onUpdate: 'CASCADE',
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 AdminAccount.belongsTo(UserAccount, {
   foreignKey: {
-    name: 'userId',
+    name: "userId",
     allowNull: false,
   },
 });

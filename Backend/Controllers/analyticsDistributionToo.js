@@ -1,14 +1,14 @@
-import { subscription } from '../Models/subscriptionModel.js';
+import { subscription } from "../Models/subscriptionModel.js";
 
 const getStatusDistribution = async (req, res) => {
   try {
     // Group by status and count occurrences
     const statusDistribution = await subscription.findAll({
       attributes: [
-        'status',
-        [sequelize.fn('COUNT', sequelize.col('status')), 'count'],
+        "status",
+        [sequelize.fn("COUNT", sequelize.col("status")), "count"],
       ],
-      group: ['status'],
+      group: ["status"],
     });
 
     // Format response
@@ -19,16 +19,16 @@ const getStatusDistribution = async (req, res) => {
 
     // Send response
     res.status(200).json({
-      message: 'Status distribution retrieved successfully.',
+      message: "Status distribution retrieved successfully.",
       data: distribution,
     });
   } catch (error) {
-    console.error('Error retrieving status distribution:', error);
+    console.error("Error retrieving status distribution:", error);
     res.status(500).json({
-      message: 'An error occurred while retrieving status distribution.',
+      message: "An error occurred while retrieving status distribution.",
       error: error.message,
     });
   }
 };
 
-export default getStatusDistribution ;
+export default getStatusDistribution;

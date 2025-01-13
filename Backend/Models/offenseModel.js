@@ -1,7 +1,7 @@
-import { DataTypes, Model } from 'sequelize';
-import { UserAccount } from '../Models/userAccountModel.js';  
-import db from '../database.js';
-import dotenv from 'dotenv';
+import { DataTypes, Model } from "sequelize";
+import { UserAccount } from "../Models/userAccountModel.js";
+import db from "../database.js";
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -12,22 +12,22 @@ export const Offense = OffenseModel.init(
     userId: {
       type: DataTypes.INTEGER,
       references: {
-        model: UserAccount, 
-        key: 'userId',
+        model: UserAccount,
+        key: "userId",
       },
       allowNull: false,
     },
     offenseCount: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 0, 
+      defaultValue: 0,
     },
   },
   {
     sequelize: db,
-    modelName: 'OffenseModel',
-    tableName: 'offenses',  
-    timestamps: true,  
+    modelName: "OffenseModel",
+    tableName: "offenses",
+    timestamps: true,
   }
 );
 

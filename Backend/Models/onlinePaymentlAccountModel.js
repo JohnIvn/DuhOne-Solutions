@@ -1,5 +1,5 @@
-import { Sequelize, DataTypes, Model } from 'sequelize';
-import db from '../database.js';
+import { Sequelize, DataTypes, Model } from "sequelize";
+import db from "../database.js";
 
 class OnlinePaymentAccountModel extends Model {}
 
@@ -18,7 +18,7 @@ export const OnlinePaymentAccount = OnlinePaymentAccountModel.init(
     balance: {
       type: DataTypes.FLOAT,
       allowNull: true,
-    },    
+    },
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: Sequelize.NOW,
@@ -26,8 +26,8 @@ export const OnlinePaymentAccount = OnlinePaymentAccountModel.init(
   },
   {
     sequelize: db,
-    modelName: 'PaypalAccount',
-    tableName: 'paypal_accounts',
+    modelName: "PaypalAccount",
+    tableName: "paypal_accounts",
     timestamps: true,
   }
 );
