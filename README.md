@@ -112,12 +112,21 @@ yarn
 
 ```bash
 /
-├── Backend/            
-├── Frontend/
-│   ├── public/
-│   └── src/
-│       └── app/
-└── Middleware/            
+├── Backend/
+|   ├── Controllers/
+|   ├── Middleware/
+|   ├── Models/
+|   ├── Routes/
+|   ├── Services/
+|   └── socketHandlers/ 
+└── Frontend/
+    └── src/
+        ├── CSS/
+        ├── Pages/
+        ├── assets/
+        ├── components/
+        └── utilities/
+         
 ```
 
 ---
